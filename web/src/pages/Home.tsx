@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SearchBar from "../components/SearchBar";
 import axios from "axios";
-import CompanyList from "../mods/CompanyList";
 import { ICompanyData } from "../types/ICompanyData";
 import RankingsLoading from "../components/Rankings/RankingsLoading";
 import Rankings from "../components/Rankings/Rankings";
@@ -14,8 +13,30 @@ const FilterBtnStyles = "border-2 rounded-xl border-black p-1";
 
 const Home: React.FC = () => {
   const [rankings, setRankings] = useState<ICompanyData[]>([]);
-  const [loaded, setLoaded] = useState<boolean>(false);
+  const [rankingsLoaded, setRankingsLoaded] = useState<boolean>(false);
+
+  const [names, setNames] = useState<string[][]>([[]]);
+  const [namesLoaded, setNamesLoaded] = useState<boolean>(false);
+
   const [metric, setMetric] = useState<string>(defaultMetric);
+
+  useEffect(() => {
+    const getNames = async () => {
+      const res = await axios.get("http://localhost:8000/companies/getNames");
+      const data = res.data;
+
+      const f: string[][] = [[]];
+      f.pop();
+      for (const ticker in data) {
+        f.push([ticker, data[ticker]]);
+      }
+      console.log(f);
+
+      setNames(f);
+    };
+
+    getNames().then(() => setNamesLoaded(true));
+  }, []);
 
   useEffect(() => {
     const reFetchRankings = async () => {
@@ -23,15 +44,15 @@ const Home: React.FC = () => {
       setRankings(res.data);
     };
 
-    setLoaded(false);
-    reFetchRankings().then(() => setLoaded(true));
+    setRankingsLoaded(false);
+    reFetchRankings().then(() => setRankingsLoaded(true));
   }, [metric]);
 
   return (
     <div className="relative w-screen bg-white mt-5">
-      <SearchBar placeholder="Search a company by ticker symbol or company name" data={CompanyList} />
+      { namesLoaded ? <SearchBar placeholder="Search by ticker or name..." data={names} /> : <div className="h-16 my-5" /> }
       <div className="relative">
-        {loaded ?
+        {rankingsLoaded ?
           <div className="flex flex-row">
             <div className="font-modern border-2 w-fit m-2 p-2">
              <u className="text-xl">Metrics:</u>

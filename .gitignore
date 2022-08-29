@@ -1,6 +1,6 @@
 .idea/
 
-ex/
+examples/
 
 /web/node_modules
 /web/public/manifest.json

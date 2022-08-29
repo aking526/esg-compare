@@ -2,11 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { config } from "./config/config";
 import company_list from "../mods/company_list.json";
 import Logging from "./utils/Logging";
-
-// Type of imported data
-interface DataObject {
-	[index: string] : any
-}
+import ISA from "./types/ISA";
 
 async function Main() {
 	const ESG_API_KEY = config.keys.esg;
@@ -19,7 +15,7 @@ async function Main() {
 
 	const GetCompanyInfo = async (tickers: string[]) => {
 		Logging.log("Fetching company info for: " + tickers.join(" "));
-		let data: DataObject = {};
+		let data: ISA = {};
 		const go = async (ticker: string) => {
 			const response: AxiosResponse = await axios.get(`https://finnhub.io/api/v1/stock/profile2?symbol=${ticker}&token=${FINNHUB_API_KEY}`);
 			data[ticker] = response.data;
@@ -40,7 +36,7 @@ async function Main() {
 		);
 		const req = await response.data;
 
-		let data: DataObject = {};
+		let data: ISA = {};
 		for (let i = 0; i < tickers.length; i++) {
 			data[tickers[i]] = req[i];
 		}
@@ -48,8 +44,8 @@ async function Main() {
 		return data;
 	}
 
-	let company_info_data: DataObject = await GetCompanyInfo(company_list);
-	let esg_data: DataObject = await GetESGData(company_list);
+	let company_info_data: ISA = await GetCompanyInfo(company_list);
+	let esg_data: ISA = await GetESGData(company_list);
 
 	// gets the data for the company in the correct form and makes the post request
 	const BuildProfile = (ticker: string, callback: Function) => {

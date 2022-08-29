@@ -4,6 +4,7 @@ import mongoose, { Error } from "mongoose";
 import { config } from "./config/config";
 import Logging from "./utils/Logging";
 import companyRoutes from "./routes/Company.routes";
+import stockRoutes from "./routes/StockInfo.routes";
 
 export const app = express();
 
@@ -50,6 +51,7 @@ const StartServer = () => {
 
 	// Routes
 	app.use("/companies", companyRoutes);
+	app.use("/stockInfo", stockRoutes);
 
 	// Healthcheck
 	app.get("/healthcheck", (req: Request, res: Response, next: NextFunction) => res.status(200).json({ message: "working" }));

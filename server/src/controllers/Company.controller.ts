@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import mongoose from "mongoose";
-import Company from "../models/Company.model";
+import mongoose, { ObjectId } from "mongoose";
+import Company, { ICompanyModel } from "../models/Company.model";
 import { MTTSC } from "../utils/ConvertText";
+import ISA from "../types/ISA";
 
 const createCompany = (req: Request, res: Response, next: NextFunction) => {
 	const { name, ticker, currency, exchange, industry, logo, weburl, market_cap, esg_id, environment_grade, environment_level, environment_score, social_grade, social_level, social_score, governance_grade, governance_level, governance_score, total_score } = req.body;
@@ -74,6 +75,18 @@ const deleteCompany = (req: Request, res: Response, next: NextFunction) => {
 		.catch((error) => res.status(500).json({ error }));
 };
 
+const readCompanyNames = (req: Request, res: Response, next: NextFunction) => {
+	return Company.find().select({ "name": 1, "ticker": 1, "_id": 0 })
+		.then((data: (ICompanyModel & {_id: mongoose.Types.ObjectId})[]) => {
+			let formatted: ISA = {};
+			for (let i = 0; i < data.length; i++) {
+				formatted[data[i]["ticker"]] = data[i]["name"];
+			}
+			res.status(200).json(formatted);
+		})
+		.catch((error) => res.status(500).json({ error }));
+};
+
 const readSort = (req: Request, res: Response, next: NextFunction) => {
 	const metric = req.params.metric;
 
@@ -82,4 +95,4 @@ const readSort = (req: Request, res: Response, next: NextFunction) => {
 		.catch((error) => res.status(500).json({ error }));
 };
 
-export default { createCompany, readCompany, readAll, updateCompany, deleteCompany, readSort };
+export default { createCompany, readCompany, readAll, updateCompany, deleteCompany, readCompanyNames, readSort };

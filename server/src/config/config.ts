@@ -10,6 +10,7 @@ const SERVER_PORT = process.env.SERVER_PORT ? Number(process.env.SERVER_PORT) : 
 
 const ESG_API_KEY = process.env.ESG_API_KEY || "";
 const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY || "";
+const AV_API_KEY = process.env.AV_API_KEY || "";
 
 export const config = {
   mongo: {
@@ -20,6 +21,7 @@ export const config = {
   },
   keys: {
     esg: ESG_API_KEY,
-    finnhub: FINNHUB_API_KEY
+    finnhub: FINNHUB_API_KEY,
+    av: AV_API_KEY
   }
 };

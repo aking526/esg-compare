@@ -6,15 +6,14 @@ import { ICompanyData, BlankCompanyData }from "../types/ICompanyData";
 import CompanyInfo from "../components/Company/CompanyInfo";
 import TextDataFormat from "../components/TextDataFormat";
 import ESGCategory from "../components/Company/ESGCategory";
+import StockGraph from "../components/Company/StockGraph";
+import { GeneralStockConv, MDConv } from "../mods/StockDataConv";
+import stockGraph from "../components/Company/StockGraph";
 
-
-interface ILoaded {
-  companyData: boolean;
-  stockInfo: boolean;
-}
 
 const Company: React.FC = () => {
   const { ticker } = useParams();
+
   const [data, setData] = useState<ICompanyData>(BlankCompanyData);
   const [stockInfo, setStockInfo] = useState<any>({});
   const [dataLoaded, setDataLoaded] = useState<boolean>(false);
@@ -28,8 +27,8 @@ const Company: React.FC = () => {
     };
 
     const fetchStockInfo = async () => {
-      // const res = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${ticker?.toUpperCase()}&outputsize=full&apikey=${config.keys.av}`);
-      // setStockInfo(res.data);
+      const res = await axios.get(`http://localhost:8000/stockInfo/get/${ticker}`);
+      setStockInfo(res.data);
     };
 
     fetchCompanyData().then(() => setDataLoaded(true));
@@ -54,8 +53,12 @@ const Company: React.FC = () => {
             </div>
             <TextDataFormat text="Total Score:" data={data.total_score} />
           </div>
-          <div>
-
+          <div className="flex flex-col items-center mt-5">
+            <strong className="text-2xl mb-1.5">Stock Info</strong>
+            {/*<p className="text-xs">Last Updated: {stockInfo[GeneralStockConv["md"]][MDConv["lastRefreshed"]]}</p>*/}
+            <div className="flex flex-row">
+              <StockGraph data={stockInfo[GeneralStockConv["daily"]]} />
+            </div>
           </div>
         </div>
       ) :
