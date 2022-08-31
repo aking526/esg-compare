@@ -5,11 +5,11 @@ import { schemas, ValidateSchema } from "../middleware/ValidateSchema";
 const router = express.Router();
 
 /* CRUD Routes */
-router.post("/create/", ValidateSchema(schemas.company.create), companyController.createCompany);
+router.post("/create/auth=:auth", ValidateSchema(schemas.company.create), companyController.createCompany);
 router.get("/get/:ticker", companyController.readCompany);
 router.get("/get/", companyController.readAll);
 router.patch("/update/:ticker", ValidateSchema(schemas.company.update), companyController.updateCompany);
-router.delete("/delete/:ticker", companyController.deleteCompany);
+router.delete("/delete/auth=:auth&ticker=:ticker", companyController.deleteCompany);
 
 /* Special Routes */
 router.get("/getNames/", companyController.readCompanyNames);

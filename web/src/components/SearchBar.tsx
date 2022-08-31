@@ -86,7 +86,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data }) => {
           </div>
         </div>
         <div className="p-2 m-1 text-base">
-          <Link to={filteredData.length !== 0 ? `/company/${filteredData[0][0]}` : "/"}><SearchIcon className="cursor-pointer"  style={{ color: "black" }} /></Link>
+          <Link to={filteredData.length !== 0 ? `/company/${filteredData[0][0]}` : "/"}><SearchIcon className="cursor-pointer" style={{ color: "black" }} /></Link>
         </div>
       </div>
 

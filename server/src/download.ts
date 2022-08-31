@@ -7,9 +7,15 @@ import ISA from "./types/ISA";
 async function Main() {
 	const ESG_API_KEY = config.keys.esg;
 	const FINNHUB_API_KEY = config.keys.finnhub;
+	const SERVER_AUTH = config.server.auth;
 
 	if (ESG_API_KEY === "" || FINNHUB_API_KEY === "") {
 		Logging.error("API KEY missing. Get your own key. Websites: https://www.esgenterprise.com/esg-analytics/esg-api-developer/, https://finnhub.io/");
+		process.exit(1);
+	}
+
+	if (SERVER_AUTH === "") {
+		Logging.error("No user authentication. Do not try to modify the database!");
 		process.exit(1);
 	}
 
@@ -74,17 +80,15 @@ async function Main() {
 			total_score: curr_esg["total"]
 		};
 
-		axios.post("http://localhost:8000/companies/create", data)
+		axios.post(`http://localhost:8000/companies/create/auth=${SERVER_AUTH}`, data)
 			.then((res: AxiosResponse) => {
-				Logging.log(res)
+				Logging.log(res.data);
 				callback();
 			})
 			.catch((error: AxiosError) => {
 				if (error.response) {
-					// @ts-ignore
-					Logging.error(error.response.data.error.details);
+					Logging.error(error.response);
 				}
-				callback();
 			});
 	}
 

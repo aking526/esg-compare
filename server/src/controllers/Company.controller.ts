@@ -3,9 +3,15 @@ import mongoose, { ObjectId } from "mongoose";
 import Company, { ICompanyModel } from "../models/Company.model";
 import { MTTSC } from "../utils/ConvertText";
 import ISA from "../types/ISA";
+import { config } from "../config/config";
 
 const createCompany = (req: Request, res: Response, next: NextFunction) => {
 	const { name, ticker, currency, exchange, industry, logo, weburl, market_cap, esg_id, environment_grade, environment_level, environment_score, social_grade, social_level, social_score, governance_grade, governance_level, governance_score, total_score } = req.body;
+	const auth = req.params.auth;
+
+	if (auth !== config.server.auth) {
+		return res.status(403).json({ message: "No Authorization" });
+	}
 
 	const company = new Company({
 		_id: new mongoose.Types.ObjectId(),
@@ -68,7 +74,12 @@ const updateCompany = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const deleteCompany = (req: Request, res: Response, next: NextFunction) => {
+	const auth = req.params.auth;
 	const companyTicker = req.params.ticker;
+
+	if (auth !== config.server.auth) {
+		return res.status(403).json({ message: "No Authorization" });
+	}
 
 	return Company.findOneAndDelete({ ticker: companyTicker })
 		.then((company) => (company ? res.status(201).json({ message: "deleted"}) : res.status(404).json({ message: "not found" })))
