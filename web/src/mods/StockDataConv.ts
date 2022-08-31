@@ -1,3 +1,5 @@
+import ISA from "../types/ISA";
+
 export const StockDataOptions = ["open", "high", "low", "close", "volume"];
 
 export const GeneralStockConv = {
@@ -13,7 +15,7 @@ export const MDConv = {
 	"timeZone": "5. Time Zone"
 }
 
-export const StockDataConv = {
+export const StockDataConv: ISA = {
 	"open": "1. open",
 	"high": "2. high",
 	"low": "3. low",

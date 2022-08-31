@@ -2094,6 +2094,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/chartjs@^0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@types/chartjs/-/chartjs-0.0.31.tgz#b16a687eaad3ea3e5cd3e961aee5a28e47b57949"
+  integrity sha512-eF1AgrIO0qP9KJYwM2dTKL2pczTjiLa0hfmZdQfKiqFq5WIvFTKPn1gkgADitF5sT4byEyq4EFdMVvuPIk6zeQ==
+
 "@types/connect-history-api-fallback@^1.3.5":
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/@types/connect-history-api-fallback/-/connect-history-api-fallback-1.3.5.tgz#d1f7a8a09d0ed5a57aee5ae9c18ab9b803205dae"

@@ -11,10 +11,10 @@ interface ESGCategoryProps {
 const ESGCategory: React.FC<ESGCategoryProps> = ({ category, score, grade, level }) => {
 	return (
 		<div className="my-1 mr-6 border-2 border-black p-3">
-			<u className="text-xl">{category}</u>
-			<TextDataFormat text={`${category} Score:`} data={score} />
-			<TextDataFormat text={`${category} Grade:`} data={grade} />
-			<TextDataFormat text={`${category} Level:`} data={level} />
+			<u className="text-2xl">{category}</u>
+			<TextDataFormat styles="my-2" text={`${category} Score:`} data={score} />
+			<TextDataFormat styles="my-2" text={`${category} Grade:`} data={grade} />
+			<TextDataFormat styles="my-2" text={`${category} Level:`} data={level} />
 		</div>
 	);
 };

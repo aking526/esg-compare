@@ -8,8 +8,7 @@ import DataRefToText from "../mods/DataRefToText";
 import MetricBtn from "../components/MetricBtn";
 
 const defaultMetric = "total_score";
-const FilterBtnStyles = "border-2 rounded-xl border-black p-1";
-
+const FilterBtnStyles = "border-2 rounded-xl border-black p-1 my-0.5";
 
 const Home: React.FC = () => {
   const [rankings, setRankings] = useState<ICompanyData[]>([]);
@@ -30,7 +29,6 @@ const Home: React.FC = () => {
       for (const ticker in data) {
         f.push([ticker, data[ticker]]);
       }
-      console.log(f);
 
       setNames(f);
     };
@@ -55,7 +53,7 @@ const Home: React.FC = () => {
         {rankingsLoaded ?
           <div className="flex flex-row">
             <div className="font-modern border-2 w-fit m-2 p-2">
-             <u className="text-xl">Metrics:</u>
+              <u className="text-xl">Metrics:</u>
               <MetricBtn
                 text="Total Score"
                 thisMetric={"total_score"}
