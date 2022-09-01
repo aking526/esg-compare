@@ -56,7 +56,12 @@ const readAll = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const updateCompany = (req: Request, res: Response, next: NextFunction) => {
+	const auth = req.params.ticker;
 	const companyTicker = req.params.ticker;
+
+	if (auth !== config.server.auth) {
+		return res.status(403).json({ message: "No Authorization" });
+	}
 
 	return Company.findOne({ ticker: companyTicker })
 		.then((company) => {

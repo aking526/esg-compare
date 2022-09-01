@@ -8,7 +8,7 @@ const router = express.Router();
 router.post("/create/auth=:auth", ValidateSchema(schemas.company.create), companyController.createCompany);
 router.get("/get/:ticker", companyController.readCompany);
 router.get("/get/", companyController.readAll);
-router.patch("/update/:ticker", ValidateSchema(schemas.company.update), companyController.updateCompany);
+router.patch("/update/auth=:auth&ticker=:ticker", ValidateSchema(schemas.company.update), companyController.updateCompany);
 router.delete("/delete/auth=:auth&ticker=:ticker", companyController.deleteCompany);
 
 /* Special Routes */

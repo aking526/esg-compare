@@ -3,6 +3,7 @@ import { config } from "./config/config";
 import company_list from "../mods/company_list.json";
 import Logging from "./utils/Logging";
 import ISA from "./types/ISA";
+import { authCheck } from "./authCheck";
 
 async function Main() {
 	const ESG_API_KEY = config.keys.esg;
@@ -14,10 +15,7 @@ async function Main() {
 		process.exit(1);
 	}
 
-	if (SERVER_AUTH === "") {
-		Logging.error("No user authentication. Do not try to modify the database!");
-		process.exit(1);
-	}
+	authCheck(SERVER_AUTH);
 
 	const GetCompanyInfo = async (tickers: string[]) => {
 		Logging.log("Fetching company info for: " + tickers.join(" "));
