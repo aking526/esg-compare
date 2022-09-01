@@ -48,7 +48,22 @@ const Home: React.FC = () => {
 
   return (
     <div className="relative w-screen bg-white mt-5">
-      { namesLoaded ? <SearchBar placeholder="Search by ticker or name..." data={names} /> : <div className="h-16 my-5" /> }
+      { namesLoaded ? <SearchBar
+        placeholder="Search by ticker or name..."
+        data={names}
+        styles={{
+          containerWidth: "w-72",
+          width: "w-64",
+          inputHeight: "h-14",
+          inputTextSize: "text-lg",
+          inputPlaceholderTextSize: "text-base",
+          ulHeight: "h-48",
+          liTextSize: "text-lg",
+          searchIconSize: "text-base"
+        }} />
+          :
+          <div className="h-16 my-5" />
+      }
       <div className="relative">
         {rankingsLoaded ?
           <div className="flex flex-row">

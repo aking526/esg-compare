@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -12,17 +12,15 @@ import NavBar from "./components/NavBar";
 import TopBar from "./components/TopBar";
 
 function App() {
-  const [currPage, setCurrPage] = useState();
-
   return (
     <Router>
-      <TopBar/>
-      <NavBar/>
+      <TopBar />
+      <NavBar />
       <Routes>
-        <Route path="/company/:ticker" element={ <Company/> }/>
-        <Route path="/research" element={ <Research/> }/>
-        <Route path="/about" element={ <About/> }/>
-        <Route path="/" element={ <Home/> }/>
+        <Route path="/company/:ticker" element={ <Company/> } />
+        <Route path="/research" element={ <Research/> } />
+        <Route path="/about" element={ <About/> } />
+        <Route path="/" element={ <Home/> } />
       </Routes>
     </Router>
   );
