@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -12,6 +12,8 @@ import NavBar from "./components/NavBar";
 import TopBar from "./components/TopBar";
 
 function App() {
+  const [currPage, setCurrPage] = useState();
+
   return (
     <Router>
       <TopBar/>

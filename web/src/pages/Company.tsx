@@ -6,9 +6,10 @@ import { ICompanyData, BlankCompanyData }from "../types/ICompanyData";
 import CompanyInfo from "../components/Company/CompanyInfo";
 import TextDataFormat from "../components/TextDataFormat";
 import ESGCategory from "../components/Company/ESGCategory";
-import ESGDChart from "../components/Company/Charts/ESGDChart";
-import StockPriceChart from "../components/Company/Charts/StockPriceChart";
+import ESGDChart from "../components/Company/charts/ESGDChart";
+import StockPriceChart from "../components/Company/charts/StockPriceChart";
 import { GeneralStockConv, MDConv } from "../mods/StockDataConv";
+import { CPair } from "../classes/CPair";
 
 
 const Company: React.FC = () => {
@@ -16,10 +17,13 @@ const Company: React.FC = () => {
 
   const [data, setData] = useState<ICompanyData>(BlankCompanyData);
   const [md, setMd] = useState<any>({});
-  const [stockPrices, setStockPrices] = useState<any>({});
+  const [stockPrices, setStockPrices] = useState<CPair[]>([]);
   const [dataLoaded, setDataLoaded] = useState<boolean>(false);
   const [stockInfoLoaded, setStockInfoLoaded] = useState<boolean>(true);
   const [loaded, setLoaded] = useState<boolean>(false);
+
+  const convertStockData = (stockData: any) => {
+  };
 
   useEffect(() => {
     const fetchCompanyData = async () => {
