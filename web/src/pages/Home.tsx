@@ -6,6 +6,8 @@ import RankingsLoading from "../components/Rankings/RankingsLoading";
 import Rankings from "../components/Rankings/Rankings";
 import DataRefToText from "../mods/DataRefToText";
 import MetricBtn from "../components/MetricBtn";
+import CompanyService from "../services/CompanyService";
+import { useQuery } from "react-query";
 
 const defaultMetric = "total_score";
 const FilterBtnStyles = "border-2 rounded-xl border-black p-1 my-0.5";
@@ -13,28 +15,9 @@ const FilterBtnStyles = "border-2 rounded-xl border-black p-1 my-0.5";
 const Home: React.FC = () => {
   const [rankings, setRankings] = useState<ICompanyData[]>([]);
   const [rankingsLoaded, setRankingsLoaded] = useState<boolean>(false);
-
-  const [names, setNames] = useState<string[][]>([[]]);
-  const [namesLoaded, setNamesLoaded] = useState<boolean>(false);
-
   const [metric, setMetric] = useState<string>(defaultMetric);
 
-  useEffect(() => {
-    const getNames = async () => {
-      const res = await axios.get("http://localhost:8000/companies/getNames");
-      const data = res.data;
-
-      const f: string[][] = [[]];
-      f.pop();
-      for (const ticker in data) {
-        f.push([ticker, data[ticker]]);
-      }
-
-      setNames(f);
-    };
-
-    getNames().then(() => setNamesLoaded(true));
-  }, []);
+  const names = useQuery(["names"], CompanyService.getNames);
 
   useEffect(() => {
     const reFetchRankings = async () => {
@@ -48,9 +31,9 @@ const Home: React.FC = () => {
 
   return (
     <div className="relative w-screen bg-white mt-5">
-      { namesLoaded ? <SearchBar
+      { !names.isLoading ? <SearchBar
         placeholder="Search by ticker or name..."
-        data={names}
+        data={names.data}
         styles={{
           containerWidth: "w-72",
           width: "w-64",

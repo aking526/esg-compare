@@ -15,7 +15,7 @@ interface SBStylingProps {
 
 interface SearchBarProps {
   placeholder: string;
-  data: string[][];
+  data: string[][] | undefined;
   styles: SBStylingProps;
 }
 
@@ -24,7 +24,7 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data, styles }) => {
   const [curr, setCurr] = useState<string>("");
-  const [filteredData, setFilteredData] = useState<string[][]>(data);
+  const [filteredData, setFilteredData] = useState<string[][] | undefined>(data);
   const [focused, setFocused] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data, styles }) => {
 
   // Sets new filter when curr is changed
   useEffect(() => {
-    const newFilter = data.filter((value: string[]) => {
+    const newFilter = data?.filter((value: string[]) => {
       return value[0].toLowerCase().includes(curr.toLowerCase()) || value[1].toLowerCase().includes(curr.toLowerCase());
     });
 
@@ -63,7 +63,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data, styles }) => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key !== "Enter") return;
 
-      navigate(`/company/${filteredData[0][0]}`);
+      if (filteredData) {
+        navigate(`/company/${filteredData[0][0]}`);
+      }
     };
 
     document.addEventListener("keydown", handleKeyDown, true);
@@ -85,10 +87,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data, styles }) => {
           placeholder={placeholder}
         />
         <div className="relative z-10">
-          {((filteredData.length !== 0 && curr.length !== 0) || focused) &&
+          {(( filteredData && filteredData.length !== 0 && curr.length !== 0) || focused) &&
             <div className="absolute top-0 left-0 right-0 bottom-0">
               <ul className={`relative flex flex-col ml-auto mr-auto bg-white rounded-lg border-2 border-cyan-50 ${styles.width} ${styles.ulHeight} pt-1.5 drop-shadow-xl overflow-hidden overflow-y-auto`}>
-                {filteredData.map((value: string[], key: number) => (
+                {filteredData && filteredData.map((value: string[], key: number) => (
                   <li className={`${styles.liTextSize} m-2 hover:bg-slate-100`} key={key}><Link to={`/company/${value[0]}`}>{value[1]} - {value[0].toUpperCase()}</Link></li>
                 ))}
               </ul>
@@ -97,7 +99,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data, styles }) => {
         </div>
       </div>
       <div className={`p-2 m-1 ${styles.searchIconSize}`}>
-        <Link to={filteredData.length !== 0 ? `/company/${filteredData[0][0]}` : "/"}><SearchIcon className="cursor-pointer" style={{ color: "black" }} /></Link>
+        <Link to={filteredData && filteredData.length !== 0 ? `/company/${filteredData[0][0]}` : "/"}><SearchIcon className="cursor-pointer" style={{ color: "black" }} /></Link>
       </div>
     </div>
   );
