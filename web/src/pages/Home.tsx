@@ -6,7 +6,7 @@ import RankingsLoading from "../components/Rankings/RankingsLoading";
 import Rankings from "../components/Rankings/Rankings";
 import DataRefToText from "../mods/DataRefToText";
 import MetricBtn from "../components/MetricBtn";
-import CompanyService from "../services/CompanyService";
+import CompanyApi from "../api/companyApi";
 import { useQuery } from "react-query";
 
 const defaultMetric = "total_score";
@@ -17,7 +17,7 @@ const Home: React.FC = () => {
   const [rankingsLoaded, setRankingsLoaded] = useState<boolean>(false);
   const [metric, setMetric] = useState<string>(defaultMetric);
 
-  const names = useQuery(["names"], CompanyService.getNames);
+  const names = useQuery(["names"], CompanyApi.getNames);
 
   useEffect(() => {
     const reFetchRankings = async () => {

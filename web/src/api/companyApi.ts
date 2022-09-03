@@ -20,5 +20,5 @@ const getNames = async () => {
 	return f;
 };
 
-const CompanyService = { getNames };
-export default CompanyService;
+const CompanyApi = { getNames };
+export default CompanyApi;
