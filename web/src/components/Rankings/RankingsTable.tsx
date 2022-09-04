@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ICompanyData } from "../../types/ICompanyData";
 import DataRefToText from "../../mods/DataRefToText";
-import {make2dArray} from "../../utils/makeArray";
+import { make2dArray } from "../../utils/makeArray";
 import StylingProps from "../../types/StylingProps";
 
 interface TableProps {
@@ -72,7 +72,6 @@ const Rankings: React.FC<RankingsProps> = ({ rankings, metric }) => {
 			tableBody[i][j+1] = curr[d];
 		}
 	}
-
 
 	return (
 		<div className="relative my-2 mx-10">

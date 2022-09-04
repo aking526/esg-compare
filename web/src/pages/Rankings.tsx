@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import SearchBar from "../components/SearchBar";
 import { ICompanyData } from "../types/ICompanyData";
 import RankingsLoading from "../components/Rankings/RankingsLoading";
-import Rankings from "../components/Rankings/Rankings";
+import RankingsTable from "../components/Rankings/RankingsTable";
 import DataRefToText from "../mods/DataRefToText";
 import MetricBtn from "../components/MetricBtn";
 import CompanyApi from "../api/CompanyApi";
@@ -12,7 +12,7 @@ import QueryError from "../components/QueryError";
 const defaultMetric = "total_score";
 const FilterBtnStyles = "border-2 rounded-xl border-black p-1 my-0.5";
 
-const Home: React.FC = () => {
+const Rankings: React.FC = () => {
   const [rankings, setRankings] = useState<ICompanyData[]>([]);
   const [metric, setMetric] = useState<string>(defaultMetric);
 
@@ -33,7 +33,6 @@ const Home: React.FC = () => {
   }, [metric]);
 
   if (names.isError) {
-    // @ts-ignore
     return <QueryError message={names.error.message} />
   }
 
@@ -93,7 +92,7 @@ const Home: React.FC = () => {
                 styles={FilterBtnStyles}
               />
             </div>
-            <Rankings rankings={rankings} metric={metric} />
+            <RankingsTable rankings={rankings} metric={metric} />
           </div>
             : <RankingsLoading metric={DataRefToText[metric]} /> }
       </div>
@@ -101,4 +100,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Rankings;

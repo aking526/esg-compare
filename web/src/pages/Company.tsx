@@ -12,6 +12,7 @@ import StockPriceChart from "../components/Company/charts/StockPriceChart";
 import { GeneralStockConv, MDConv } from "../mods/StockDataConv";
 import { CPair } from "../classes/CPair";
 import CompanyApi from "../api/CompanyApi";
+import QueryError from "../components/QueryError";
 
 
 const Company: React.FC = () => {
@@ -25,16 +26,13 @@ const Company: React.FC = () => {
   const [stockInfoLoaded, setStockInfoLoaded] = useState<boolean>(true);
   const [loaded, setLoaded] = useState<boolean>(false);
 
-  const { isLoading: dataLoading } = useQuery<ICompanyData, Error>([`${ticker}_data`], async () => {
+  const { isLoading: dataLoading, isError: dataIsError, error: dataError } = useQuery<ICompanyData, Error>([`${ticker}_data`], async () => {
     return await CompanyApi.fetchCompanyData(ticker);
   }, {
     onSuccess: (res) => {
       setData(res);
-    },
-    onError: (err: any) => {
-      setError(err.response?.data || err);
     }
-  })
+  });
 
   const convertStockData = (stockData: any) => {
   };
@@ -57,6 +55,10 @@ const Company: React.FC = () => {
   useEffect(() => {
     setLoaded(!dataLoading && stockInfoLoaded);
   }, [dataLoading, stockInfoLoaded]);
+
+  if (dataIsError) {
+    return <QueryError message={dataError?.message} />;
+  }
 
   return (
     <>

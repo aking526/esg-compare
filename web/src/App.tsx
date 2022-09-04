@@ -4,7 +4,7 @@ import {
   Routes,
   Route
 } from "react-router-dom";
-import Home from "./pages/Home";
+import Rankings from "./pages/Rankings";
 import About from "./pages/About";
 import Company from "./pages/Company";
 import Research from "./pages/Research";
@@ -20,7 +20,7 @@ function App() {
         <Route path="/company/:ticker" element={ <Company/> } />
         <Route path="/research" element={ <Research/> } />
         <Route path="/about" element={ <About/> } />
-        <Route path="/" element={ <Home/> } />
+        <Route path="/" element={ <Rankings/> } />
       </Routes>
     </Router>
   );
