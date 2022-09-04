@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import SearchBar from "../components/SearchBar";
-import axios from "axios";
 import { ICompanyData } from "../types/ICompanyData";
 import RankingsLoading from "../components/Rankings/RankingsLoading";
 import Rankings from "../components/Rankings/Rankings";
 import DataRefToText from "../mods/DataRefToText";
 import MetricBtn from "../components/MetricBtn";
 import CompanyApi from "../api/CompanyApi";
-import { useQueryClient, useQuery } from "react-query";
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import QueryError from "../components/QueryError";
 
 const defaultMetric = "total_score";
@@ -19,8 +18,8 @@ const Home: React.FC = () => {
 
   const queryClient = useQueryClient();
 
-  const names = useQuery<string[][], Error>("names", CompanyApi.getNames);
-  const { isLoading: rankingsLoading, isError: rankingsIsError, error: rankingsError } = useQuery<ICompanyData[], Error>(`${metric}_ranking`, async () => {
+  const names = useQuery<string[][], Error>(['names'], CompanyApi.getNames);
+  const { isLoading: rankingsLoading, isError: rankingsIsError, error: rankingsError } = useQuery<ICompanyData[], Error>([`${metric}_ranking`], async () => {
     return CompanyApi.fetchRankings(metric);
   }, {
     onSuccess: (res) => {
@@ -29,7 +28,7 @@ const Home: React.FC = () => {
   });
 
   useEffect(() => {
-    const cachedRanking: ICompanyData[] | undefined = queryClient.getQueryData(`${metric}_ranking`);
+    const cachedRanking: ICompanyData[] | undefined = queryClient.getQueryData([`${metric}_ranking`]);
     if (cachedRanking) setRankings(cachedRanking);
   }, [metric]);
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useQuery } from '@tanstack/react-query';
 import CompanyLoading from "../components/Company/CompanyLoading";
 import { ICompanyData, BlankCompanyData }from "../types/ICompanyData";
 import CompanyInfo from "../components/Company/CompanyInfo";
@@ -25,7 +25,7 @@ const Company: React.FC = () => {
   const [stockInfoLoaded, setStockInfoLoaded] = useState<boolean>(true);
   const [loaded, setLoaded] = useState<boolean>(false);
 
-  const { isLoading: dataLoading } = useQuery<ICompanyData, Error>(`${ticker}_data`, async () => {
+  const { isLoading: dataLoading } = useQuery<ICompanyData, Error>([`${ticker}_data`], async () => {
     return await CompanyApi.fetchCompanyData(ticker);
   }, {
     onSuccess: (res) => {
