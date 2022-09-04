@@ -28,9 +28,18 @@ const Company: React.FC = () => {
 
   const { isLoading: dataLoading, isError: dataIsError, error: dataError } = useQuery<ICompanyData, Error>([`${ticker}_data`], async () => {
     return await CompanyApi.fetchCompanyData(ticker);
-  }, {
+  },
+  {
     onSuccess: (res) => {
       setData(res);
+    }
+  });
+  const { isLoading: stockDataLoading, isError: stockDataIsError, error: stockDataError } = useQuery([`${ticker}_stock_data`], async () => {
+    return await CompanyApi.fetchStockData(ticker);
+  },
+  {
+    onSuccess: (res) => {
+
     }
   });
 

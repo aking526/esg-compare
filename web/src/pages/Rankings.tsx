@@ -12,13 +12,16 @@ import QueryError from "../components/QueryError";
 const defaultMetric = "total_score";
 const FilterBtnStyles = "border-2 rounded-xl border-black p-1 my-0.5";
 
-const Rankings: React.FC = () => {
+interface RankingsProps {
+  names: string[][] | undefined;
+}
+
+const Rankings: React.FC<RankingsProps> = ({ names }) => {
   const [rankings, setRankings] = useState<ICompanyData[]>([]);
   const [metric, setMetric] = useState<string>(defaultMetric);
 
   const queryClient = useQueryClient();
 
-  const names = useQuery<string[][], Error>(['names'], CompanyApi.getNames);
   const { isLoading: rankingsLoading, isError: rankingsIsError, error: rankingsError } = useQuery<ICompanyData[], Error>([`${metric}_ranking`], async () => {
     return CompanyApi.fetchRankings(metric);
   }, {
@@ -32,19 +35,15 @@ const Rankings: React.FC = () => {
     if (cachedRanking) setRankings(cachedRanking);
   }, [metric]);
 
-  if (names.isError) {
-    return <QueryError message={names.error.message} />
-  }
-
   if (rankingsIsError) {
     return <QueryError message={rankingsError.message} />
   }
 
   return (
     <div className="relative w-screen bg-white mt-5">
-      { !names.isLoading ? <SearchBar
+      { names ? <SearchBar
         placeholder="Search by ticker or name..."
-        data={names.data}
+        data={names}
         styles={{
           containerWidth: "w-72",
           width: "w-64",
