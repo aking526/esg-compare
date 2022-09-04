@@ -1,5 +1,6 @@
 import axios from "axios";
 import ISS from "../types/ISS";
+import { ICompanyData } from "../types/ICompanyData";
 
 const apiClient = axios.create({
   baseURL: "http://localhost:8000/companies",
@@ -21,5 +22,15 @@ const getNames = async () => {
   return f;
 };
 
-const CompanyApi = { getNames };
+const fetchRankings = async (metric: string) => {
+  const res = await apiClient.get<ICompanyData[]>(`sort/${metric}`);
+  return res.data
+};
+
+const fetchCompanyData = async (ticker: string | undefined) => {
+  const res = await apiClient.get<ICompanyData>(`/get/${ticker}`);
+  return res.data;
+};
+
+const CompanyApi = { getNames, fetchCompanyData, fetchRankings };
 export default CompanyApi;

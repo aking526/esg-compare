@@ -6,28 +6,41 @@ import RankingsLoading from "../components/Rankings/RankingsLoading";
 import Rankings from "../components/Rankings/Rankings";
 import DataRefToText from "../mods/DataRefToText";
 import MetricBtn from "../components/MetricBtn";
-import CompanyApi from "../api/companyApi";
-import { useQuery } from "react-query";
+import CompanyApi from "../api/CompanyApi";
+import { useQueryClient, useQuery } from "react-query";
+import QueryError from "../components/QueryError";
 
 const defaultMetric = "total_score";
 const FilterBtnStyles = "border-2 rounded-xl border-black p-1 my-0.5";
 
 const Home: React.FC = () => {
   const [rankings, setRankings] = useState<ICompanyData[]>([]);
-  const [rankingsLoaded, setRankingsLoaded] = useState<boolean>(false);
   const [metric, setMetric] = useState<string>(defaultMetric);
 
-  const names = useQuery(["names"], CompanyApi.getNames);
+  const queryClient = useQueryClient();
+
+  const names = useQuery<string[][], Error>("names", CompanyApi.getNames);
+  const { isLoading: rankingsLoading, isError: rankingsIsError, error: rankingsError } = useQuery<ICompanyData[], Error>(`${metric}_ranking`, async () => {
+    return CompanyApi.fetchRankings(metric);
+  }, {
+    onSuccess: (res) => {
+      setRankings(res);
+    }
+  });
 
   useEffect(() => {
-    const reFetchRankings = async () => {
-      const res = await axios.get(`http://localhost:8000/companies/sort/${metric}`);
-      setRankings(res.data);
-    };
-
-    setRankingsLoaded(false);
-    reFetchRankings().then(() => setRankingsLoaded(true));
+    const cachedRanking: ICompanyData[] | undefined = queryClient.getQueryData(`${metric}_ranking`);
+    if (cachedRanking) setRankings(cachedRanking);
   }, [metric]);
+
+  if (names.isError) {
+    // @ts-ignore
+    return <QueryError message={names.error.message} />
+  }
+
+  if (rankingsIsError) {
+    return <QueryError message={rankingsError.message} />
+  }
 
   return (
     <div className="relative w-screen bg-white mt-5">
@@ -48,7 +61,7 @@ const Home: React.FC = () => {
           <div className="h-16 my-5" />
       }
       <div className="relative">
-        {rankingsLoaded ?
+        { !rankingsLoading ?
           <div className="flex flex-row">
             <div className="font-modern border-2 w-fit m-2 p-2">
               <u className="text-xl">Metrics:</u>

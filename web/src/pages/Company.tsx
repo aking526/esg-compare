@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useQuery } from "react-query";
 import CompanyLoading from "../components/Company/CompanyLoading";
 import { ICompanyData, BlankCompanyData }from "../types/ICompanyData";
 import CompanyInfo from "../components/Company/CompanyInfo";
@@ -10,27 +11,35 @@ import ESGDChart from "../components/Company/charts/ESGDChart";
 import StockPriceChart from "../components/Company/charts/StockPriceChart";
 import { GeneralStockConv, MDConv } from "../mods/StockDataConv";
 import { CPair } from "../classes/CPair";
+import CompanyApi from "../api/CompanyApi";
 
 
 const Company: React.FC = () => {
   const { ticker } = useParams();
 
   const [data, setData] = useState<ICompanyData>(BlankCompanyData);
+  const [error, setError] = useState<string | undefined>(undefined);
   const [md, setMd] = useState<any>({});
   const [stockPrices, setStockPrices] = useState<CPair[]>([]);
   const [dataLoaded, setDataLoaded] = useState<boolean>(false);
   const [stockInfoLoaded, setStockInfoLoaded] = useState<boolean>(true);
   const [loaded, setLoaded] = useState<boolean>(false);
 
+  const { isLoading: dataLoading } = useQuery<ICompanyData, Error>(`${ticker}_data`, async () => {
+    return await CompanyApi.fetchCompanyData(ticker);
+  }, {
+    onSuccess: (res) => {
+      setData(res);
+    },
+    onError: (err: any) => {
+      setError(err.response?.data || err);
+    }
+  })
+
   const convertStockData = (stockData: any) => {
   };
 
   useEffect(() => {
-    const fetchCompanyData = async () => {
-      const res = await axios.get(`http://localhost:8000/companies/get/${ticker}`);
-      setData(res.data);
-    };
-
     const fetchStockInfo = async () => {
       const res = await axios.get(`http://localhost:8000/stockInfo/get/${ticker}`);
       if (("Note" in res.data)) {
@@ -41,13 +50,13 @@ const Company: React.FC = () => {
       setStockPrices(res.data[GeneralStockConv["daily"]]);
     };
 
-    fetchCompanyData().then(() => setDataLoaded(true));
+    // fetchCompanyData().then(() => setDataLoaded(true));
     fetchStockInfo().then(() => setStockInfoLoaded(true));
   }, []);
 
   useEffect(() => {
-    setLoaded(dataLoaded && stockInfoLoaded);
-  }, [dataLoaded, stockInfoLoaded]);
+    setLoaded(!dataLoading && stockInfoLoaded);
+  }, [dataLoading, stockInfoLoaded]);
 
   return (
     <>
