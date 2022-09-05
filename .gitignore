@@ -3,8 +3,13 @@
 examples/
 
 /web/node_modules
-/web/public/manifest.json
 /web/.env
+
+/web/public/manifest.json
+/web/public/favicon.ico
+/web/public/logo192.png
+/web/public/logo512.png
+/web/public/robots.txt
 
 /server/node_modules
 /server/build
