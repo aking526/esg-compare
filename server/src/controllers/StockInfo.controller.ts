@@ -3,17 +3,20 @@ import axios from "axios";
 import { config } from "../config/config";
 import Logging from "../utils/Logging";
 
-const getStockInfo = async (req: Request, res: Response, next: NextFunction ) => {
+const getStockInfo = async (req: Request, res: Response, next: NextFunction) => {
 	const companyTicker = req.params.ticker;
+	const resolution = req.params.resolution;
+	const from = req.params.from;
+	const to = req.params.to;
 
 	try {
-		const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${companyTicker.toUpperCase()}&outputsize=full&apikey=${config.keys.av}`;
-		const avRes = await axios.get(url);
-		const data = avRes.data;
+		const url = `https://finnhub.io/api/v1/stock/candle?symbol=${companyTicker.toUpperCase()}&resolution=${resolution}&from=${from}&to=${to}&token=${config.keys.finnhub}`;
+		const fRes = await axios.get(url);
+		const data = fRes.data;
 
 		return res.status(200).json(data);
 	} catch (e) {
-		Logging.log(e);
+		Logging.error(e);
 		return res.status(500).json({ e });
 	}
 };
@@ -29,7 +32,7 @@ const getNews = async (req: Request, res: Response, next: NextFunction) => {
 
 		return res.status(200).json(data);
 	} catch (e) {
-		Logging.log(e);
+		Logging.error(e);
 		return res.status(500).json({ e });
 	}
 };
