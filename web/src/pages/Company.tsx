@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import CompanyLoading from "../components/Company/CompanyLoading";
 import { ICompanyData, BlankCompanyData }from "../types/ICompanyData";
 import CompanyInfo from "../components/Company/CompanyInfo";
@@ -9,22 +8,33 @@ import TextDataFormat from "../components/TextDataFormat";
 import ESGCategory from "../components/Company/ESGCategory";
 import ESGDChart from "../components/Company/charts/ESGDChart";
 import StockPriceChart from "../components/Company/charts/StockPriceChart";
-import { GeneralStockConv, MDConv } from "../mods/StockDataConv";
 import { CPair } from "../classes/CPair";
 import CompanyApi from "../api/CompanyApi";
 import QueryError from "../components/QueryError";
+import StockApi from "../api/StockApi";
+import { convertDateToUnix } from "../utils/dateUnixConverter";
+import ISA from "../types/ISA";
 
 
 const Company: React.FC = () => {
   const { ticker } = useParams();
 
   const [data, setData] = useState<ICompanyData>(BlankCompanyData);
-  const [error, setError] = useState<string | undefined>(undefined);
-  const [md, setMd] = useState<any>({});
-  const [stockPrices, setStockPrices] = useState<CPair[]>([]);
-  const [dataLoaded, setDataLoaded] = useState<boolean>(false);
-  const [stockInfoLoaded, setStockInfoLoaded] = useState<boolean>(true);
+  const [closingPrices, setClosingPrices] = useState<CPair[]>([]);
+  const [from, setFrom] = useState<number>(946787386);
+  const [to, setTo] = useState<number>(convertDateToUnix(new Date()));
   const [loaded, setLoaded] = useState<boolean>(false);
+
+  const convertStockData = (data: ISA, which: string) => {
+    const iter: number[] = data[which];
+    let cc: CPair[] = [];
+    for (let i = 0; i < iter.length; i++) {
+      cc[i] = new CPair(i, iter[i]);
+    }
+    return cc;
+  };
+
+  const queryClient = useQueryClient();
 
   const { isLoading: dataLoading, isError: dataIsError, error: dataError } = useQuery<ICompanyData, Error>([`${ticker}_data`], async () => {
     return await CompanyApi.fetchCompanyData(ticker);
@@ -34,40 +44,38 @@ const Company: React.FC = () => {
       setData(res);
     }
   });
-  const { isLoading: stockDataLoading, isError: stockDataIsError, error: stockDataError } = useQuery([`${ticker}_stock_data`], async () => {
-    return await CompanyApi.fetchStockData(ticker);
+  const { isLoading: stockPricesLoading, isError: stockPricesIsError, error: stockPricesError } = useQuery([`${ticker}_stock_prices`], async () => {
+    return await StockApi.fetchStockInfo(ticker, "1", from, to);
   },
   {
     onSuccess: (res) => {
-
+      const conv = convertStockData(res, "c");
+      setClosingPrices(conv);
     }
   });
 
-  const convertStockData = (stockData: any) => {
-  };
-
   useEffect(() => {
-    const fetchStockInfo = async () => {
-      const res = await axios.get(`http://localhost:8000/stockInfo/get/${ticker}`);
-      if (("Note" in res.data)) {
-        console.log(res.data);
-        return;
-      }
-      setMd(res.data[GeneralStockConv["md"]]);
-      setStockPrices(res.data[GeneralStockConv["daily"]]);
-    };
-
-    // fetchCompanyData().then(() => setDataLoaded(true));
-    fetchStockInfo().then(() => setStockInfoLoaded(true));
+    const cachedData: ICompanyData | undefined = queryClient.getQueryData([`${ticker}_data`]);
+    const cachedStockData: ISA | undefined = queryClient.getQueryData([`${ticker}_stock_prices`]);
+    if (cachedData) setData(cachedData);
+    if (cachedStockData) {
+      const conv = convertStockData(cachedStockData, "c");
+      setClosingPrices(conv);
+    }
   }, []);
 
   useEffect(() => {
-    setLoaded(!dataLoading && stockInfoLoaded);
-  }, [dataLoading, stockInfoLoaded]);
+    setLoaded(!dataLoading && !stockPricesLoading);
+  }, [dataLoading, stockPricesLoading]);
 
   if (dataIsError) {
     return <QueryError message={dataError?.message} />;
   }
+
+  // if (stockPricesIsError) {
+  //   // @ts-ignore
+  //   return <QueryError message={stockPricesError.message} />
+  // }
 
   return (
     <>
@@ -85,12 +93,12 @@ const Company: React.FC = () => {
             <TextDataFormat text="Total Score:" data={data.total_score} />
           </div>
           <div className="flex flex-col items-center mt-5">
-            {stockPrices !== undefined && md !== undefined ?
+            {!stockPricesLoading ?
               <div>
                 <strong className="text-2xl mb-1.5">Stock Info</strong>
-                <p className="text-xs">Last Updated: {md[MDConv["lastRefreshed"]]}</p>
+                <p className="text-xs">Last Updated: {new Date().toLocaleString()}</p>
                 <div className="flex flex-row">
-                  <StockPriceChart ticker={data.ticker} name={data.name} prices={stockPrices} />
+                  <StockPriceChart ticker={data.ticker} name={data.name} from={from} to={to} prices={closingPrices} />
                 </div>
               </div>
             : null
@@ -100,7 +108,7 @@ const Company: React.FC = () => {
         ) :
           <CompanyLoading company={ticker}/>
       }
-      </>
+    </>
   );
 };
 

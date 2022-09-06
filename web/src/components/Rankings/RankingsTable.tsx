@@ -43,7 +43,7 @@ const TableRow: React.FC<TableRowProps> = ({ row, styles }) => {
 		<tr>
 			{row.map((val: string, idx: number) => {
 				if (idx == 2) return;
-				if (idx === 1) return <td key={idx} className={`${styles} text-blue-900`}><Link to={`/company/${row[2]}`}>{val}</Link></td>;
+				if (idx === 1) return <Link to={`/company/${row[2]}`}><td key={idx} className={`${styles} text-blue-900`}>{val}</td></Link>;
 				return <td key={idx}>{val}</td>;
 			})}
 		</tr>

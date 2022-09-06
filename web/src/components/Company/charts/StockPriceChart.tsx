@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {
 	Chart as ChartJS,
 	CategoryScale,
@@ -7,10 +7,10 @@ import {
 	LineElement,
 	Title,
 	Tooltip,
-	Legend, ChartData
+	Legend
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { StockDataConv } from "../../../mods/StockDataConv";
+import { CPair, getDatesFormatted, getPrices } from "../../../classes/CPair";
 
 ChartJS.register(
 	CategoryScale,
@@ -23,63 +23,46 @@ ChartJS.register(
 );
 
 
-const convertData = (which: string, data: any) => {
-	let conv: number[] = [];
-	conv.pop();
-	for (const date in data) {
-		const str_num = data[date][StockDataConv[which]];
-		conv.push(parseFloat(str_num));
-	}
-	conv.reverse();
-	return conv;
-};
-
-const options = {
-	plugins: {
-		zoomAndPan: {
-
-		}
-	}
-};
-
-
 interface StockPriceChartProps {
 	ticker: string;
 	name: string;
-	prices: any;
+	from: number;
+	to: number;
+	prices: CPair[];
 }
 
-const StockPriceChart: React.FC<StockPriceChartProps> = ({ ticker, name, prices }) => {
-	const [closingPrices, setClosingPrices] = useState<ChartData<"line"> | any>({});
+const StockPriceChart: React.FC<StockPriceChartProps> = ({ ticker, name, from, to, prices }) => {
+	prices.reverse();
+	const data = {
+		labels: getDatesFormatted(prices).slice(prices.length - 15, prices.length),
+		datasets: [
+			{
+				label: "Stock Price",
+				data: getPrices(prices).slice(prices.length - 15, prices.length),
+				backgroundColor: [
+					"rgba(75,192,192,1)",
+					"#ecf0f1",
+					"#50AF95",
+					"#f3ba2f",
+					"#2a71d0",
+				],
+				borderColor: "black",
+				borderWidth: 2
+			}
+		]
+	};
 
+	const options = {
+		plugins: {
+			zoomAndPan: {
 
-	useEffect(() => {
-		const k = Object.keys(prices);
-		k.reverse();
-		const data = {
-			labels: Object.keys(k),
-			datasets: [
-				{
-					label: "Stock Price",
-					data: convertData("close", prices),
-					backgroundColor: [
-						"rgba(75,192,192,1)",
-						"#ecf0f1",
-						"#50AF95",
-						"#f3ba2f",
-						"#2a71d0",
-					],
-					borderColor: "black",
-					borderWidth: 2
-				}
-			]
-		};
-		setClosingPrices(data);
-	}, []);
+			}
+		}
+	};
 
 	return (
 		<div>
-			{/*<Line data={closingPrices} />*/}
+			<Line data={data} width={500} height={500}/>
 		</div>
 	);
 };

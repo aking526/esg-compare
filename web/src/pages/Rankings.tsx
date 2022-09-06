@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from "react";
-import SearchBar from "../components/SearchBar";
 import { ICompanyData } from "../types/ICompanyData";
 import RankingsLoading from "../components/Rankings/RankingsLoading";
 import RankingsTable from "../components/Rankings/RankingsTable";
 import DataRefToText from "../mods/DataRefToText";
 import MetricBtn from "../components/MetricBtn";
 import CompanyApi from "../api/CompanyApi";
-import { useQueryClient, useQuery } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import QueryError from "../components/QueryError";
 
-const defaultMetric = "total_score";
-const FilterBtnStyles = "border-2 rounded-xl border-black p-1 my-0.5";
+const Rankings: React.FC = () => {
+  const defaultMetric = "total_score";
+  const FilterBtnStyles = "border-2 rounded-xl border-black p-1 my-0.5";
 
-interface RankingsProps {
-  names: string[][] | undefined;
-}
-
-const Rankings: React.FC<RankingsProps> = ({ names }) => {
   const [rankings, setRankings] = useState<ICompanyData[]>([]);
   const [metric, setMetric] = useState<string>(defaultMetric);
 
@@ -40,23 +35,7 @@ const Rankings: React.FC<RankingsProps> = ({ names }) => {
   }
 
   return (
-    <div className="relative w-screen bg-white mt-5">
-      { names ? <SearchBar
-        placeholder="Search by ticker or name..."
-        data={names}
-        styles={{
-          containerWidth: "w-72",
-          width: "w-64",
-          inputHeight: "h-14",
-          inputTextSize: "text-lg",
-          inputPlaceholderTextSize: "text-base",
-          ulHeight: "h-48",
-          liTextSize: "text-lg",
-          searchIconSize: "text-base"
-        }} />
-          :
-          <div className="h-16 my-5" />
-      }
+    <div className="relative w-screen bg-slate-100 py-5">
       <div className="relative">
         { !rankingsLoading ?
           <div className="flex flex-row">

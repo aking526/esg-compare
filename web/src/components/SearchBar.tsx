@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 
 interface SBStylingProps {
@@ -11,6 +11,7 @@ interface SBStylingProps {
   ulHeight: string;
   liTextSize: string;
   searchIconSize: string;
+  searchIconColor: string;
 }
 
 interface SearchBarProps {
@@ -28,9 +29,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data, styles }) => {
   const [focused, setFocused] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => setCurr(event.target.value);
   const onFocus = () => setFocused(true);
+
+  useEffect(() => {
+    setFocused(false);
+    setCurr("");
+  }, [location]);
 
   // Handles whether the search box is clicked or not
   useEffect(() => {
@@ -99,7 +106,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data, styles }) => {
         </div>
       </div>
       <div className={`p-2 m-1 ${styles.searchIconSize}`}>
-        <Link to={filteredData && filteredData.length !== 0 ? `/company/${filteredData[0][0]}` : "/"}><SearchIcon className="cursor-pointer" style={{ color: "black" }} /></Link>
+        <Link to={filteredData && filteredData.length !== 0 ? `/company/${filteredData[0][0]}` : "/"}><SearchIcon className="cursor-pointer" style={{ color: styles.searchIconColor }} /></Link>
       </div>
     </div>
   );
