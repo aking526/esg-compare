@@ -1,6 +1,6 @@
 import React from "react";
 
-const CPInputField: React.FC = () => {
+const CInputField: React.FC = () => {
 	return (
 		<div>
 			<input></input>
@@ -8,4 +8,4 @@ const CPInputField: React.FC = () => {
 	);
 };
 
-export default CPInputField;
+export default CInputField;

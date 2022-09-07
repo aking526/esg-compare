@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import StylingProps from "../types/StylingProps";
+import StylingProps from "../../types/StylingProps";
 
 interface FilterBtnProps extends StylingProps {
 	text: string;

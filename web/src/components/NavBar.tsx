@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Github_Logo from "../assets/GitHub-Mark-120px-plus.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { Github_URL } from "../mods/Links";
 
 const NavBar: React.FC = () => {
@@ -11,7 +12,7 @@ const NavBar: React.FC = () => {
       <h1><Link to="/compare">Compare</Link></h1>
       <h1><Link to="/research">Research</Link></h1>
       <h1><Link to="/about">About</Link></h1>
-      <a href={Github_URL}><img src={Github_Logo} alt="" width="30" height="30" /></a>
+      <a href={Github_URL}><FontAwesomeIcon icon={faGithub} size="lg" /></a>
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import SearchIcon from "@mui/icons-material/Search";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlassArrowRight } from "@fortawesome/free-solid-svg-icons";
+
 
 interface SBStylingProps {
   containerWidth: string;
@@ -105,8 +107,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data, styles }) => {
           }
         </div>
       </div>
-      <div className={`p-2 m-1 ${styles.searchIconSize}`}>
-        <Link to={filteredData && filteredData.length !== 0 ? `/company/${filteredData[0][0]}` : "/"}><SearchIcon className="cursor-pointer" style={{ color: styles.searchIconColor }} /></Link>
+      <div className={`p-2 m-1 mt-2 ${styles.searchIconSize}`}>
+        <Link to={filteredData && filteredData.length !== 0 ? `/company/${filteredData[0][0]}` : "/"}><FontAwesomeIcon icon={faMagnifyingGlassArrowRight}  size="lg" color="white" pulse/></Link>
       </div>
     </div>
   );

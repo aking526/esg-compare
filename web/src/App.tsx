@@ -12,7 +12,7 @@ import Company from "./pages/Company";
 import Research from "./pages/Research";
 import NavBar from "./components/NavBar";
 import TopBar from "./components/TopBar";
-import ComparePage from "./pages/ComparePage";
+import Compare from "./pages/Compare";
 import CompanyApi from "./api/CompanyApi";
 import QueryError from "./components/QueryError";
 
@@ -29,7 +29,7 @@ function App() {
       <NavBar />
       <Routes>
         <Route path="/company/:ticker" element={ <Company/> }/>
-        <Route path="/compare" element={ <ComparePage /> }/>
+        <Route path="/compare" element={ <Compare /> }/>
         <Route path="/research" element={ <Research/> }/>
         <Route path="/about" element={ <About/> }/>
         <Route path="/rankings" element={ <Rankings/> }/>
