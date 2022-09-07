@@ -13,7 +13,7 @@ import Research from "./pages/Research";
 import NavBar from "./components/NavBar";
 import TopBar from "./components/TopBar";
 import Compare from "./pages/Compare";
-import CompanyApi from "./api/CompanyApi";
+import CompanyApi from "./proxy/CompanyApi";
 import QueryError from "./components/QueryError";
 
 function App() {
