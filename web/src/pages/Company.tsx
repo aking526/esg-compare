@@ -9,9 +9,9 @@ import ESGCategory from "../components/Company/ESGCategory";
 import ESGDChart from "../components/Company/charts/ESGDChart";
 import StockPriceChart from "../components/Company/charts/StockPriceChart";
 import { CPair } from "../classes/CPair";
-import CompanyApi from "../proxy/CompanyApi";
+import CompanyApi from "../api/CompanyApi";
 import QueryError from "../components/QueryError";
-import StockApi from "../proxy/StockApi";
+import StockApi from "../api/StockApi";
 import { convertDateToUnix } from "../utils/dateUnixConverter";
 import ISA from "../types/ISA";
 

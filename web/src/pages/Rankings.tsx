@@ -6,7 +6,7 @@ import RankingsTable from "../components/Rankings/RankingsTable";
 import MetricBtn from "../components/Rankings/MetricBtn";
 import FilterCheckbox from "../components/Rankings/FilterCheckbox";
 import DataRefToText from "../mods/DataRefToText";
-import CompanyApi from "../proxy/CompanyApi";
+import CompanyApi from "../api/CompanyApi";
 
 import QueryError from "../components/QueryError";
 import FilterDropdown from "../components/Rankings/FilterDropdown";
