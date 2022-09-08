@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { components, default as ReactSelect, OptionProps } from "react-select";
-import MyOption from "../../types/MyOption";
+import { MyOption, TOptionsSelected } from "../../types/MyOption";
 
 const Option: React.FC<OptionProps> = (props) => {
 	return (
@@ -18,13 +18,19 @@ const Option: React.FC<OptionProps> = (props) => {
 };
 
 interface FilterDropdownProps {
+	title: string;
 	options: MyOption[];
+	passBack: Function;
 }
 
-const FilterDropdown: React.FC<FilterDropdownProps> = ({ options }) => {
-	const [optionSelected, setOptionSelected] = useState<any | null>(null);
+const FilterDropdown: React.FC<FilterDropdownProps> = ({ title, options, passBack }) => {
+	const [optionsSelected, setOptionsSelected] = useState<TOptionsSelected | any>(null);
 
-	const handleChange = (selected?: MyOption | MyOption[] | null) => setOptionSelected(selected);
+	const handleChange = (selected?: TOptionsSelected) => setOptionsSelected(selected);
+
+	useEffect(() => {
+		passBack(optionsSelected);
+	}, [optionsSelected]);
 
 	return (
 		<span
@@ -33,6 +39,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({ options }) => {
 			data-trigger="focus"
 			data-content="Please select industry/ies"
 		>
+			{title}
 			<ReactSelect
 				options={options}
 				isMulti
@@ -41,10 +48,9 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({ options }) => {
 				components={{
 					Option
 				}}
-
 				onChange={handleChange}
 				// allowSelectAll={true}
-				value={optionSelected}
+				value={optionsSelected}
 			/>
 		</span>
 	);

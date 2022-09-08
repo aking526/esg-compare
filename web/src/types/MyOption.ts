@@ -1,2 +1,6 @@
-type MyOption = {label: string, value: string};
-export default MyOption;
+export interface MyOption {
+	label: string,
+	value: string
+}
+
+export type TOptionsSelected = MyOption | MyOption[] | null;

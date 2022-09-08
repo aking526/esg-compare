@@ -10,7 +10,7 @@ import CompanyApi from "../api/CompanyApi";
 
 import QueryError from "../components/QueryError";
 import FilterDropdown from "../components/Rankings/FilterDropdown";
-import MyOption from "../types/MyOption";
+import { MyOption, TOptionsSelected } from "../types/MyOption";
 
 const Rankings: React.FC = () => {
   const defaultMetric = "total_score";
@@ -18,6 +18,7 @@ const Rankings: React.FC = () => {
 
   const [rankings, setRankings] = useState<ICompanyData[]>([]);
   const [metric, setMetric] = useState<string>(defaultMetric);
+  const [industryOptionsSelected, setIndustryOptionsSelected] = useState<TOptionsSelected | null | any>(null);
 
   const queryClient = useQueryClient();
 
@@ -45,6 +46,19 @@ const Rankings: React.FC = () => {
     { value: "blue", label: "Media" },
     { value: "purple", label: "Automobiles" },
   ];
+  const handleIndustryOptSel = (ios?: TOptionsSelected) => {
+    if (!ios) return;
+    if (Array.isArray(ios)) {
+      let labels: string[] = [];
+      for (let i = 0; i < ios.length; i++) {
+        labels[i] = ios[i].label;
+      }
+
+      setIndustryOptionsSelected(labels);
+    }
+
+    setIndustryOptionsSelected("label" in ios ? ios.label : null);
+  };
 
   return (
     <div className="relative w-screen bg-slate-100 py-5">
@@ -84,7 +98,7 @@ const Rankings: React.FC = () => {
           <RankingsTable rankings={rankings} metric={metric} />
           <div className="flex flex-col m-2 p-2 border-2 w-96">
             <u className="text-xl">Filters: </u>
-            <FilterDropdown options={options}/>
+            <FilterDropdown title="Industry:" options={options} passBack={handleIndustryOptSel}/>
           </div>
         </div>
           : <RankingsLoading metric={DataRefToText[metric]}/> }
