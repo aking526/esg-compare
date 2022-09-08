@@ -21,7 +21,7 @@ const Company: React.FC = () => {
 
   const [data, setData] = useState<ICompanyData>(BlankCompanyData);
   const [closingPrices, setClosingPrices] = useState<CPair[]>([]);
-  const [from, setFrom] = useState<number>(946787386);
+  const [from, setFrom] = useState<number>(1577854800);
   const [to, setTo] = useState<number>(convertDateToUnix(new Date()));
   const [loaded, setLoaded] = useState<boolean>(false);
 
@@ -29,7 +29,8 @@ const Company: React.FC = () => {
     const iter: number[] = data[which];
     let cc: CPair[] = [];
     for (let i = 0; i < iter.length; i++) {
-      cc[i] = new CPair(i, iter[i]);
+      cc[i] = new CPair(data["t"][i], iter[i]);
+      console.log(data["t"][i]);
     }
     return cc;
   };
@@ -45,7 +46,7 @@ const Company: React.FC = () => {
     }
   });
   const { isLoading: stockPricesLoading, isError: stockPricesIsError, error: stockPricesError } = useQuery([`${ticker}_stock_prices`], async () => {
-    return await StockApi.fetchStockInfo(ticker, "1", from, to);
+    return await StockApi.fetchStockInfo(ticker, "D", from, to);
   },
   {
     onSuccess: (res) => {

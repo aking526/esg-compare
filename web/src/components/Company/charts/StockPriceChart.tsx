@@ -32,19 +32,14 @@ interface StockPriceChartProps {
 }
 
 const StockPriceChart: React.FC<StockPriceChartProps> = ({ ticker, name, from, to, prices }) => {
-	prices.reverse();
 	const data = {
-		labels: getDatesFormatted(prices).slice(prices.length - 15, prices.length),
+		labels: getDatesFormatted(prices).slice(prices.length - 20, prices.length),
 		datasets: [
 			{
-				label: "Stock Price",
-				data: getPrices(prices).slice(prices.length - 15, prices.length),
+				label: "Price",
+				data: getPrices(prices).slice(prices.length - 20, prices.length),
 				backgroundColor: [
-					"rgba(75,192,192,1)",
-					"#ecf0f1",
-					"#50AF95",
-					"#f3ba2f",
-					"#2a71d0",
+					"rgb(125 211 252)",
 				],
 				borderColor: "black",
 				borderWidth: 2

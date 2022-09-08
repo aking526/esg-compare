@@ -9,7 +9,7 @@ const apiClient = axios.create({
 });
 
 const fetchStockInfo = async (ticker: string | undefined, resolution: string, from: string | number, to: string | number) => {
-	const res = await apiClient.get<ISA>(`/get/symbol=:${ticker}&resolution=:${resolution}&from=:${from}&to=:${to}`);
+	const res = await apiClient.get<ISA>(`/get/symbol=${ticker}&resolution=${resolution}&from=${from}&to=${to}`);
 	return res.data;
 };
 
