@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
-import Logging from "./utils/Logging";
+import Logging from "../utils/Logging";
 import { authCheck } from "./authCheck";
 
 function updateCompany(ticker: string, auth: string, callback: Function) {

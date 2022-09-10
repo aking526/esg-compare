@@ -1,4 +1,4 @@
-import Logging from "./utils/Logging";
+import Logging from "../utils/Logging";
 
 export function authCheck(SERVER_AUTH: string) {
 	if (SERVER_AUTH === "") {

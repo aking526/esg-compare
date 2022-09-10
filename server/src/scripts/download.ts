@@ -1,10 +1,10 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { config } from "./config/config";
-import company_list from "../mods/company_list.json";
-import Logging from "./utils/Logging";
-import ISA from "./types/ISA";
+import { config } from "../config/config";
+import company_list from "../../mods/company_list.json";
+import Logging from "../utils/Logging";
+import ISA from "../types/ISA";
 import { authCheck } from "./authCheck";
-import { ICompany } from "./models/Company.model";
+import { ICompany } from "../models/Company.model";
 
 async function Main() {
 	const ESG_API_KEY = config.keys.esg;
