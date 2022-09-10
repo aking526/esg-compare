@@ -6,7 +6,7 @@ interface TopBarProps {
 }
 
 const TopBar: React.FC<TopBarProps> = ({ names }) => {
-	const [currDateTime, setCurrDateTime] = useState<string>("");
+	const [currDateTime, setCurrDateTime] = useState<string>((new Date()).toLocaleString());
 
 	const currCallback = useCallback(() => {
 		const dt = new Date();
@@ -20,23 +20,23 @@ const TopBar: React.FC<TopBarProps> = ({ names }) => {
 
 	return (
 		<div className="relative flex flex-row justify-between items-center py-2 px-3 w-screen bg-black font-modern text-xs text-white">
-			<p className="text-lg">ESG Investing Tracker</p>
+			<p className="text-base">ESG Investing Tracker</p>
 			<SearchBar
 				placeholder="Search by ticker or name..."
 				data={names}
 				styles={{
 					containerWidth: "w-72",
 					width: "w-64",
-					inputHeight: "h-14",
-					inputTextSize: "text-lg",
+					inputHeight: "h-10",
+					inputTextSize: "text-base",
 					inputPlaceholderTextSize: "text-base",
 					ulHeight: "h-48",
-					liTextSize: "text-lg",
+					liTextSize: "text-base",
 					searchIconSize: "text-base",
 					searchIconColor: "white"
 				}}
 			/>
-			<p className="text-lg">{currDateTime}</p>
+			<p className="text-base">{currDateTime}</p>
 		</div>
 	);
 };
