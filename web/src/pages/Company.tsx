@@ -9,7 +9,7 @@ import ESGCategory from "../components/Company/ESGCategory";
 import ESGDChart from "../components/Company/charts/ESGDChart";
 import StockPriceChart from "../components/Company/charts/StockPriceChart";
 import { CPair } from "../classes/CPair";
-import CompanyApi from "../api/CompanyApi";
+import CompaniesApi from "../api/CompaniesApi";
 import QueryError from "../components/QueryError";
 import StockApi from "../api/StockApi";
 import { convertDateToUnix } from "../utils/dateUnixConverter";
@@ -38,7 +38,7 @@ const Company: React.FC = () => {
   const queryClient = useQueryClient();
 
   const { isLoading: dataLoading, isError: dataIsError, error: dataError } = useQuery<ICompanyData, Error>([`${ticker}_data`], async () => {
-    return await CompanyApi.fetchCompanyData(ticker);
+    return await CompaniesApi.fetchCompanyData(ticker);
   },
   {
     onSuccess: (res) => {

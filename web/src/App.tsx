@@ -13,11 +13,11 @@ import Research from "./pages/Research";
 import NavBar from "./components/NavBar";
 import TopBar from "./components/TopBar";
 import Compare from "./pages/Compare";
-import CompanyApi from "./api/CompanyApi";
+import CompaniesApi from "./api/CompaniesApi";
 import QueryError from "./components/QueryError";
 
 function App() {
-  const names = useQuery<string[][], Error>(['names'], CompanyApi.getNames);
+  const names = useQuery<string[][], Error>(['names'], CompaniesApi.getNames);
 
   if (names.isError) {
     return <QueryError message={names.error.message} />;

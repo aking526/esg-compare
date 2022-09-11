@@ -50,8 +50,8 @@ const StartServer = () => {
 	});
 
 	// Routes
-	app.use("/companies", companyRoutes);
-	app.use("/stockInfo", stockRoutes);
+	app.use("/api/companies", companyRoutes);
+	app.use("/api/stockInfo", stockRoutes);
 
 	// Healthcheck
 	app.get("/healthcheck", (req: Request, res: Response, next: NextFunction) => res.status(200).json({ message: "working" }));

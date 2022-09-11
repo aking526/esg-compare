@@ -6,7 +6,7 @@ import RankingsTable from "../components/Rankings/RankingsTable";
 import MetricBtn from "../components/Rankings/MetricBtn";
 import FilterCheckbox from "../components/Rankings/FilterCheckbox";
 import DataRefToText from "../mods/DataRefToText";
-import CompanyApi from "../api/CompanyApi";
+import CompaniesApi from "../api/CompaniesApi";
 
 import QueryError from "../components/QueryError";
 import FilterDropdown from "../components/Rankings/FilterDropdown";
@@ -23,7 +23,7 @@ const Rankings: React.FC = () => {
   const queryClient = useQueryClient();
 
   const { isLoading: rankingsLoading, isError: rankingsIsError, error: rankingsError } = useQuery<ICompanyData[], Error>([`${metric}_ranking`], async () => {
-    return CompanyApi.fetchRankings(metric);
+    return CompaniesApi.fetchRankings(metric);
   }, {
     onSuccess: (res) => {
       setRankings(res);

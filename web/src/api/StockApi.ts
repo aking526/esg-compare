@@ -2,7 +2,7 @@ import axios from "axios";
 import ISA from "../types/ISA";
 
 const apiClient = axios.create({
-	baseURL: "http://localhost:8000/stockInfo",
+	baseURL: "/api/stockInfo",
 	headers: {
 		"Content-type": "application/json"
 	}

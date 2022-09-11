@@ -3,7 +3,7 @@ import ISS from "../types/ISS";
 import { ICompanyData } from "../types/ICompanyData";
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:8000/companies",
+  baseURL: "/api/companies",
   headers: {
     "Content-type": "application/json"
   }
@@ -32,5 +32,5 @@ const fetchCompanyData = async (ticker: string | undefined) => {
   return res.data;
 };
 
-const CompanyApi = { getNames, fetchCompanyData, fetchRankings };
-export default CompanyApi;
+const CompaniesApi = { getNames, fetchCompanyData, fetchRankings };
+export default CompaniesApi;
