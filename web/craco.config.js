@@ -7,6 +7,20 @@ const noopServiceWorker = require("react-dev-utils/noopServiceWorkerMiddleware")
 
 module.exports = {
   webpack: {
+    mode: "development",
+    devtool: "inline-source-map",
+    entry: "./app.ts",
+    output: {
+      filename: "bundle.js"
+    },
+    resolve: {
+      extensions: [".ts", ".tsx", ".js", ".jsx"]
+    },
+    module: {
+      rules: [
+        { test: /\.tsx?$/, loader: "ts-loader" }
+      ]
+    },
     configure: (webpackConfig, { paths }) => {
       // ModuleScope Plugin
       const scopePluginIndex = webpackConfig.resolve.plugins.findIndex(
@@ -56,5 +70,7 @@ module.exports = {
       ]
     }
   },
-  typescript: {}
+  typescript: {
+    enableTypeChecking: true
+  }
 };
