@@ -8,10 +8,9 @@ module.exports = {
     "jest": true,
   },
   rules: {
+    "no-unused-vars": "off",
     "no-console": "off",
-    "curly": "warn",
     "linebreak-style": ["warn", "unix"]
   },
-  settings: {
-  }
+  settings: {}
 }
