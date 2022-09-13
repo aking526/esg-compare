@@ -18,12 +18,14 @@ const Rankings: React.FC = () => {
 
   const [rankings, setRankings] = useState<ICompanyData[]>([]);
   const [metric, setMetric] = useState<string>(defaultMetric);
+  const [filters, setFilters] = useState<string | undefined>(undefined);
+  const [queryKey, setQueryKey] = useState<string>(`${metric}_rankings`);
   const [industryOptionsSelected, setIndustryOptionsSelected] = useState<TOptionsSelected | null | any>(null);
 
   const queryClient = useQueryClient();
 
-  const { isLoading: rankingsLoading, isError: rankingsIsError, error: rankingsError } = useQuery<ICompanyData[], Error>([`${metric}_ranking`], async () => {
-    return CompaniesApi.fetchRankings(metric);
+  const { isLoading: rankingsLoading, isError: rankingsIsError, error: rankingsError } = useQuery<ICompanyData[], Error>([queryKey], async () => {
+    return CompaniesApi.fetchRankings(metric, filters);
   }, {
     onSuccess: (res) => {
       setRankings(res);
@@ -31,8 +33,19 @@ const Rankings: React.FC = () => {
   });
 
   useEffect(() => {
-    const cachedRanking: ICompanyData[] | undefined = queryClient.getQueryData([`${metric}_ranking`]);
-    if (cachedRanking) setRankings(cachedRanking);
+    if (filters) {
+      setQueryKey(prev => (prev + "?" + filters));
+    }
+  }, [filters]);
+
+  useEffect(() => {
+    if (filters) {
+      const newKey = `${metric}_rankings`;
+    } else {
+      setQueryKey(`${metric}_rankings`);
+      const cachedRanking: ICompanyData[] | undefined = queryClient.getQueryData([`${metric}_rankings`]);
+      if (cachedRanking) setRankings(cachedRanking);
+    }
   }, [metric]);
 
   if (rankingsIsError) {
@@ -45,6 +58,7 @@ const Rankings: React.FC = () => {
     { value: "ocean1", label: "Technology" },
     { value: "blue", label: "Media" },
     { value: "purple", label: "Automobiles" },
+    { value: "teal", label: "Retail" }
   ];
   const handleIndustryOptSel = (ios?: TOptionsSelected) => {
     if (!ios) return;

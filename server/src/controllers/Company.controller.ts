@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import mongoose, { ObjectId } from "mongoose";
 import Company, { ICompanyModel } from "../models/Company.model";
-import { MTTSC } from "../utils/ConvertText";
+import { MTTSC } from "../utils/convert";
 import ISA from "../types/ISA";
 import { config } from "../config/config";
 
@@ -105,8 +105,21 @@ const readCompanyNames = (req: Request, res: Response, next: NextFunction) => {
 
 const readSort = (req: Request, res: Response, next: NextFunction) => {
 	const metric = req.params.metric;
+	const industry = req.query.industry;
 
-	return Company.find().sort(MTTSC[metric])
+	let filters: {
+		[index: string]: string | number | object;
+	} = {};
+
+	if (industry) {
+		if (typeof industry === "string") {
+			filters["industry"] = industry.includes(",") ? industry.split(",") : industry;
+		}	else if (Array.isArray(industry)) {
+			filters["industry"] = { $in: industry };
+		}
+	}
+
+	return Company.find(filters).sort(MTTSC[metric])
 		.then((companies) => res.status(200).json(companies))
 		.catch((error) => res.status(500).json({ error }));
 };

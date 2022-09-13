@@ -22,8 +22,8 @@ const getNames = async () => {
   return f;
 };
 
-const fetchRankings = async (metric: string) => {
-  const res = await apiClient.get<ICompanyData[]>(`sort/${metric}`);
+const fetchRankings = async (metric: string, filters: string | undefined) => {
+  const res = await apiClient.get<ICompanyData[]>(`sort/${metric}?${filters}`);
   return res.data
 };
 
