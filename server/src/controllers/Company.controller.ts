@@ -103,18 +103,6 @@ const readCompanyNames = (req: Request, res: Response, next: NextFunction) => {
 		.catch((error) => res.status(500).json({ error }));
 };
 
-const readIndustries = (req: Request, res: Response, next: NextFunction) => {
-	return Company.find().select({ "industry": 1, "_id": 0 })
-		.then((data: (ICompanyModel & {_id: ObjectId })[]) => {
-			let formatted: string[] = [];
-			for (let i = 0; i < data.length; i++) {
-				formatted.push(data[i].industry);
-			}
-			res.status(200).json(formatted);
-		})
-		.catch((error) => res.status(500).json({ error }));
-};
-
 const readSort = (req: Request, res: Response, next: NextFunction) => {
 	const metric = req.params.metric;
 	const industry = req.query.industry;
@@ -123,11 +111,11 @@ const readSort = (req: Request, res: Response, next: NextFunction) => {
 		[index: string]: string | number | object;
 	} = {};
 
-	if (typeof industry === "string") {
-		if (industry.includes(",")) {
-			filters["industry"] = { $in: industry.split(",") };
-		}	else {
-			filters["industry"] = industry;
+	if (industry) {
+		if (typeof industry === "string") {
+			filters["industry"] = industry.includes(",") ? industry.split(",") : industry;
+		}	else if (Array.isArray(industry)) {
+			filters["industry"] = { $in: industry };
 		}
 	}
 
@@ -136,4 +124,4 @@ const readSort = (req: Request, res: Response, next: NextFunction) => {
 		.catch((error) => res.status(500).json({ error }));
 };
 
-export default { createCompany, readCompany, readAll, updateCompany, deleteCompany, readCompanyNames, readIndustries, readSort };
+export default { createCompany, readCompany, readAll, updateCompany, deleteCompany, readCompanyNames, readSort };
