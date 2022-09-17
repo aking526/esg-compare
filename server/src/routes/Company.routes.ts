@@ -13,7 +13,7 @@ router.delete("/delete/auth=:auth&ticker=:ticker", companyController.deleteCompa
 
 /* Special Routes */
 router.get("/getNames/", companyController.readCompanyNames);
-
+router.get("/getIndustries/", companyController.readIndustries);
 
 /* Sorting Routes */
 router.get("/sort/:metric", companyController.readSort);

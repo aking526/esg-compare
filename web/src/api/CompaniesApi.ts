@@ -22,8 +22,14 @@ const getNames = async () => {
   return f;
 };
 
-const fetchRankings = async (metric: string) => {
-  const res = await apiClient.get<ICompanyData[]>(`sort/${metric}`);
+const getIndustries = async () => {
+  const res = await apiClient.get<string[]>("/getIndustries");
+  return res.data;
+};
+
+const fetchRankings = async (metric: string, filters: string | null) => {
+  const url = filters ? `sort/${metric}?${filters}` : `sort/${metric}`;
+  const res = await apiClient.get<ICompanyData[]>(url);
   return res.data
 };
 
@@ -32,5 +38,5 @@ const fetchCompanyData = async (ticker: string | undefined) => {
   return res.data;
 };
 
-const CompaniesApi = { getNames, fetchCompanyData, fetchRankings };
+const CompaniesApi = { getNames, getIndustries, fetchCompanyData, fetchRankings };
 export default CompaniesApi;

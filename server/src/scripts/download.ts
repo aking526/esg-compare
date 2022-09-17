@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { config } from "../config/config";
-import company_list from "../../mods/company_list.json";
+import company_list from "../../data/company_list.json";
 import Logging from "../utils/Logging";
 import ISA from "../types/ISA";
 import { authCheck } from "./authCheck";

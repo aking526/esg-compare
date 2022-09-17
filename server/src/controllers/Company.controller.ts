@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import mongoose, { ObjectId } from "mongoose";
 import Company, { ICompanyModel } from "../models/Company.model";
-import { MTTSC } from "../utils/ConvertText";
+import { MTTSC } from "../utils/convert";
 import ISA from "../types/ISA";
 import { config } from "../config/config";
 
@@ -103,12 +103,37 @@ const readCompanyNames = (req: Request, res: Response, next: NextFunction) => {
 		.catch((error) => res.status(500).json({ error }));
 };
 
+const readIndustries = (req: Request, res: Response, next: NextFunction) => {
+	return Company.find().select({ "industry": 1, "_id": 0 })
+		.then((data: (ICompanyModel & {_id: ObjectId })[]) => {
+			let formatted: string[] = [];
+			for (let i = 0; i < data.length; i++) {
+				formatted.push(data[i].industry);
+			}
+			res.status(200).json(formatted);
+		})
+		.catch((error) => res.status(500).json({ error }));
+};
+
 const readSort = (req: Request, res: Response, next: NextFunction) => {
 	const metric = req.params.metric;
+	const industry = req.query.industry;
 
-	return Company.find().sort(MTTSC[metric])
+	let filters: {
+		[index: string]: string | number | object;
+	} = {};
+
+	if (typeof industry === "string") {
+		if (industry.includes(",")) {
+			filters["industry"] = { $in: industry.split(",") };
+		}	else {
+			filters["industry"] = industry;
+		}
+	}
+
+	return Company.find(filters).sort(MTTSC[metric])
 		.then((companies) => res.status(200).json(companies))
 		.catch((error) => res.status(500).json({ error }));
 };
 
-export default { createCompany, readCompany, readAll, updateCompany, deleteCompany, readCompanyNames, readSort };
+export default { createCompany, readCompany, readAll, updateCompany, deleteCompany, readCompanyNames, readIndustries, readSort };

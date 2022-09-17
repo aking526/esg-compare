@@ -7,20 +7,6 @@ const noopServiceWorker = require("react-dev-utils/noopServiceWorkerMiddleware")
 
 module.exports = {
   webpack: {
-    mode: "development",
-    devtool: "inline-source-map",
-    entry: "./app.ts",
-    output: {
-      filename: "bundle.js"
-    },
-    resolve: {
-      extensions: [".ts", ".tsx", ".js", ".jsx"]
-    },
-    module: {
-      rules: [
-        { test: /\.tsx?$/, loader: "ts-loader" }
-      ]
-    },
     configure: (webpackConfig, { paths }) => {
       // ModuleScope Plugin
       const scopePluginIndex = webpackConfig.resolve.plugins.findIndex(
@@ -40,28 +26,28 @@ module.exports = {
     }
   },
   // DeprecationWarning: 'onAfterSetupMiddleware'
-  devServer: (devServerConfig, { env, paths }) => {
-    devServerConfig = {
-      onBeforeSetupMiddleware: undefined,
-      onAfterSetupMiddleware: undefined,
-      setupMiddlewares: (middlewares, devServer) => {
-        if (!devServer) {
-          throw new Error("webpack-dev-server is not defined");
-        }
-        if (fs.existsSync(paths.proxySetup)) {
-          require(paths.proxySetup)(devServer.app);
-        }
-        middlewares.push(
-          evalSourceMap(devServer),
-          redirectServerPath(paths.publicUrlOrPath),
-          noopServiceWorker(paths.publicUrlOrPath)
-        );
-        return middlewares;
-      }
-    };
-
-    return devServerConfig;
-  },
+  // devServer: (devServerConfig, { env, paths }) => {
+  //   devServerConfig = {
+  //     onBeforeSetupMiddleware: undefined,
+  //     onAfterSetupMiddleware: undefined,
+  //     setupMiddlewares: (middlewares, devServer) => {
+  //       if (!devServer) {
+  //         throw new Error("webpack-dev-server is not defined");
+  //       }
+  //       if (fs.existsSync(paths.proxySetup)) {
+  //         require(paths.proxySetup)(devServer.app);
+  //       }
+  //       middlewares.push(
+  //         evalSourceMap(devServer),
+  //         redirectServerPath(paths.publicUrlOrPath),
+  //         noopServiceWorker(paths.publicUrlOrPath)
+  //       );
+  //       return middlewares;
+  //     }
+  //   };
+  //
+  //   return devServerConfig;
+  // },
   style: {
     postOptions: {
       plugins: [
