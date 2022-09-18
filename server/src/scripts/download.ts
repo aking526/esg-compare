@@ -53,7 +53,7 @@ async function Main() {
 	let esg_data: ISA = await getESGData(company_list);
 
 	// gets the data for the company in the correct form and makes the post request
-	const BuildProfile = (ticker: string, callback: Function) => {
+	const buildProfile = (ticker: string, callback: Function) => {
 		const curr_ci = company_info_data[ticker];
 		const curr_esg = esg_data[ticker];
 
@@ -93,7 +93,7 @@ async function Main() {
 
 	let counter = 0;
 	for (let i = 0; i < company_list.length; i++) {
-		BuildProfile(company_list[i], () => {
+		buildProfile(company_list[i], () => {
 			counter++
 			Logging.log(counter + " number of profiles built");
 			if (counter === company_list.length) {

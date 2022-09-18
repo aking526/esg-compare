@@ -32,7 +32,7 @@ const ExecFinnhubBatch = async () => {
 		let data: ISA = {};
 		const go = async (ticker: string) => {
 			Logging.log("Starting downloading: " + ticker);
-			const response: AxiosResponse = await axios.get(`https://finnhub.io/api/v1/stock/profile2?symbol=${ticker}&token=cbhaajiad3i0blfforp0`);
+			const response: AxiosResponse = await axios.get(`https://finnhub.io/api/v1/stock/profile2?symbol=${ticker}&token=${FINNHUB_API_KEY}`);
 			data[ticker] = response.data;
 			Logging.log("Ending downloading: " + ticker);
 		};
@@ -57,7 +57,7 @@ const ExecFinnhubBatch = async () => {
 	}, 61 * 1000);
 }
 
-const ExecEsgBatch = async () => {
+const ExecEsgBatch = async (dayCnt: number) => {
 	const ESG_API_KEY = config.keys.esg;
 
 	if (ESG_API_KEY === "") {
@@ -65,12 +65,17 @@ const ExecEsgBatch = async () => {
 		process.exit(1);
 	}
 
-	const esg = JSON.parse(fs.readFileSync("./cache/esg_data.json").toString());
+	if (dayCnt === 50) {
+		Logging.log(`50 API Calls made. Wait 24 hours. Current time: ${new Date().toLocaleString()}`);
+		process.exit(1);
+	}
+
+	const e = JSON.parse(fs.readFileSync("./cache/esg_data.json").toString());
 
 	let thisd = [];
 	for (const ticker of company_tickers) {
-		if (ticker in esg) continue;
-		if (thisd.length >= 60) break;
+		if (ticker in e) continue;
+		if (thisd.length >= 50) break;
 
 		thisd.push(ticker);
 	}
@@ -78,6 +83,35 @@ const ExecEsgBatch = async () => {
 	if (thisd.length === 0) {
 		process.exit(1);
 	}
+
+	const getESGData = async (tickers: string[]) => {
+		Logging.log("Fetching ESG data for: " + tickers.join(" "));
+		const response: AxiosResponse = await axios.get("https://tf689y3hbj.execute-api.us-east-1.amazonaws.com/prod/authorization/search?q=" +
+				tickers.join(",") +
+				"&token=" + ESG_API_KEY
+		);
+		const req = response.data;
+
+		let data: ISA = {};
+		for (let i = 0; i < tickers.length; i++) {
+			data[tickers[i]] = req[i];
+		}
+
+		Logging.log("Download complete.");
+		return data;
+	};
+
+	const esg = await getESGData(thisd);
+	for (const ticker in esg) {
+		e[ticker] = esg[ticker];
+	}
+
+	fs.writeFileSync("./cache/esg_data.json", JSON.stringify(e, null, 4), {});
+
+	setTimeout(() => {
+		ExecEsgBatch(dayCnt + 1).then(() => null);
+	}, 6 * 1001);
 };
 
-ExecFinnhubBatch().then(() => null);
+// ExecFinnhubBatch().then(() => null);
+ExecEsgBatch(0).then(() => null);

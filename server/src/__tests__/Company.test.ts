@@ -1,7 +1,5 @@
 import supertest from "supertest";
-import createServer from "../utils/createServer";
-
-const app = createServer();
+import { app } from "../server";
 
 // Fix the bug
 describe("company", () => {
