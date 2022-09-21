@@ -13,7 +13,6 @@ examples/
 /server/node_modules
 /server/build
 /server/.env
-/server/cache/
 
 .DS_Store
 .env.local
