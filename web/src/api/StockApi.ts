@@ -13,5 +13,10 @@ const fetchStockInfo = async (ticker: string | undefined, resolution: string, fr
 	return res.data;
 };
 
-const StockApi = { fetchStockInfo };
+const getNews = async (ticker: string | undefined, from: string, to: string) => {
+	const res = await apiClient.get(`/getNews/${ticker}/from=${from}&to=${to}`);
+	return res.data;
+};
+
+const StockApi = { fetchStockInfo, getNews };
 export default StockApi;

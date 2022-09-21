@@ -23,16 +23,17 @@ const getStockInfo = async (req: Request, res: Response, next: NextFunction) => 
 
 const getNews = async (req: Request, res: Response, next: NextFunction) => {
 	const companyTicker = req.params.ticker;
-	const topics = req.params.topics;
+	const from = req.params.from;
+	const to = req.params.to;
 
 	try {
-		const url = `https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=${companyTicker.toUpperCase()}&topics=${topics}&apikey=${config.keys.av}`;
-		const avRes = await axios.get(url);
-		const data = avRes.data;
+		const url = `https://finnhub.io/api/v1/company-news?symbol=${companyTicker}&from=${from}&to=${to}&token=${config.keys.finnhub}`;
+		const fRes = await axios.get(url);
+		const data = fRes.data;
 
 		return res.status(200).json(data);
 	} catch (e) {
-		Logging.error(e);
+		Logging.log(e);
 		return res.status(500).json({ e });
 	}
 };

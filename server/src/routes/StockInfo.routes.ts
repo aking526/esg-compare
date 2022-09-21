@@ -4,6 +4,6 @@ import stockInfoController from "../controllers/StockInfo.controller";
 const router = express.Router();
 
 router.get("/get/symbol=:ticker&resolution=:resolution&from=:from&to=:to", stockInfoController.getStockInfo);
-router.get("/getNews/:ticker/:topics", stockInfoController.getNews);
+router.get("/getNews/:ticker/from=:from&to=:to", stockInfoController.getNews);
 
 export default router;

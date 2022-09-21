@@ -8,11 +8,13 @@ import TextDataFormat from "../components/TextDataFormat";
 import ESGCategory from "../components/Company/ESGCategory";
 import ESGDChart from "../components/Company/charts/ESGDChart";
 import StockPriceChart from "../components/Company/charts/StockPriceChart";
+import NewsSection from "../components/Company/NewsSection";
 import { CPair } from "../classes/CPair";
 import CompaniesApi from "../api/CompaniesApi";
 import QueryError from "../components/QueryError";
 import StockApi from "../api/StockApi";
 import { convertDateToUnix } from "../utils/dateUnixConverter";
+import TNewsInfo from "../types/TNewsInfo";
 import ISA from "../types/ISA";
 
 
@@ -23,6 +25,7 @@ const Company: React.FC = () => {
   const [closingPrices, setClosingPrices] = useState<CPair[]>([]);
   const [from, setFrom] = useState<number>(1577854800);
   const [to, setTo] = useState<number>(convertDateToUnix(new Date()));
+  const [news, setNews] = useState<TNewsInfo[]>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
 
   const convertStockData = (data: ISA, which: string) => {
@@ -35,6 +38,14 @@ const Company: React.FC = () => {
     return cc;
   };
 
+  const formatDate = (date: Date) => {
+    return date.toJSON().split("T")[0];
+  };
+
+  const getLastWeeksDate = (now: Date) => {
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+  };
+
   const queryClient = useQueryClient();
 
   const { isLoading: dataLoading, isError: dataIsError, error: dataError } = useQuery<ICompanyData, Error>([`${ticker}_data`], async () => {
@@ -45,6 +56,7 @@ const Company: React.FC = () => {
       setData(res);
     }
   });
+
   const { isLoading: stockPricesLoading, isError: stockPricesIsError, error: stockPricesError } = useQuery([`${ticker}_stock_prices`], async () => {
     return await StockApi.fetchStockInfo(ticker, "D", from, to);
   },
@@ -52,6 +64,17 @@ const Company: React.FC = () => {
     onSuccess: (res) => {
       const conv = convertStockData(res, "c");
       setClosingPrices(conv);
+    }
+  });
+
+  const { isLoading: newsLoading, isError: newsIsError, error: newsError } = useQuery([`${ticker}_news`], async () => {
+    const now = new Date();
+    const lastWeek = getLastWeeksDate(now);
+    return await StockApi.getNews(ticker, formatDate(lastWeek) , formatDate(now));
+  },
+  {
+    onSuccess: (res) => {
+      setNews(res);
     }
   });
 
@@ -66,17 +89,22 @@ const Company: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setLoaded(!dataLoading && !stockPricesLoading);
-  }, [dataLoading, stockPricesLoading]);
+    setLoaded(!dataLoading && !stockPricesLoading && !newsLoading);
+  }, [dataLoading, stockPricesLoading, newsLoading]);
 
   if (dataIsError) {
     return <QueryError message={dataError?.message} />;
   }
 
-  // if (stockPricesIsError) {
-  //   // @ts-ignore
-  //   return <QueryError message={stockPricesError.message} />
-  // }
+  if (stockPricesIsError) {
+    // @ts-ignore
+    return <QueryError message={stockPricesError.message} />;
+  }
+
+  if (newsIsError) {
+    // @ts-ignore
+    return <QueryError message={newsError.message} />;
+  }
 
   return (
     <>
@@ -94,16 +122,19 @@ const Company: React.FC = () => {
             <TextDataFormat text="Total Score:" data={data.total_score} />
           </div>
           <div className="flex flex-col items-center mt-5">
-            {!stockPricesLoading ?
-              <div>
-                <strong className="text-2xl mb-1.5">Stock Info</strong>
-                <p className="text-xs">Last Updated: {new Date().toLocaleString()}</p>
-                <div className="flex flex-row">
-                  <StockPriceChart ticker={data.ticker} name={data.name} from={from} to={to} prices={closingPrices} />
-                </div>
-              </div>
-            : null
-            }
+            <strong className="text-2xl mb-1.5">Stock Info</strong>
+            <p className="text-xs">Last Updated: {new Date().toLocaleString()}</p>
+            <div className="flex flex-row">
+              <StockPriceChart ticker={data.ticker} name={data.name} from={from} to={to} prices={closingPrices} />
+            </div>
+          </div>
+          <div className="flex flex-col mt-5">
+            <strong className="text-2xl mb-1.5">News</strong>
+            <div className="flex flex-row">
+              {news.slice(0, 5).map((curr) => {
+                return <NewsSection currNews={curr} />;
+              })}
+            </div>
           </div>
         </div>
         ) :
