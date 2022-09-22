@@ -1,6 +1,5 @@
 .idea/
 
-examples/
 
 /web/node_modules
 /web/.env
