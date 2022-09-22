@@ -5,7 +5,6 @@ examples/
 /web/node_modules
 /web/.env
 
-/web/public/manifest.json
 /web/public/favicon.ico
 /web/public/logo192.png
 /web/public/logo512.png

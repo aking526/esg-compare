@@ -110,7 +110,7 @@ const ExecEsgBatch = async (dayCnt: number) => {
 
 	setTimeout(() => {
 		ExecEsgBatch(dayCnt + 1).then(() => null);
-	}, 61 * 1000);
+	}, 20 * 1000);
 };
 
 // ExecFinnhubBatch().then(() => null);
