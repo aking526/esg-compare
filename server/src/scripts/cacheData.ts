@@ -108,9 +108,7 @@ const ExecEsgBatch = async (dayCnt: number) => {
 
 	fs.writeFileSync("./cache/esg_data.json", JSON.stringify(e, null, 4), {});
 
-	setTimeout(() => {
-		ExecEsgBatch(dayCnt + 1).then(() => null);
-	}, 20 * 1000);
+	Logging.log("Data written to file");
 };
 
 // ExecFinnhubBatch().then(() => null);

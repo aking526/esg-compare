@@ -1,10 +1,10 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { config } from "../config/config";
 import company_list from "../../data/company_list.json";
 import Logging from "../utils/Logging";
 import ISA from "../types/ISA";
 import { authCheck } from "./authCheck";
-import { ICompany } from "../models/Company.model";
+import buildProfile from "./buildProfile";
 
 async function Main() {
 	const ESG_API_KEY = config.keys.esg;
@@ -52,55 +52,16 @@ async function Main() {
 	let company_info_data: ISA = await getCompanyInfo(company_list);
 	let esg_data: ISA = await getESGData(company_list);
 
-	// gets the data for the company in the correct form and makes the post request
-	const buildProfile = (ticker: string, callback: Function) => {
-		const curr_ci = company_info_data[ticker];
-		const curr_esg = esg_data[ticker];
-
-		const data: ICompany = {
-			ticker: ticker,
-			name: curr_ci["name"],
-			currency: curr_ci["currency"],
-			exchange: curr_ci["exchange"],
-			industry: curr_ci["finnhubIndustry"],
-			logo: curr_ci["logo"],
-			weburl: curr_ci["weburl"],
-			market_cap: curr_ci["marketCapitalization"],
-			esg_id: curr_esg["esg_id"],
-			environment_grade: curr_esg["environment_grade"],
-			environment_level: curr_esg["environment_level"],
-			social_grade: curr_esg["social_grade"],
-			social_level: curr_esg["social_level"],
-			governance_grade: curr_esg["governance_grade"],
-			governance_level: curr_esg["governance_level"],
-			environment_score: curr_esg["environment_score"],
-			social_score: curr_esg["social_score"],
-			governance_score: curr_esg["governance_score"],
-			total_score: curr_esg["total"]
-		};
-
-		axios.post(`http://localhost:8000/companies/create/auth=${SERVER_AUTH}`, data)
-			.then((res: AxiosResponse) => {
-				Logging.log(res.data);
-				callback();
-			})
-			.catch((error: AxiosError) => {
-				if (error.response) {
-					Logging.error(error.response);
-				}
-			});
-	}
-
 	let counter = 0;
 	for (let i = 0; i < company_list.length; i++) {
-		buildProfile(company_list[i], () => {
+		await buildProfile(company_list[i], company_info_data[company_list[i]], esg_data[company_list[i]], () => {
 			counter++
 			Logging.log(counter + " number of profiles built");
 			if (counter === company_list.length) {
 				Logging.log("Downloads complete.");
 				process.exit(1);
 			}
-		});
+		}, SERVER_AUTH);
 	}
 }
 

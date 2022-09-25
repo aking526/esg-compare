@@ -6,7 +6,7 @@ import ISA from "../types/ISA";
 import { config } from "../config/config";
 
 const createCompany = (req: Request, res: Response, next: NextFunction) => {
-	const { name, ticker, currency, exchange, industry, logo, weburl, market_cap, esg_id, environment_grade, environment_level, environment_score, social_grade, social_level, social_score, governance_grade, governance_level, governance_score, total_score } = req.body;
+	const { name, ticker, currency, exchange, industry, logo, weburl, esg_id, environment_grade, environment_level, environment_score, social_grade, social_level, social_score, governance_grade, governance_level, governance_score, total_score } = req.body;
 	const auth = req.params.auth;
 
 	if (auth !== config.server.auth) {
@@ -22,7 +22,6 @@ const createCompany = (req: Request, res: Response, next: NextFunction) => {
 		industry,
 		logo,
 		weburl,
-		market_cap,
 		esg_id,
 		environment_grade,
 		environment_level,
@@ -45,7 +44,7 @@ const readCompany = async (req: Request, res: Response, next: NextFunction) => {
 	const companyTicker = req.params.ticker;
 
 	return Company.findOne({ ticker: companyTicker })
-			.then((company) => (company ? res.status(200).json(company) : res.status(404).json({ message: "not found " })))
+			.then((company) => (company ? res.status(200).json(company) : res.status(404).json({ message: "Not Found" })))
 			.catch((error) => res.status(500).json({ error }));
 };
 
