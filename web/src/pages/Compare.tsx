@@ -3,6 +3,8 @@ import CInputField from "../components/Compare/CInputField";
 import CInputSelected from "../components/Compare/CInputSelected";
 import CompaniesApi from "../api/CompaniesApi";
 import { ICompanyData } from "../types/ICompanyData";
+import { useQuery } from "@tanstack/react-query";
+import QueryError from "../components/QueryError";
 
 const Compare: React.FC = () => {
 	const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -19,7 +21,15 @@ const Compare: React.FC = () => {
 	const [data, setData] = useState<ICompanyData[]>([]);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
+
+	const names = useQuery<string[][], Error>(['names'], CompaniesApi.getNames);
+	if (names.isError) {
+		// @ts-ignore
+		return <QueryError message={names.error.message} />;
+	}
+
 	useEffect(() => {
+		console.log("In Compare component: " + tickers);
 		if (tickers[0] && tickers[1]) setAllSelected(true);
 	}, [tickers]);
 
@@ -33,19 +43,27 @@ const Compare: React.FC = () => {
 			setData(newArr);
 		};
 
-		fetch().then(() => setDataLoaded(true));
+		if (allSelected) fetch().then(() => setDataLoaded(true));
 	}, [allSelected]);
+
+	const handleSelected = (selected: string, index: number) => {
+		let newT = tickers;
+		newT[index] = selected;
+		setTickers(newT);
+	};
 
 	if (go) {
 		return (
 			<>
 			{ allSelected ?
-				<div>
+				<div className="flex flex-row">
+					<CInputSelected ticker={tickers[0]} />
+					<CInputSelected ticker={tickers[1]} />
 				</div>
 						:
-				<div className="flex flex-row my-16 mx-32">
+				<div className="flex flex-row justify-evenly my-16 mx-32">
 					<CInputSelected ticker={go} />
-					<CInputField />
+					<CInputField passBack={handleSelected} index={1} names={names.data}/>
 				</div>
 			}
 			</>
@@ -56,8 +74,8 @@ const Compare: React.FC = () => {
 		<>
 			{ allSelected ?
 				<div>
-					<CInputField/>
-					<CInputField/>
+					<CInputField passBack={handleSelected} index={0} names={names.data}/>
+					<CInputField passBack={handleSelected} index={1} names={names.data}/>
 				</div>
 					:
 				<>

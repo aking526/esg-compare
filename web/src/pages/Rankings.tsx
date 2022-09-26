@@ -34,7 +34,7 @@ const Rankings: React.FC = () => {
   }
 
   const { isLoading: rankingsLoading, isError: rankingsIsError, error: rankingsError } = useQuery<ICompanyData[], Error>([queryKey], async () => {
-    return CompaniesApi.fetchRankings(metric, filters);
+    return CompaniesApi.fetchRankings(metric, industryOptionsSelected);
   }, {
     onSuccess: (res) => {
       setRankings(res);
@@ -69,11 +69,17 @@ const Rankings: React.FC = () => {
   useEffect(() => {
     if (!industries) return;
 
-    let go: MyOption[] = [];
+    let set = new Set<string>();
     for (let i = 0; i < industries.length; i++) {
-      go.push({ value: "blue", label: industries[i] });
+      if (industries[i] == "N/A") continue;
+      set.add(industries[i]);
     }
-    setDropdownOptions(go);
+
+    let options: MyOption[] = [];
+    set.forEach((industry) => {
+      options.push({ value: "blue", label: industry});
+    });
+    setDropdownOptions(options);
   }, [industries]);
 
   const handleIndustryOptSel = (ios?: TOptionsSelected) => {
@@ -135,13 +141,13 @@ const Rankings: React.FC = () => {
                     styles={FilterBtnStyles}
                 />
               </div>
-              <RankingsTable rankings={rankings} metric={metric} />
+              <RankingsTable rankings={rankings.slice(0, 50)} metric={metric} />
               <div className="flex flex-col m-2 p-2 border-2 w-96">
                 {!industriesLoading &&
-                    <>
-                      <u className="text-xl">Filters: </u>
-                      <FilterDropdown title="Industry:" options={dropdownOptions} passBack={handleIndustryOptSel}/>
-                    </>
+                  <>
+                    <u className="text-xl">Filters: </u>
+                    <FilterDropdown title="Industry:" options={options} passBack={handleIndustryOptSel}/>
+                  </>
                 }
               </div>
             </div>

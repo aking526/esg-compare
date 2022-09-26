@@ -2,19 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlassArrowRight } from "@fortawesome/free-solid-svg-icons";
-
-
-interface SBStylingProps {
-  containerWidth: string;
-  width: string;
-  inputHeight: string;
-  inputTextSize: string;
-  inputPlaceholderTextSize: string;
-  ulHeight: string;
-  liTextSize: string;
-  searchIconSize: string;
-  searchIconColor: string;
-}
+import SBStylingProps from "../types/SBStylingProps";
 
 interface SearchBarProps {
   placeholder: string;
