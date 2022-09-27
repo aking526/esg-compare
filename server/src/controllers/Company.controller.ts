@@ -43,7 +43,7 @@ const createCompany = (req: Request, res: Response, next: NextFunction) => {
 const readCompany = async (req: Request, res: Response, next: NextFunction) => {
 	const companyTicker = req.params.ticker;
 
-	return Company.findOne({ ticker: companyTicker })
+	return Company.find({ ticker: companyTicker })
 			.then((company) => (company ? res.status(200).json(company) : res.status(404).json({ message: "Not Found" })))
 			.catch((error) => res.status(500).json({ error }));
 };
@@ -86,7 +86,20 @@ const deleteCompany = (req: Request, res: Response, next: NextFunction) => {
 	}
 
 	return Company.findOneAndDelete({ ticker: companyTicker })
-			.then((company) => (company ? res.status(201).json({ message: "deleted"}) : res.status(404).json({ message: "not found" })))
+			.then((company) => (company ? res.status(201).json({ message: "deleted" }) : res.status(404).json({ message: "not found" })))
+			.catch((error) => res.status(500).json({ error }));
+};
+
+const deleteById = (req: Request, res: Response, next: NextFunction) => {
+	const auth = req.params.auth;
+	const id = req.params.id;
+
+	if (auth !== config.server.auth) {
+		return res.status(403).json({ message: "No Authorization "});
+	}
+
+	return Company.findByIdAndDelete(id)
+			.then((company) => (company ? res.status(201).json({ message: "deleted" }) : res.status(404).json({ message: "not found" })))
 			.catch((error) => res.status(500).json({ error }));
 };
 
@@ -135,4 +148,4 @@ const readSort = (req: Request, res: Response, next: NextFunction) => {
 			.catch((error) => res.status(500).json({ error }));
 };
 
-export default { createCompany, readCompany, readAll, updateCompany, deleteCompany, readCompanyNames, readIndustries, readSort };
+export default { createCompany, readCompany, readAll, updateCompany, deleteCompany, deleteById, readCompanyNames, readIndustries, readSort };

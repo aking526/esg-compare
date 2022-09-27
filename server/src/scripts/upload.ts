@@ -6,22 +6,22 @@ import { config } from "../config/config";
 import { authCheck } from "./authCheck";
 import buildProfile from "./buildProfile";
 
-async function Main() {
+export const inDB = async (ticker: string) => {
+	try {
+		const res = await axios.get(`http://localhost:8000/api/companies/getNames`);
+		return ticker in res.data;
+	}	catch (e) {
+		return false;
+	}
+};
+
+const Main = async () => {
 	const SERVER_AUTH = config.server.auth;
 
 	authCheck(SERVER_AUTH);
 
 	const info_data = JSON.parse(fs.readFileSync("./cache/company_info.json").toString());
 	const esg_data = JSON.parse(fs.readFileSync("./cache/esg_data.json").toString());
-
-	const inDB = async (ticker: string) => {
-		try {
-			const res = await axios.get(`http://localhost:8000/api/companies/get${ticker}`);
-			return !("message" in res.data);
-		}	catch (e) {
-			return false;
-		}
-	};
 
 	let toUpload: string[] = [];
 	for (let i = 0; i < company_tickers.length; i++) {
@@ -43,6 +43,6 @@ async function Main() {
 	}
 
 	return uploaded;
-}
+};
 
 Main().then((list ) => Logging.log("Uploaded: " + list.join(" ")));
