@@ -76,8 +76,10 @@ const Rankings: React.FC = () => {
     }
 
     let options: MyOption[] = [];
-    set.forEach((industry) => {
-      options.push({ value: "blue", label: industry});
+    let cnt = 1;
+    set.forEach((industry, ) => {
+      options.push({ value: cnt.toString(), label: industry});
+      cnt++;
     });
     setDropdownOptions(options);
   }, [industries]);
@@ -98,13 +100,6 @@ const Rankings: React.FC = () => {
       setIndustryOptionsSelected(labels.join(","));
     }
   };
-
-  const options: MyOption[] = [
-    { value: "ocean1", label: "Technology" },
-    { value: "blue", label: "Media" },
-    { value: "purple", label: "Automobiles" },
-    { value: "teal", label: "Retail" }
-  ];
 
   return (
       <div className="relative w-screen bg-slate-100 py-5">
@@ -146,9 +141,12 @@ const Rankings: React.FC = () => {
                 {!industriesLoading &&
                   <>
                     <u className="text-xl">Filters: </u>
-                    <FilterDropdown title="Industry:" options={options} passBack={handleIndustryOptSel}/>
+                    <FilterDropdown title="Industry:" options={dropdownOptions} passBack={handleIndustryOptSel}/>
                   </>
                 }
+                <div>
+                  <h3>Stock Exchange: </h3>
+                </div>
               </div>
             </div>
             : <RankingsLoading metric={DataRefToText[metric]}/> }

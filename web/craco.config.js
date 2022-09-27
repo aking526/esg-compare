@@ -34,14 +34,17 @@ module.exports = {
   //       if (!devServer) {
   //         throw new Error("webpack-dev-server is not defined");
   //       }
+  //
   //       if (fs.existsSync(paths.proxySetup)) {
   //         require(paths.proxySetup)(devServer.app);
   //       }
+  //
   //       middlewares.push(
   //         evalSourceMap(devServer),
   //         redirectServerPath(paths.publicUrlOrPath),
   //         noopServiceWorker(paths.publicUrlOrPath)
   //       );
+  //
   //       return middlewares;
   //     }
   //   };

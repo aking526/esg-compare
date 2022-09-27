@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { components, default as ReactSelect, OptionProps } from "react-select";
+import makeAnimated from "react-select/animated";
 import { MyOption, TOptionsSelected } from "../../types/MyOption";
+
+const animatedComponents = makeAnimated();
 
 const Option: React.FC<OptionProps> = (props) => {
 	return (
@@ -45,9 +48,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({ title, options, passBac
 				isMulti
 				closeMenuOnSelect={false}
 				hideSelectedOptions={false}
-				components={{
-					Option
-				}}
+				components={animatedComponents}
 				onChange={handleChange}
 				// allowSelectAll={true}
 				value={optionsSelected}

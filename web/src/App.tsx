@@ -9,12 +9,12 @@ import Home from "./pages/Home";
 import Rankings from "./pages/Rankings";
 import About from "./pages/About";
 import Company from "./pages/Company";
-import Research from "./pages/Research";
 import NavBar from "./components/NavBar";
 import TopBar from "./components/TopBar";
 import Compare from "./pages/Compare";
 import CompaniesApi from "./api/CompaniesApi";
 import QueryError from "./components/QueryError";
+import RatingsMethodology from "./pages/RatingsMethodology";
 
 function App() {
   const names = useQuery<string[][], Error>(['names'], CompaniesApi.getNames);
@@ -30,7 +30,7 @@ function App() {
       <Routes>
         <Route path="/company/:ticker" element={ <Company/> }/>
         <Route path="/compare" element={ <Compare /> }/>
-        <Route path="/research" element={ <Research/> }/>
+        <Route path="/ratings-methodology" element={ <RatingsMethodology/> }/>
         <Route path="/about" element={ <About/> }/>
         <Route path="/rankings" element={ <Rankings/> }/>
         <Route path="/" element={ <Home/> }/>
