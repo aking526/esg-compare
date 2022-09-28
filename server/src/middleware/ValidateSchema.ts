@@ -36,7 +36,8 @@ export const schemas = {
 			environment_score: Joi.number().required(),
 			social_score: Joi.number().required(),
 			governance_score: Joi.number().required(),
-			total_score: Joi.number().required()
+			total_score: Joi.number().required(),
+			last_processing_date: Joi.string().required()
 		}),
 		update: Joi.object<ICompany>({
 			ticker: Joi.string().required(),
@@ -56,7 +57,8 @@ export const schemas = {
 			environment_score: Joi.number().required(),
 			social_score: Joi.number().required(),
 			governance_score: Joi.number().required(),
-			total_score: Joi.number().required()
+			total_score: Joi.number().required(),
+			last_processing_date: Joi.string().required()
 		})
 	}
 }

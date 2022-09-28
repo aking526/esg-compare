@@ -4,7 +4,7 @@ import company_list from "../../data/company_list.json";
 import Logging from "../utils/Logging";
 import ISA from "../types/ISA";
 import { authCheck } from "./authCheck";
-import buildProfile from "./buildProfile";
+import companyProfiler from "./companyProfiler";
 
 async function Main() {
 	const ESG_API_KEY = config.keys.esg;
@@ -54,7 +54,7 @@ async function Main() {
 
 	let counter = 0;
 	for (let i = 0; i < company_list.length; i++) {
-		await buildProfile(company_list[i], company_info_data[company_list[i]], esg_data[company_list[i]], () => {
+		companyProfiler.buildProfile(company_list[i], company_info_data[company_list[i]], esg_data[company_list[i]], () => {
 			counter++
 			Logging.log(counter + " number of profiles built");
 			if (counter === company_list.length) {

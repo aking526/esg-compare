@@ -6,7 +6,7 @@ import ISA from "../types/ISA";
 import { config } from "../config/config";
 
 const createCompany = (req: Request, res: Response, next: NextFunction) => {
-	const { name, ticker, currency, exchange, industry, logo, weburl, esg_id, environment_grade, environment_level, environment_score, social_grade, social_level, social_score, governance_grade, governance_level, governance_score, total_score } = req.body;
+	const { name, ticker, currency, exchange, industry, logo, weburl, esg_id, environment_grade, environment_level, environment_score, social_grade, social_level, social_score, governance_grade, governance_level, governance_score, total_score, last_processing_date } = req.body;
 	const auth = req.params.auth;
 
 	if (auth !== config.server.auth) {
@@ -32,7 +32,8 @@ const createCompany = (req: Request, res: Response, next: NextFunction) => {
 		governance_grade,
 		governance_level,
 		governance_score,
-		total_score
+		total_score,
+		last_processing_date
 	});
 
 	return company.save()
@@ -55,11 +56,11 @@ const readAll = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const updateCompany = (req: Request, res: Response, next: NextFunction) => {
-	const auth = req.params.ticker;
 	const companyTicker = req.params.ticker;
+	const auth = req.params.auth;
 
 	if (auth !== config.server.auth) {
-		return res.status(403).json({ message: "No Authorization" });
+		return res.status(403).json({ message: `No Authorization. Your auth: ${auth}. Correct auth: ${config.server.auth}` });
 	}
 
 	return Company.findOne({ ticker: companyTicker })

@@ -4,7 +4,7 @@ import axios from "axios";
 import Logging from "../utils/Logging";
 import { config } from "../config/config";
 import { authCheck } from "./authCheck";
-import buildProfile from "./buildProfile";
+import companyProfiler from "./companyProfiler";
 
 export const inDB = async (ticker: string) => {
 	try {
@@ -34,7 +34,7 @@ const Main = async () => {
 
 	let uploaded: string[] = [];
 	for (let i = 0; i < toUpload.length; i++) {
-		buildProfile(toUpload[i], info_data[toUpload[i]], esg_data[toUpload[i]], () => {
+		companyProfiler.buildProfile(toUpload[i], info_data[toUpload[i]], esg_data[toUpload[i]], () => {
 			uploaded.push(toUpload[i]);
 			if (uploaded.length === toUpload.length) {
 				return uploaded;

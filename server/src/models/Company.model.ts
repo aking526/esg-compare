@@ -19,6 +19,7 @@ export interface ICompany {
 	social_score: number;
 	governance_score: number;
 	total_score: number;
+	last_processing_date: string;
 }
 
 export interface ICompanyModel extends ICompany, Document {}
@@ -42,7 +43,8 @@ const CompanySchema: Schema = new Schema(
 		environment_score: { type: Number, required: true },
 		social_score: { type: Number, required: true },
 		governance_score: { type: Number, required: true },
-		total_score: { type: Number, required: true }
+		total_score: { type: Number, required: true },
+		last_processing_date: { type: String, required: true }
 	},
 	{
 		versionKey: false
