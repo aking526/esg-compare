@@ -1,24 +1,7 @@
 import React from "react";
 import { capitalizeFirstLetter } from "../utils/stringFunctions";
+import HSection from "../components/HSection";
 
-interface HSectionProps {
-	metric: string;
-	factors: string[];
-}
-
-const HSection: React.FC<HSectionProps> = ({ metric, factors }) => {
-	return (
-		<div>
-			<h1>{capitalizeFirstLetter(metric)}</h1>
-			<p>Some examples of factors that go under {metric.toLowerCase()} include:</p>
-			<ul>
-				{factors.map((value, k) => {
-					return <li key={k}>{value}</li>
-				})}
-			</ul>
-		</div>
-	);
-};
 
 const Home: React.FC = () => {
 	return (
@@ -26,7 +9,7 @@ const Home: React.FC = () => {
 			<div>
 				<h1 className="text-xl">What is ESG?</h1>
 			</div>
-			<div>
+			<div className="flex flex-row">
 				<HSection metric="Environment" factors={[
 					"Energy Efficiency",
 					"Green House Gas Emissions",

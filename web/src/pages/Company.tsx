@@ -33,7 +33,6 @@ const Company: React.FC = () => {
     let cc: CPair[] = [];
     for (let i = 0; i < iter.length; i++) {
       cc[i] = new CPair(data["t"][i], iter[i]);
-      console.log(data["t"][i]);
     }
     return cc;
   };
@@ -53,7 +52,7 @@ const Company: React.FC = () => {
   },
   {
     onSuccess: (res) => {
-      setData(res);
+      setData(res[0]);
     }
   });
 
@@ -131,8 +130,8 @@ const Company: React.FC = () => {
           <div className="flex flex-col mt-5">
             <strong className="text-2xl mb-1.5">News</strong>
             <div className="flex flex-row">
-              {news.slice(0, 5).map((curr) => {
-                return <NewsSection currNews={curr} />;
+              {news.slice(0, 5).map((curr, idx) => {
+                return <NewsSection currNews={curr} key={idx} />;
               })}
             </div>
           </div>
