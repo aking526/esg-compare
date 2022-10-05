@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import CInputField from "../components/Compare/CInputField";
-import CInputSelected from "../components/Compare/CInputSelected";
+import CompareInputField from "../components/Compare/CompareInputField";
+import CompareInputSelected from "../components/Compare/CompareInputSelected";
 import CompaniesApi from "../api/CompaniesApi";
 import { ICompanyData } from "../types/ICompanyData";
 import { useQuery } from "@tanstack/react-query";
@@ -12,8 +12,8 @@ const Compare: React.FC = () => {
 	});
 
 	// @ts-ignore
-	const go = params.go;
-	const instate = go ? [go, undefined] : [undefined, undefined];
+	const companies = params.companies;
+	const instate = companies ? [companies, undefined] : [undefined, undefined];
 
 	const [tickers, setTickers] = useState<string[]>(instate);
 	const [allSelected, setAllSelected] = useState(false);
@@ -29,9 +29,16 @@ const Compare: React.FC = () => {
 	}
 
 	useEffect(() => {
-		console.log("In Compare component: " + tickers);
 		if (tickers[0] && tickers[1]) setAllSelected(true);
 	}, [tickers]);
+
+	useEffect(() => {
+		if (companies.includes(",")) {
+			setTickers(companies.split(","));
+		} else {
+			setTickers([companies, undefined]);
+		}
+	}, [companies]);
 
 	useEffect(() => {
 		const fetch = async () => {
@@ -46,24 +53,18 @@ const Compare: React.FC = () => {
 		if (allSelected) fetch().then(() => setDataLoaded(true));
 	}, [allSelected]);
 
-	const handleSelected = (selected: string, index: number) => {
-		let newT = tickers;
-		newT[index] = selected;
-		setTickers(newT);
-	};
-
-	if (go) {
+	if (companies) {
 		return (
 			<>
 			{ allSelected ?
 				<div className="flex flex-row">
-					<CInputSelected ticker={tickers[0]} />
-					<CInputSelected ticker={tickers[1]} />
+					<CompareInputSelected ticker={tickers[0]} />
+					<CompareInputSelected ticker={tickers[1]} />
 				</div>
 						:
 				<div className="flex flex-row justify-evenly my-16 mx-32">
-					<CInputSelected ticker={go} />
-					<CInputField passBack={handleSelected} index={1} names={names.data}/>
+					<CompareInputSelected ticker={companies} />
+					<CompareInputField index={1} names={names.data} prevSelected={companies ? companies : undefined}/>
 				</div>
 			}
 			</>
@@ -72,23 +73,32 @@ const Compare: React.FC = () => {
 
 	return (
 		<>
-			{ allSelected ?
-				<div>
-					<CInputField passBack={handleSelected} index={0} names={names.data}/>
-					<CInputField passBack={handleSelected} index={1} names={names.data}/>
-				</div>
-					:
+			{ companies ?
 				<>
-					{ dataLoaded ?
+					{ allSelected ?
+						<>
+							{ dataLoaded ?
+									<div>
+									</div>
+									:
+									<div>
+									</div>
+							}
+						</>
+						:
+						<>
 							<div>
+								<CompareInputField index={0} prevSelected={companies ? companies : undefined} names={names.data}/>
+								<CompareInputField index={1} prevSelected={companies ? companies : undefined} names={names.data}/>
 							</div>
-							:
-							<div>
-
-							</div>
-					}
+						</>
+				}
 				</>
+					:
+					<>
+					</>
 			}
+
 		</>
 	);
 };

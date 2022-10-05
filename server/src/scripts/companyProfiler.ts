@@ -39,9 +39,9 @@ const buildProfile = (ticker: string, curr_ci: ISA, curr_esg: ISA, callback: Fun
 			})
 			.catch((error: AxiosError) => {
 				Logging.log(`Error with: ${ticker}`);
-				// if (error.response) {
-				// 	Logging.error(error.response);
-				// }
+				if (error.response) {
+					Logging.error(error.response);
+				}
 			});
 };
 

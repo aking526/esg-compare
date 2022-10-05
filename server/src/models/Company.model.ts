@@ -6,8 +6,8 @@ export interface ICompany {
 	currency: string;
 	exchange: string;
 	industry: string;
-	logo: string;
-	weburl: string;
+	logo?: string;
+	weburl?: string;
 	esg_id: number;
 	environment_grade: string;
 	environment_level: string;
@@ -31,8 +31,8 @@ const CompanySchema: Schema = new Schema(
 		currency: { type: String, required: true },
 		exchange: { type: String, required: true },
 		industry: { type: String, required: true },
-		logo: { type: String, required: true },
-		weburl: { type: String, required: true },
+		logo: { type: String, required: false },
+		weburl: { type: String, required: false },
 		esg_id: { type: Number, required: true },
 		environment_grade: { type: String, required: true },
 		environment_level: { type: String, required: true },

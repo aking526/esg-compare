@@ -4,7 +4,7 @@ interface CInputSelectedProps {
   ticker: string;
 }
 
-const CInputSelected: React.FC<CInputSelectedProps> = ({ ticker }) => {
+const CompareInputSelected: React.FC<CInputSelectedProps> = ({ ticker }) => {
   return (
     <div className="rounded-2xl bg-slate-100 p-5">
       <p className="text-3xl">{ticker}</p>
@@ -12,4 +12,4 @@ const CInputSelected: React.FC<CInputSelectedProps> = ({ ticker }) => {
   );
 };
 
-export default CInputSelected;
+export default CompareInputSelected;
