@@ -30,22 +30,21 @@ const TopBar: React.FC<TopBarProps> = ({ names }) => {
 	return (
 		<div className="relative flex flex-row justify-between items-center py-2 px-3 w-screen bg-black font-modern text-xs text-white">
 			<p className="text-base">ESG Investing Tracker</p>
-			{!onComparePage && <SearchBar
-          placeholder="Search by ticker or name..."
-          data={names}
-          styles={{
-						containerWidth: "w-72",
-						width: "w-64",
-						inputHeight: "h-10",
-						inputTextSize: "text-base",
-						inputPlaceholderTextSize: "text-base",
-						ulHeight: "h-48",
-						liTextSize: "text-base",
-						searchIconSize: "text-base",
-						searchIconColor: "white"
-					}}
+			<SearchBar
+				placeholder="Search by ticker or name..."
+				data={names}
+				styles={{
+					containerWidth: "w-72",
+					width: "w-64",
+					inputHeight: "h-10",
+					inputTextSize: "text-base",
+					inputPlaceholderTextSize: "text-base",
+					ulHeight: "h-48",
+					liTextSize: "text-base",
+					searchIconSize: "text-base",
+					searchIconColor: "white"
+				}}
       />
-			}
 			<p className="text-base">{currDateTime}</p>
 		</div>
 	);

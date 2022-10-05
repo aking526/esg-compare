@@ -1,7 +1,7 @@
 import React from "react";
 
 interface CompareLoadingProps {
-	tickers: string[][];
+	tickers: string[];
 }
 
 const CompareLoading: React.FC<CompareLoadingProps> = ({ tickers }) => {

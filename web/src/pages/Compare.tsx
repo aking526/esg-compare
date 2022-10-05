@@ -3,8 +3,9 @@ import CompareInputField from "../components/Compare/CompareInputField";
 import CompareInputSelected from "../components/Compare/CompareInputSelected";
 import CompaniesApi from "../api/CompaniesApi";
 import { ICompanyData } from "../types/ICompanyData";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import QueryError from "../components/QueryError";
+import CompareLoading from "../components/Compare/CompareLoading";
 
 const Compare: React.FC = () => {
 	const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -21,6 +22,7 @@ const Compare: React.FC = () => {
 	const [data, setData] = useState<ICompanyData[]>([]);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
+	const queryClient = useQueryClient();
 
 	const names = useQuery<string[][], Error>(['names'], CompaniesApi.getNames);
 	if (names.isError) {
@@ -33,6 +35,8 @@ const Compare: React.FC = () => {
 	}, [tickers]);
 
 	useEffect(() => {
+		if (!companies) return;
+
 		if (companies.includes(",")) {
 			setTickers(companies.split(","));
 		} else {
@@ -44,8 +48,13 @@ const Compare: React.FC = () => {
 		const fetch = async () => {
 			let newArr = [];
 			for (let i = 0; i < 2; i++) {
+				const cachedData: ICompanyData | undefined = queryClient.getQueryData([`${tickers[i]}_data`]);
+				if (cachedData) {
+					newArr.push(cachedData);
+					continue;
+				}
 				const data = await CompaniesApi.fetchCompanyData(tickers[i]);
-				newArr.push(data);
+				newArr.push(data[0]);
 			}
 			setData(newArr);
 		};
@@ -53,53 +62,67 @@ const Compare: React.FC = () => {
 		if (allSelected) fetch().then(() => setDataLoaded(true));
 	}, [allSelected]);
 
-	if (companies) {
-		return (
-			<>
-			{ allSelected ?
-				<div className="flex flex-row">
-					<CompareInputSelected ticker={tickers[0]} />
-					<CompareInputSelected ticker={tickers[1]} />
-				</div>
-						:
-				<div className="flex flex-row justify-evenly my-16 mx-32">
-					<CompareInputSelected ticker={companies} />
-					<CompareInputField index={1} names={names.data} prevSelected={companies ? companies : undefined}/>
-				</div>
-			}
-			</>
-		);
-	}
-
 	return (
-		<>
+		<div className="font-modern my-16 mx-32 p-5 bg-slate-200 rounded-2xl">
 			{ companies ?
 				<>
 					{ allSelected ?
-						<>
+						<div className="">
 							{ dataLoaded ?
-									<div>
+								<div className="flex flex-col">
+									<div className="flex flex-row justify-evenly">
+										{data.map((dat: ICompanyData, idx) => {
+											const ticker = tickers[idx];
+											return (
+												<div className="flex flex-row justify-between">
+													<div className="flex flex-col mx-5" key={idx}>
+														<div className="flex flex-row">
+															<h1 className="mr-2 font-extrabold text-4xl">{
+																dat.weburl ?
+																		<a href={dat.weburl}>{dat.name}</a>
+																		:
+																		<>{dat.name}</>
+															}</h1>
+															<h2 className="ml-2 mt-2 text-2xl">({ticker.toUpperCase()})</h2>
+														</div>
+														<p className="text-base">{dat.exchange}</p>
+														<div className="flex flex-row text-xs">
+															<p className="font-extrabold mr-1">Industry:</p>
+															<p>{dat.industry}</p>
+														</div>
+													</div>
+													<div className="border-2 border-black">
+														<img
+																className="w-20 h-20"
+																src={dat.logo}
+																alt=""
+														/>
+													</div>
+												</div>
+											);
+										})}
 									</div>
-									:
-									<div>
-									</div>
+									{/*<CompareInputSelected ticker={tickers[0]}/>*/}
+									{/*<CompareInputSelected ticker={tickers[1]}/>*/}
+								</div>
+								:
+								<CompareLoading tickers={tickers} />
 							}
-						</>
+						</div>
 						:
-						<>
-							<div>
-								<CompareInputField index={0} prevSelected={companies ? companies : undefined} names={names.data}/>
-								<CompareInputField index={1} prevSelected={companies ? companies : undefined} names={names.data}/>
-							</div>
-						</>
-				}
+						<div className="flex flex-row justify-evenly my-16 mx-32">
+							<CompareInputSelected ticker={companies} />
+							<CompareInputField index={1} names={names.data} prevSelected={companies ? companies : undefined}/>
+						</div>
+					}
 				</>
 					:
-					<>
-					</>
+				<div className="flex flex-row">
+					<CompareInputField index={0} prevSelected={companies ? companies : undefined} names={names.data}/>
+					<CompareInputField index={1} prevSelected={companies ? companies : undefined} names={names.data}/>
+				</div>
 			}
-
-		</>
+		</div>
 	);
 };
 
