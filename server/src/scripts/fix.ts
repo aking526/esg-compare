@@ -67,3 +67,7 @@ const fixESGJSON = () => {
 };
 
 fixESGJSON();
+
+const sortESGJSON = () => {
+	const esg = JSON.parse(fs.readFileSync("./cache/esg_data.json").toString());
+};

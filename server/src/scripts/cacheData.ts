@@ -57,7 +57,7 @@ const ExecFinnhubBatch = async () => {
 	}, 61 * 1000);
 }
 
-const ExecEsgBatch = async (dayCnt: number) => {
+const ExecEsgBatch = async (dayCnt: number, customList: string[] | undefined) => {
 	const ESG_API_KEY = config.keys.esg;
 
 	if (ESG_API_KEY === "") {
@@ -72,13 +72,21 @@ const ExecEsgBatch = async (dayCnt: number) => {
 
 	const e = JSON.parse(fs.readFileSync("./cache/esg_data.json").toString());
 
-	let thisd = [];
-	for (const ticker of company_tickers) {
-		if (ticker in e) continue;
-		if (thisd.length >= 50) break;
+	const getNewList = (list: string[]) => {
+		let arr = [];
+		for (let i = list.length - 1; i >= 0; i--) {
+			const ticker = list[i];
+			if (ticker in e) continue;
+			if (arr.length >= 50) break;
 
-		thisd.push(ticker);
-	}
+			arr.push(ticker);
+		}
+
+		return list;
+	};
+
+	let thisd = getNewList(company_tickers);
+	if (customList) thisd = customList;
 
 	if (thisd.length === 0) {
 		process.exit(1);
@@ -112,4 +120,4 @@ const ExecEsgBatch = async (dayCnt: number) => {
 };
 
 // ExecFinnhubBatch().then(() => null);
-ExecEsgBatch(0).then(() => null);
+ExecEsgBatch(0, undefined).then(() => null);
