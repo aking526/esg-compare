@@ -6,6 +6,7 @@ import { ICompanyData } from "../types/ICompanyData";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import QueryError from "../components/QueryError";
 import CompareLoading from "../components/Compare/CompareLoading";
+import CompareBarChart from "../components/Compare/charts/CompareBarChart";
 
 const Compare: React.FC = () => {
 	const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -101,6 +102,18 @@ const Compare: React.FC = () => {
 												</div>
 											);
 										})}
+									</div>
+									<div>
+										<CompareBarChart companyA={{
+											ticker: tickers[0],
+											name: data[0].name,
+											ratings: [data[0].environment_score, data[0].social_score, data[0].governance_score, data[0].total_score]
+										}}
+									 	companyB={{
+											ticker: tickers[1],
+											name: data[1].name,
+											ratings: [data[1].environment_score, data[1].social_score, data[1].governance_score, data[1].total_score]
+										}} />
 									</div>
 									{/*<CompareInputSelected ticker={tickers[0]}/>*/}
 									{/*<CompareInputSelected ticker={tickers[1]}/>*/}
