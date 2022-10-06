@@ -74,15 +74,14 @@ const ExecEsgBatch = async (dayCnt: number, customList: string[] | undefined) =>
 
 	const getNewList = (list: string[]) => {
 		let arr = [];
-		for (let i = list.length - 1; i >= 0; i--) {
-			const ticker = list[i];
+		for (const ticker in list) {
 			if (ticker in e) continue;
 			if (arr.length >= 50) break;
 
 			arr.push(ticker);
 		}
 
-		return list;
+		return arr;
 	};
 
 	let thisd = getNewList(company_tickers);
@@ -118,6 +117,11 @@ const ExecEsgBatch = async (dayCnt: number, customList: string[] | undefined) =>
 
 	Logging.log("Data written to file");
 };
+
+
+/*
+Bug - formation of thisd is not working -- to fix
+ */
 
 // ExecFinnhubBatch().then(() => null);
 ExecEsgBatch(0, undefined).then(() => null);
