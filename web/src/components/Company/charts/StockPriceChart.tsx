@@ -42,7 +42,7 @@ const StockPriceChart: React.FC<StockPriceChartProps> = ({ ticker, name, from, t
 					"rgb(125 211 252)",
 				],
 				borderColor: "black",
-				borderWidth: 2
+				borderWidth: 0.5
 			}
 		]
 	};

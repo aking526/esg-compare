@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import CompareInputField from "../components/Compare/CompareInputField";
 import CompareInputSelected from "../components/Compare/CompareInputSelected";
 import CompaniesApi from "../api/CompaniesApi";
 import { ICompanyData } from "../types/ICompanyData";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import QueryError from "../components/QueryError";
 import CompareLoading from "../components/Compare/CompareLoading";
 import CompareBarChart from "../components/Compare/charts/CompareBarChart";
+import { convertStockData, CPair } from "../classes/CPair";
+import StockApi from "../api/StockApi";
+import { convertDateToUnix } from "../utils/date";
+import CompareStockChart from "../components/Compare/charts/CompareStockChart";
 
 const Compare: React.FC = () => {
 	const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -23,6 +28,14 @@ const Compare: React.FC = () => {
 	const [data, setData] = useState<ICompanyData[]>([]);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
+	const [stockPrices, setStockPrices] = useState<CPair[][]>([]);
+	const [stockPricesLoaded, setStockPricesLoaded] = useState(false);
+
+	const [from, setFrom] = useState<number>(1577854800);
+	const [to, setTo] = useState<number>(convertDateToUnix(new Date()));
+
+	const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+
 	const queryClient = useQueryClient();
 
 	const names = useQuery<string[][], Error>(['names'], CompaniesApi.getNames);
@@ -36,6 +49,7 @@ const Compare: React.FC = () => {
 	}, [tickers]);
 
 	useEffect(() => {
+		forceUpdate();
 		if (!companies) return;
 
 		if (companies.includes(",")) {
@@ -58,9 +72,20 @@ const Compare: React.FC = () => {
 				newArr.push(data[0]);
 			}
 			setData(newArr);
+
+			let newArr2: CPair[][] = [];
+			for (let i = 0; i < 2; i++) {
+				const data = await StockApi.fetchStockInfo(tickers[i], "D", from, to);
+				const conv = convertStockData(data, "c");
+				newArr2.push(conv);
+			}
+			setStockPrices(newArr2);
 		};
 
-		if (allSelected) fetch().then(() => setDataLoaded(true));
+		if (allSelected) fetch().then(() => {
+			setDataLoaded(true);
+			setStockPricesLoaded(true);
+		});
 	}, [allSelected]);
 
 	return (
@@ -75,14 +100,11 @@ const Compare: React.FC = () => {
 										{data.map((dat: ICompanyData, idx) => {
 											const ticker = tickers[idx];
 											return (
-												<div className="flex flex-row justify-between">
-													<div className="flex flex-col mx-5" key={idx}>
+												<div className="flex flex-row justify-between" key={idx}>
+													<div className="flex flex-col mx-5">
 														<div className="flex flex-row">
 															<h1 className="mr-2 font-extrabold text-4xl">{
-																dat.weburl ?
-																		<a href={dat.weburl}>{dat.name}</a>
-																		:
-																		<>{dat.name}</>
+																<Link to={`company/${ticker}`}>{dat.name}</Link>
 															}</h1>
 															<h2 className="ml-2 mt-2 text-2xl">({ticker.toUpperCase()})</h2>
 														</div>
@@ -115,6 +137,16 @@ const Compare: React.FC = () => {
 											ratings: [data[1].environment_score, data[1].social_score, data[1].governance_score, data[1].total_score]
 										}} />
 									</div>
+									{stockPricesLoaded &&
+										<div>
+											<CompareStockChart
+												tickerA={tickers[0]}
+												pricesA={stockPrices[0]}
+												tickerB={tickers[1]}
+												pricesB={stockPrices[1]}
+											/>
+										</div>
+									}
 									{/*<CompareInputSelected ticker={tickers[0]}/>*/}
 									{/*<CompareInputSelected ticker={tickers[1]}/>*/}
 								</div>

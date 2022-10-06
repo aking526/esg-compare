@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface CSearchBarProps {
 	placeholder: string;
@@ -14,11 +14,11 @@ const CompareSearchBar: React.FC<CSearchBarProps> = ({ placeholder, data, prevSe
 	const [curr, setCurr] = useState<string>("");
 	const [filteredData, setFilteredData] = useState<string[][] | undefined>(data);
 	const [focused, setFocused] = useState<boolean>(false);
+	const [selectedOne, setSelectedOne] = useState(prevSelected);
 
 	const onChange = (event: React.ChangeEvent<HTMLInputElement>) => setCurr(event.target.value);
 	const onFocus = () => setFocused(true);
 
-	const navigate = useNavigate();
 
 	// Handles whether the search box is clicked or not
 	useEffect(() => {
@@ -44,6 +44,10 @@ const CompareSearchBar: React.FC<CSearchBarProps> = ({ placeholder, data, prevSe
 		if (curr === "") setFilteredData([]);
 		else setFilteredData(newFilter);
 	}, [curr]);
+
+	useEffect(() => {
+		setSelectedOne(prevSelected);
+	}, [prevSelected]);
 
 	// adds an event listener when filteredData is change
 	// useEffect(() => { // handled this way because of state was not updating
@@ -78,7 +82,7 @@ const CompareSearchBar: React.FC<CSearchBarProps> = ({ placeholder, data, prevSe
                 <div className="absolute top-0 left-0 right-0 bottom-0">
                   <ul className="relative flex flex-col ml-auto mr-auto bg-white rounded-lg border-2 border-cyan-50 w-40 h-20 pt-1.5 drop-shadow-xl overflow-hidden overflow-y-auto">
 										{filteredData && filteredData.slice(0, 15).map((value: string[], key: number) => (
-												<li className="text-sm m-2 hover:bg-slate-100" key={key}><Link to={prevSelected ? `/compare?companies=${prevSelected},${value[0]}` : `/compare?companies=${value[0]}`}>{value[1]} - {value[0].toUpperCase()}</Link></li>
+												<li className="text-sm m-2 hover:bg-slate-100" key={key}><Link to={selectedOne ? `/compare?companies=${prevSelected},${value[0]}` : `/compare?companies=${value[0]}`}>{value[1]} - {value[0].toUpperCase()}</Link></li>
 										))}
                   </ul>
                 </div>

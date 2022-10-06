@@ -1,5 +1,6 @@
 // Dates ==> Unix Timestamp
-import {convertUnixToDate} from "../utils/dateUnixConverter";
+import { convertUnixToDate } from "../utils/date";
+import ISA from "../types/ISA";
 
 export class CPair {
 	date: number;
@@ -21,6 +22,15 @@ export function getDatesFormatted(arr: CPair[]) {
 	for (let i = 0; i < arr.length; i++) go[i] = convertUnixToDate(arr[i].date);
 	return go;
 }
+
+export const convertStockData = (data: ISA, which: string) => {
+	const iter: number[] = data[which];
+	let cc: CPair[] = [];
+	for (let i = 0; i < iter.length; i++) {
+		cc[i] = new CPair(data["t"][i], iter[i]);
+	}
+	return cc;
+};
 
 export function getMaxPrice(arr: CPair[]) {
 	let nax: CPair = new CPair(-1, -1);

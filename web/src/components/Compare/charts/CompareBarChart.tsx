@@ -36,7 +36,7 @@ const CompareBarChart: React.FC<CompareBarChartProps> = ({ companyA, companyB })
 			},
 			title: {
 				display: true,
-				text: "Ratings Comparison",
+				text: "ESG Ratings Comparison",
 			},
 		},
 	};
@@ -48,12 +48,16 @@ const CompareBarChart: React.FC<CompareBarChartProps> = ({ companyA, companyB })
 			{
 				label: companyA.name,
 				data: companyA.ratings,
-				backgroundColor: "rgba(255, 99, 132, 0.5)"
+				backgroundColor: "rgba(255, 99, 132, 0.5)",
+				borderColor: "black",
+				borderWidth: 1
 			},
 			{
 				label: companyB.name,
 				data: companyB.ratings,
-				backgroundColor: "rgba(53, 162, 235, 0.5)"
+				backgroundColor: "rgba(53, 162, 235, 0.5)",
+				borderColor: "black",
+				borderWidth: 1
 			}
 		]
 	};

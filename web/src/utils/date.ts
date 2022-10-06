@@ -12,3 +12,12 @@ export function convertUnixToDate(unix_timestamp: number) {
 
 	return month + "/" + date + "/" + year;
 }
+
+
+export const formatDate = (date: Date) => {
+	return date.toJSON().split("T")[0];
+};
+
+export const getLastWeeksDate = (now: Date) => {
+	return new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+};

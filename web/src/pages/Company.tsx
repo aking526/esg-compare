@@ -13,7 +13,9 @@ import { CPair } from "../classes/CPair";
 import CompaniesApi from "../api/CompaniesApi";
 import QueryError from "../components/QueryError";
 import StockApi from "../api/StockApi";
-import { convertDateToUnix } from "../utils/dateUnixConverter";
+import { convertDateToUnix } from "../utils/date";
+import { formatDate, getLastWeeksDate } from "../utils/date";
+import { convertStockData } from "../classes/CPair";
 import TNewsInfo from "../types/TNewsInfo";
 import ISA from "../types/ISA";
 
@@ -27,23 +29,6 @@ const Company: React.FC = () => {
   const [to, setTo] = useState<number>(convertDateToUnix(new Date()));
   const [news, setNews] = useState<TNewsInfo[]>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
-
-  const convertStockData = (data: ISA, which: string) => {
-    const iter: number[] = data[which];
-    let cc: CPair[] = [];
-    for (let i = 0; i < iter.length; i++) {
-      cc[i] = new CPair(data["t"][i], iter[i]);
-    }
-    return cc;
-  };
-
-  const formatDate = (date: Date) => {
-    return date.toJSON().split("T")[0];
-  };
-
-  const getLastWeeksDate = (now: Date) => {
-    return new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
-  };
 
   const queryClient = useQueryClient();
 
