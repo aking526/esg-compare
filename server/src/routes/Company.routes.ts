@@ -12,11 +12,11 @@ router.patch("/update/ticker=:ticker&auth=:auth", ValidateSchema(schemas.company
 router.delete("/delete/ticker=:ticker&auth=:auth", companyController.deleteCompany);
 router.delete("/deleteById/id=:id&auth=:auth", companyController.deleteById);
 
+/* Sorting Routes */
+router.get("/sort/:metric", companyController.readSort);
+
 /* Special Routes */
 router.get("/getNames/", companyController.readCompanyNames);
 router.get("/getIndustries/", companyController.readIndustries);
-
-/* Sorting Routes */
-router.get("/sort/:metric", companyController.readSort);
 
 export default router;

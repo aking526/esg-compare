@@ -131,6 +131,7 @@ const readIndustries = (req: Request, res: Response, next: NextFunction) => {
 const readSort = (req: Request, res: Response, next: NextFunction) => {
 	const metric = req.params.metric;
 	const industry = req.query.industry;
+	const exchange = req.query.exchange;
 
 	let filters: {
 		[index: string]: string | number | object;
@@ -142,6 +143,10 @@ const readSort = (req: Request, res: Response, next: NextFunction) => {
 		}	else {
 			filters["industry"] = industry;
 		}
+	}
+
+	if (typeof exchange === "string") {
+		filters["exchange"] = exchange;
 	}
 
 	return Company.find(filters).sort(MTTSC[metric])
