@@ -49,7 +49,6 @@ const Compare: React.FC = () => {
 	}, [tickers]);
 
 	useEffect(() => {
-		forceUpdate();
 		if (!companies) return;
 
 		if (companies.includes(",")) {
@@ -57,6 +56,7 @@ const Compare: React.FC = () => {
 		} else {
 			setTickers([companies, undefined]);
 		}
+		forceUpdate();
 	}, [companies]);
 
 	useEffect(() => {
@@ -89,7 +89,7 @@ const Compare: React.FC = () => {
 	}, [allSelected]);
 
 	return (
-		<div className="font-modern my-16 mx-32 p-5 bg-slate-200 rounded-2xl">
+		<div className="font-modern my-16 mx-24 p-5 bg-slate-200 rounded-2xl">
 			{ companies ?
 				<>
 					{ allSelected ?
@@ -162,7 +162,7 @@ const Compare: React.FC = () => {
 					}
 				</>
 					:
-				<div className="flex flex-row">
+				<div className="flex flex-row items-center justify-evenly">
 					<CompareInputField index={0} prevSelected={companies ? companies : undefined} names={names.data}/>
 					<CompareInputField index={1} prevSelected={companies ? companies : undefined} names={names.data}/>
 				</div>

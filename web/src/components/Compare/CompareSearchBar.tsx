@@ -67,7 +67,7 @@ const CompareSearchBar: React.FC<CSearchBarProps> = ({ placeholder, data, prevSe
 	const handleOnPointerDown = (event: React.PointerEvent<HTMLDivElement>) => event.stopPropagation();
 
 	return (
-			<div className="flex flex-row justify-center my-1 font-modern text-black mr-auto ml-auto w-44 p-5" onPointerDown={handleOnPointerDown}>
+			<div className="flex flex-row justify-center font-modern text-black mr-auto ml-auto w-44 p-5" onPointerDown={handleOnPointerDown}>
 				<div className="flex flex-col">
 					<input
 							className="bg-slate-100 w-40 h-14 text-sm rounded-xl border-2 border-black px-3 hover:bg-white hover:border-sky-700 placeholder:text-xs"

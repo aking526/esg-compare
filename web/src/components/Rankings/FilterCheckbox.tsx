@@ -1,17 +1,18 @@
-import React from "react";
+import React, { ChangeEventHandler } from "react";
 
 interface FilterCheckboxProps {
 	label: string;
 	value: boolean;
-	onChange: Function;
+	onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
 const FilterCheckbox: React.FC<FilterCheckboxProps> = ({ label, value, onChange }) => {
 	return (
 		<div>
-			<label>
-				<input type="checkbox" checked={value} onChange={() => onChange}/>
-			</label>
+			<form>
+				<input type="checkbox" checked={value} onChange={onChange}/>
+				<label className="ml-2">{label}</label>
+			</form>
 		</div>
 	);
 };

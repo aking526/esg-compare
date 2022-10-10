@@ -51,7 +51,7 @@ const TableRow: React.FC<TableRowProps> = ({ row, styles }) => {
 };
 
 
-const Rankings: React.FC<RankingsProps> = ({ rankings, metric }) => {
+const RankingsTable: React.FC<RankingsProps> = ({ rankings, metric }) => {
 	const tableHeading: string[] = ["Rank", "Company", "Total Score", "Environment Score", "Social Score", "Governance Score"];
 	const getFrom: string[] = ["name", "ticker", "total_score", "environment_score", "social_score", "governance_score"];
 	const tableBody: string[][] = make2dArray(getFrom.length, rankings.length, "");
@@ -74,10 +74,10 @@ const Rankings: React.FC<RankingsProps> = ({ rankings, metric }) => {
 	}
 
 	return (
-		<div className="relative my-2 mx-10">
+		<div className="relative my-2 mx-10 px-5 pb-3 rounded-xl bg-slate-100 shadow-light">
 			<Table heading={tableHeading} body={tableBody} metric={metric} />
 		</div>
 	);
 };
 
-export default Rankings;
+export default RankingsTable;

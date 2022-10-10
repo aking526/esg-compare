@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import CompanyLoading from "../components/Company/CompanyLoading";
-import { ICompanyData, BlankCompanyData }from "../types/ICompanyData";
+import { ICompanyData, BlankCompanyData } from "../types/ICompanyData";
 import CompanyInfo from "../components/Company/CompanyInfo";
 import TextDataFormat from "../components/TextDataFormat";
 import ESGCategory from "../components/Company/ESGCategory";
@@ -93,7 +93,7 @@ const Company: React.FC = () => {
   return (
     <>
       {loaded ? (
-        <div className="flex flex-col  my-16 font-modern mx-32 p-5 bg-slate-200 rounded-2xl">
+        <div className="flex flex-col shadow-light my-16 font-modern mx-24 p-5 bg-slate-200 rounded-2xl">
           <CompanyInfo name={data.name} ticker={data.ticker} exchange={data.exchange} industry={data.industry} logo={data.logo} weburl={data.weburl} />
           <div className="flex flex-col mt-5">
             <strong className="text-3xl mb-1.5">ESG Data</strong>

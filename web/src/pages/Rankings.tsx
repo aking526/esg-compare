@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { ICompanyData } from "../types/ICompanyData";
 import RankingsLoading from "../components/Rankings/RankingsLoading";
@@ -9,10 +9,13 @@ import CompaniesApi from "../api/CompaniesApi";
 import QueryError from "../components/QueryError";
 import FilterDropdown from "../components/Rankings/FilterDropdown";
 import { MyOption, TOptionsSelected } from "../types/MyOption";
+import FilterCheckbox from "../components/Rankings/FilterCheckbox";
 
 const Rankings: React.FC = () => {
   const defaultMetric = "total_score";
   const FilterBtnStyles = "border-2 rounded-xl border-black p-1 my-0.5";
+
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
   const [rankings, setRankings] = useState<ICompanyData[]>([]);
   const [metric, setMetric] = useState<string>(defaultMetric);
@@ -21,6 +24,36 @@ const Rankings: React.FC = () => {
   const [industryOptionsSelected, setIndustryOptionsSelected] = useState<string | null>(null);
   const [industries , setIndustries] = useState<string[] | undefined>(undefined);
   const [dropdownOptions, setDropdownOptions] = useState<MyOption[]>([]);
+
+  const [nyse, setNyse] = useState(false);
+  const [nasdaq, setNasdaq] = useState(false);
+  const [uncachedRankingsLoading, setUncachedRankingsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let filters, exchange;
+      if (nyse == nasdaq) {
+        filters = null;
+        exchange = null;
+      } else if (nyse) {
+        filters = "exchange=NEW YORK STOCK EXCHANGE, INC.";
+        exchange = "nyse";
+      } else {
+        filters = "exchange=NASDAQ NMS - GLOBAL MARKET";
+        exchange = "nasdaq";
+      }
+
+      setUncachedRankingsLoading(true);
+      const res = await CompaniesApi.fetchRankings(metric, filters);
+      setRankings(res);
+    };
+
+    fetchData().then(() => {
+      setUncachedRankingsLoading(false);
+      forceUpdate();
+    });
+  }, [nyse, nasdaq]);
+
   const queryClient = useQueryClient();
 
   const { isLoading: industriesLoading, isError: industriesIsError, error: industriesError } = useQuery<string[], Error>(["industries"], CompaniesApi.getIndustries, {
@@ -34,7 +67,7 @@ const Rankings: React.FC = () => {
   }
 
   const { isLoading: rankingsLoading, isError: rankingsIsError, error: rankingsError } = useQuery<ICompanyData[], Error>([queryKey], async () => {
-    return CompaniesApi.fetchRankings(metric, industryOptionsSelected);
+    return CompaniesApi.fetchRankings(metric, filters);
   }, {
     onSuccess: (res) => {
       setRankings(res);
@@ -62,12 +95,22 @@ const Rankings: React.FC = () => {
   }, [metric]);
 
   useEffect(() => {
-    if (!industryOptionsSelected) setFilters(null);
-    else setFilters(industryOptionsSelected);
+    const fetchData = async () => {
+      const res = await CompaniesApi.fetchRankings(metric, industryOptionsSelected ? `industry=${industryOptionsSelected}` : null);
+      setUncachedRankingsLoading(true);
+      setRankings(res);
+    };
+    fetchData().then(() => {
+      setUncachedRankingsLoading(false);
+      forceUpdate();
+    });
   }, [industryOptionsSelected]);
 
   useEffect(() => {
-    if (!industries) return;
+    if (!industries) {
+      setIndustryOptionsSelected(null);
+      return;
+    }
 
     let set = new Set<string>();
     for (let i = 0; i < industries.length; i++) {
@@ -103,9 +146,9 @@ const Rankings: React.FC = () => {
 
   return (
       <div className="relative w-screen bg-slate-100 py-5">
-        { !rankingsLoading ?
+        { !rankingsLoading && !uncachedRankingsLoading ?
             <div className="flex flex-row">
-              <div className="font-modern border-2 w-fit m-2 p-2">
+              <div className="font-modern border-2 rounded-lg w-fit h-min m-2 p-2">
                 <u className="text-xl">Metrics:</u>
                 <MetricBtn
                     text="Total Score"
@@ -136,16 +179,20 @@ const Rankings: React.FC = () => {
                     styles={FilterBtnStyles}
                 />
               </div>
-              <RankingsTable rankings={rankings.slice(0, 50)} metric={metric} />
-              <div className="flex flex-col m-2 p-2 border-2 w-96">
+              <div>
+                <RankingsTable rankings={rankings.slice(0, 50)} metric={metric} />
+              </div>
+              <div className="flex flex-col m-2 p-2 border-2 rounded-lg w-96 h-min">
                 {!industriesLoading &&
                   <>
                     <u className="text-xl">Filters: </u>
                     <FilterDropdown title="Industry:" options={dropdownOptions} passBack={handleIndustryOptSel}/>
                   </>
                 }
-                <div>
+                <div className="mt-1">
                   <h3>Stock Exchange: </h3>
+                  <FilterCheckbox label="NYSE" value={nyse} onChange={() => setNyse(prevState => !prevState)} />
+                  <FilterCheckbox label="Nasdaq" value={nasdaq} onChange={() => setNasdaq(prevState => !prevState)} />
                 </div>
               </div>
             </div>

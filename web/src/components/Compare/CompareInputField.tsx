@@ -9,7 +9,8 @@ interface CInputFieldProps {
 
 const CompareInputField: React.FC<CInputFieldProps> = ({ index, prevSelected, names  }) => {
 	return (
-		<div>
+		<div className="m-3 p-4 bg-slate-100 shadow-light rounded-xl">
+			<h1>Select a company below</h1>
 			<CompareSearchBar placeholder="Search a company..." data={names} prevSelected={prevSelected} />
 		</div>
 	);
