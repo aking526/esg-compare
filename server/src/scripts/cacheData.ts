@@ -1,5 +1,6 @@
 import fs from "fs";
 import company_tickers from "../../data/company_tickers.json";
+import sp500_tickers  from "../../data/sp500_tickers.json";
 import Logging from "../utils/Logging";
 import ISA from "../types/ISA";
 import { config } from "../config/config";
@@ -74,7 +75,8 @@ const ExecEsgBatch = async (dayCnt: number, customList: string[] | undefined) =>
 
 	const getNewList = (list: string[]) => {
 		let arr = [];
-		for (const ticker in list) {
+		for (let i = 0; i < list.length; i++) {
+			const ticker = list[i];
 			if (ticker in e) continue;
 			if (arr.length >= 50) break;
 
@@ -84,7 +86,7 @@ const ExecEsgBatch = async (dayCnt: number, customList: string[] | undefined) =>
 		return arr;
 	};
 
-	let thisd = getNewList(company_tickers);
+	let thisd = getNewList(sp500_tickers);
 	if (customList) thisd = customList;
 
 	if (thisd.length === 0) {
@@ -118,10 +120,6 @@ const ExecEsgBatch = async (dayCnt: number, customList: string[] | undefined) =>
 	Logging.log("Data written to file");
 };
 
-
-/*
-Bug - formation of thisd is not working -- to fix
- */
 
 // ExecFinnhubBatch().then(() => null);
 ExecEsgBatch(0, undefined).then(() => null);

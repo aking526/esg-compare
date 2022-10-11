@@ -27,7 +27,7 @@ const Table: React.FC<TableProps> = ({ heading, body, metric }) => {
 				<tr>
 					{heading.map((head, idx) => {
 						const isGreen = head === DataRefToText[metric] ? "text-green-600" : "";
-						return <th key={idx} className={`pt-2 pr-2 border-b-2 ${isGreen}`}>{head}</th>
+						return <th key={idx} className={`pt-2 p-2 bg-slate-100 sticky top-0 ${isGreen}`}>{head}</th>
 					})}
 				</tr>
 			</thead>
@@ -43,8 +43,8 @@ const TableRow: React.FC<TableRowProps> = ({ row, styles }) => {
 		<tr>
 			{row.map((val: string, idx: number) => {
 				if (idx == 2) return;
-				if (idx === 1) return <td key={idx} className={`${styles} text-blue-900`}><Link to={`/company/${row[2]}`}>{val}</Link></td>;
-				return <td key={idx}>{val}</td>;
+				if (idx === 1) return <td key={idx} className={`${styles} text-blue-900 text-center`}><Link to={`/company/${row[2]}`}>{val}</Link></td>;
+				return <td key={idx} className="text-center">{val}</td>;
 			})}
 		</tr>
 	);
@@ -74,7 +74,7 @@ const RankingsTable: React.FC<RankingsProps> = ({ rankings, metric }) => {
 	}
 
 	return (
-		<div className="relative my-2 mx-10 px-5 pb-3 rounded-xl bg-slate-100 shadow-light">
+		<div className="relative my-2 mx-10 px-5 pb-3 rounded-xl bg-slate-100 shadow-light overflow-y-auto h-[30%]">
 			<Table heading={tableHeading} body={tableBody} metric={metric} />
 		</div>
 	);

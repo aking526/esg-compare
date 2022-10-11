@@ -28,7 +28,7 @@ const TopBar: React.FC<TopBarProps> = ({ names }) => {
 	}, []);
 
 	return (
-		<div className="relative flex flex-row justify-between items-center py-2 px-3 w-screen bg-black font-modern text-xs text-white">
+		<div id="top-bar" className="relative flex flex-row justify-between items-center py-2 px-3 w-screen bg-black font-modern text-xs text-white">
 			<p className="text-base">ESG Investing Tracker</p>
 			<SearchBar
 				placeholder="Search by ticker or name..."

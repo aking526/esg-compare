@@ -10,6 +10,11 @@ import QueryError from "../components/QueryError";
 import FilterDropdown from "../components/Rankings/FilterDropdown";
 import { MyOption, TOptionsSelected } from "../types/MyOption";
 import FilterCheckbox from "../components/Rankings/FilterCheckbox";
+import { useCalculateHeight } from "../hooks/Hooks";
+
+/*
+Fix bug with filtering!!!
+ */
 
 const Rankings: React.FC = () => {
   const defaultMetric = "total_score";
@@ -29,30 +34,83 @@ const Rankings: React.FC = () => {
   const [nasdaq, setNasdaq] = useState(false);
   const [uncachedRankingsLoading, setUncachedRankingsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      let filters, exchange;
-      if (nyse == nasdaq) {
-        filters = null;
-        exchange = null;
-      } else if (nyse) {
-        filters = "exchange=NEW YORK STOCK EXCHANGE, INC.";
-        exchange = "nyse";
-      } else {
-        filters = "exchange=NASDAQ NMS - GLOBAL MARKET";
-        exchange = "nasdaq";
-      }
+  const height = useCalculateHeight();
 
+  useEffect(() => {
+    forceUpdate();
+  }, [height]);
+
+  useEffect(() => {
+    const industryFilter = industryOptionsSelected ? `industry=${industryOptionsSelected}` : null;
+    let exchangeFilter;
+    if (nyse == nasdaq) {
+      exchangeFilter = null;
+    } else if (nyse) {
+      exchangeFilter = "exchange=NEW YORK STOCK EXCHANGE, INC.";
+    } else {
+      exchangeFilter = "exchange=NASDAQ NMS - GLOBAL MARKET";
+    }
+
+    let finalFilter: string | null;
+    if (industryFilter && exchangeFilter) {
+      finalFilter = industryFilter + "&" + exchangeFilter;
+    } else if (industryFilter) {
+      finalFilter = industryFilter;
+    } else if (exchangeFilter) {
+      finalFilter = exchangeFilter;
+    } else {
+      finalFilter = null;
+    }
+    console.log(finalFilter);
+
+    const fetchData = async () => {
       setUncachedRankingsLoading(true);
-      const res = await CompaniesApi.fetchRankings(metric, filters);
+      const res = await CompaniesApi.fetchRankings(metric, finalFilter);
       setRankings(res);
     };
 
     fetchData().then(() => {
       setUncachedRankingsLoading(false);
-      forceUpdate();
-    });
-  }, [nyse, nasdaq]);
+      // forceUpdate();
+    })
+  }, [metric, industryOptionsSelected, nyse, nasdaq]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const res = await CompaniesApi.fetchRankings(metric, industryOptionsSelected ? `industry=${industryOptionsSelected}` : null);
+  //     setUncachedRankingsLoading(true);
+  //     setRankings(res);
+  //   };
+  //   fetchData().then(() => {
+  //     setUncachedRankingsLoading(false);
+  //     forceUpdate();
+  //   });
+  // }, [industryOptionsSelected]);
+  //
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     let filters, exchange;
+  //     if (nyse == nasdaq) {
+  //       filters = null;
+  //       exchange = null;
+  //     } else if (nyse) {
+  //       filters = "exchange=NEW YORK STOCK EXCHANGE, INC.";
+  //       exchange = "nyse";
+  //     } else {
+  //       filters = "exchange=NASDAQ NMS - GLOBAL MARKET";
+  //       exchange = "nasdaq";
+  //     }
+  //
+  //     setUncachedRankingsLoading(true);
+  //     const res = await CompaniesApi.fetchRankings(metric, filters);
+  //     setRankings(res);
+  //   };
+  //
+  //   fetchData().then(() => {
+  //     setUncachedRankingsLoading(false);
+  //     forceUpdate();
+  //   });
+  // }, [nyse, nasdaq]);
 
   const queryClient = useQueryClient();
 
@@ -95,18 +153,6 @@ const Rankings: React.FC = () => {
   }, [metric]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await CompaniesApi.fetchRankings(metric, industryOptionsSelected ? `industry=${industryOptionsSelected}` : null);
-      setUncachedRankingsLoading(true);
-      setRankings(res);
-    };
-    fetchData().then(() => {
-      setUncachedRankingsLoading(false);
-      forceUpdate();
-    });
-  }, [industryOptionsSelected]);
-
-  useEffect(() => {
     if (!industries) {
       setIndustryOptionsSelected(null);
       return;
@@ -145,7 +191,7 @@ const Rankings: React.FC = () => {
   };
 
   return (
-      <div className="relative w-screen bg-slate-100 py-5">
+      <div className={`relative w-screen bg-slate-100 py-5 h-[${height}] overflow-y-hidden`}>
         { !rankingsLoading && !uncachedRankingsLoading ?
             <div className="flex flex-row">
               <div className="font-modern border-2 rounded-lg w-fit h-min m-2 p-2">
