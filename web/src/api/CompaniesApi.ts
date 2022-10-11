@@ -1,6 +1,7 @@
 import axios from "axios";
 import ISS from "../types/ISS";
 import { ICompanyData } from "../types/ICompanyData";
+import { IScoresTickers } from "../types/IScores";
 
 const apiClient = axios.create({
   baseURL: "/api/companies",
@@ -28,7 +29,7 @@ const getIndustries = async () => {
 };
 
 const fetchRankings = async (metric: string, filters: string | null) => {
-  const url = filters ? `sort/${metric}?${filters}` : `sort/${metric}`;
+  const url = filters ? `/sort/${metric}?${filters}` : `/sort/${metric}`;
   const res = await apiClient.get<ICompanyData[]>(url);
   return res.data
 };
@@ -38,5 +39,11 @@ const fetchCompanyData = async (ticker: string | undefined) => {
   return res.data;
 };
 
-const CompaniesApi = { getNames, getIndustries, fetchCompanyData, fetchRankings };
+const getScores = async (industry: string | string[] | null | undefined ) => {
+  const url = industry ? `/getScores?industry=${typeof industry === "string" ? industry : industry.join(",")}` : `/getScores`;
+  const res = await apiClient.get<IScoresTickers[]>(url);
+  return res.data;
+};
+
+const CompaniesApi = { getNames, getIndustries, fetchCompanyData, fetchRankings, getScores };
 export default CompaniesApi;

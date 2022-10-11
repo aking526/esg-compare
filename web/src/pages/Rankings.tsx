@@ -10,7 +10,7 @@ import QueryError from "../components/QueryError";
 import FilterDropdown from "../components/Rankings/FilterDropdown";
 import { MyOption, TOptionsSelected } from "../types/MyOption";
 import FilterCheckbox from "../components/Rankings/FilterCheckbox";
-import { useCalculateHeight } from "../hooks/Hooks";
+import { useCalculateHeight } from "../hooks/useCalculateHeight";
 
 /*
 Fix bug with filtering!!!

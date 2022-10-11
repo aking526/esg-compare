@@ -4,7 +4,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import CompanyLoading from "../components/Company/CompanyLoading";
 import { ICompanyData, BlankCompanyData } from "../types/ICompanyData";
 import CompanyInfo from "../components/Company/CompanyInfo";
-import TextDataFormat from "../components/TextDataFormat";
 import ESGCategory from "../components/Company/ESGCategory";
 import ESGDChart from "../components/Company/charts/ESGDChart";
 import StockPriceChart from "../components/Company/charts/StockPriceChart";
@@ -18,6 +17,7 @@ import { formatDate, getLastWeeksDate } from "../utils/date";
 import { convertStockData } from "../classes/CPair";
 import TNewsInfo from "../types/TNewsInfo";
 import ISA from "../types/ISA";
+import {useIndustryAvg} from "../hooks/useIndustryAvg";
 
 
 const Company: React.FC = () => {
@@ -62,20 +62,6 @@ const Company: React.FC = () => {
     }
   });
 
-  useEffect(() => {
-    const cachedData: ICompanyData | undefined = queryClient.getQueryData([`${ticker}_data`]);
-    const cachedStockData: ISA | undefined = queryClient.getQueryData([`${ticker}_stock_prices`]);
-    if (cachedData) setData(cachedData);
-    if (cachedStockData) {
-      const conv = convertStockData(cachedStockData, "c");
-      setClosingPrices(conv);
-    }
-  }, []);
-
-  useEffect(() => {
-    setLoaded(!dataLoading && !stockPricesLoading && !newsLoading);
-  }, [dataLoading, stockPricesLoading, newsLoading]);
-
   if (dataIsError) {
     return <QueryError message={dataError?.message} />;
   }
@@ -90,20 +76,60 @@ const Company: React.FC = () => {
     return <QueryError message={newsError.message} />;
   }
 
+  useEffect(() => {
+    const cachedData: ICompanyData | undefined = queryClient.getQueryData([`${ticker}_data`]);
+    const cachedStockData: ISA | undefined = queryClient.getQueryData([`${ticker}_stock_prices`]);
+    if (cachedData) setData(cachedData);
+    if (cachedStockData) {
+      const conv = convertStockData(cachedStockData, "c");
+      setClosingPrices(conv);
+    }
+  }, []);
+
+  const avg = useIndustryAvg(data.industry);
+
+  useEffect(() => {
+    setLoaded(!dataLoading && !stockPricesLoading && !newsLoading);
+  }, [dataLoading, stockPricesLoading, newsLoading]);
+
   return (
     <>
-      {loaded ? (
+      {loaded && avg && data ? (
         <div className="flex flex-col shadow-light my-16 font-modern mx-24 p-5 bg-slate-200 rounded-2xl">
           <CompanyInfo name={data.name} ticker={data.ticker} exchange={data.exchange} industry={data.industry} logo={data.logo} weburl={data.weburl} />
           <div className="flex flex-col mt-5">
             <strong className="text-3xl mb-1.5">ESG Data</strong>
             <div className="flex flex-row mb-1.5">
-              <ESGCategory category="Environment" score={data.environment_score} grade={data.environment_grade} level={data.environment_level} />
-              <ESGCategory category="Social" score={data.social_score} grade={data.social_grade} level={data.social_level} />
-              <ESGCategory category="Governance" score={data.governance_score} grade={data.governance_grade} level={data.governance_level} />
-              <ESGDChart env={data.environment_score} soc={data.social_score} gov={data.governance_score} />
+              <ESGCategory
+                name={data.name}
+                industry={data.industry}
+                category="Environment"
+                score={data.environment_score}
+                grade={data.environment_grade}
+                level={data.environment_level}
+                avg_score={avg.environment_score}
+              />
+              <ESGCategory
+                name={data.name}
+                industry={data.industry}
+                category="Social"
+                score={data.social_score}
+                grade={data.social_grade}
+                level={data.social_level}
+                avg_score={avg.social_score}
+              />
+              <ESGCategory
+                name={data.name}
+                industry={data.industry}
+                category="Governance"
+                score={data.governance_score}
+                grade={data.governance_grade}
+                level={data.governance_level}
+                avg_score={avg.governance_score}
+              />
+              <ESGDChart env={data.environment_score} soc={data.social_score} gov={data.governance_score}/>
             </div>
-            <TextDataFormat text="Total Score:" data={data.total_score} />
+            <p><strong>Total Score:</strong> {data.total_score}</p>
           </div>
           <div className="flex flex-col items-center mt-5">
             <strong className="text-2xl mb-1.5">Stock Info</strong>

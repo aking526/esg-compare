@@ -154,4 +154,24 @@ const readSort = (req: Request, res: Response, next: NextFunction) => {
 			.catch((error) => res.status(500).json({ error }));
 };
 
-export default { createCompany, readCompany, readAll, updateCompany, deleteCompany, deleteById, readCompanyNames, readIndustries, readSort };
+const getScores = (req: Request, res: Response, next: NextFunction) => {
+	const industry = req.query.industry;
+
+	let filters: {
+		[index: string]: string | number | object;
+	} = {};
+
+	if (typeof industry === "string") {
+		if (industry.includes(",")) {
+			filters["industry"] = { $in: industry.split(",") };
+		}	else {
+			filters["industry"] = industry;
+		}
+	}
+
+	return Company.find(filters).select({ "ticker": 1, "environment_score": 1, "social_score": 1, "governance_score": 1, "total_score": 1, "_id": 0 })
+			.then((scores) => res.status(200).json(scores))
+			.catch((error) => res.status(500).json({ error }));
+};
+
+export default { createCompany, readCompany, readAll, updateCompany, deleteCompany, deleteById, readCompanyNames, readIndustries, readSort, getScores };
