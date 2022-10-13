@@ -20,7 +20,7 @@ const MetricBtn: React.FC<FilterBtnProps> = ({ text, thisMetric, currMetric, set
 
 	return (
 		<div>
-			<button className={`${styles} ${color}`} onClick={handleClick}>{text}</button>
+			<button className={`w-full ${styles} ${color}`} onClick={handleClick}>{text}</button>
 		</div>
 	);
 };

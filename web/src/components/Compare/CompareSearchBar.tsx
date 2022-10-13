@@ -5,12 +5,13 @@ interface CSearchBarProps {
 	placeholder: string;
 	data: string[][] | undefined;
 	prevSelected: string | undefined;
+	passBack: Function;
 }
 
 // data[i][0] ==> ticker
 // data[i][1] ==> name
 
-const CompareSearchBar: React.FC<CSearchBarProps> = ({ placeholder, data, prevSelected }) => {
+const CompareSearchBar: React.FC<CSearchBarProps> = ({ placeholder, data, prevSelected, passBack }) => {
 	const [curr, setCurr] = useState<string>("");
 	const [filteredData, setFilteredData] = useState<string[][] | undefined>(data);
 	const [focused, setFocused] = useState<boolean>(false);
@@ -82,7 +83,10 @@ const CompareSearchBar: React.FC<CSearchBarProps> = ({ placeholder, data, prevSe
                 <div className="absolute top-0 left-0 right-0 bottom-0">
                   <ul className="relative flex flex-col ml-auto mr-auto bg-white rounded-lg border-2 border-cyan-50 w-40 h-20 pt-1.5 drop-shadow-xl overflow-hidden overflow-y-auto">
 										{filteredData && filteredData.slice(0, 15).map((value: string[], key: number) => (
-												<li className="text-sm m-2 hover:bg-slate-100" key={key}><Link to={selectedOne ? `/compare?companies=${prevSelected},${value[0]}` : `/compare?companies=${value[0]}`}>{value[1]} - {value[0].toUpperCase()}</Link></li>
+												// <li className="text-sm m-2 hover:bg-slate-100" key={key}><Link to={selectedOne ? `/compare?companies=${prevSelected},${value[0]}` : `/compare?companies=${value[0]}`}>{value[1]} - {value[0].toUpperCase()}</Link></li>
+												<li className="text-sm m-2 hover:bg-slate-100" key={key} onClick={() => {
+													passBack(value[0]);
+												}}>{value[1]} - {value[0].toUpperCase()}</li>
 										))}
                   </ul>
                 </div>

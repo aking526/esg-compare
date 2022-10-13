@@ -18,6 +18,7 @@ interface TableRowProps extends StylingProps {
 interface RankingsProps {
 	rankings: ICompanyData[];
 	metric: string;
+	start: number;
 }
 
 const Table: React.FC<TableProps> = ({ heading, body, metric }) => {
@@ -51,7 +52,7 @@ const TableRow: React.FC<TableRowProps> = ({ row, styles }) => {
 };
 
 
-const RankingsTable: React.FC<RankingsProps> = ({ rankings, metric }) => {
+const RankingsTable: React.FC<RankingsProps> = ({ rankings, metric, start }) => {
 	const tableHeading: string[] = ["Rank", "Company", "Total Score", "Environment Score", "Social Score", "Governance Score"];
 	const getFrom: string[] = ["name", "ticker", "total_score", "environment_score", "social_score", "governance_score"];
 	const tableBody: string[][] = make2dArray(getFrom.length, rankings.length, "");
@@ -65,7 +66,7 @@ const RankingsTable: React.FC<RankingsProps> = ({ rankings, metric }) => {
 
 	for (let i = 0; i < rankings.length; i++) {
 		const curr = rankings[i];
-		tableBody[i][0] = String(i+1);
+		tableBody[i][0] = String(start+i+1);
 		for (const d in curr) {
 			if (!checkIn(d)) continue;
 			let j = getFrom.indexOf(d);
@@ -74,8 +75,8 @@ const RankingsTable: React.FC<RankingsProps> = ({ rankings, metric }) => {
 	}
 
 	return (
-		<div className="relative my-2 mx-10 px-5 pb-3 rounded-xl bg-slate-100 shadow-light overflow-y-auto h-[30%]">
-			<Table heading={tableHeading} body={tableBody} metric={metric} />
+		<div className="relative my-2 ml-10 mr-5 px-5 pb-3 rounded-xl shadow-light overflow-y-auto h-rankings-table-h">
+			<Table heading={tableHeading} body={tableBody} metric={metric}/>
 		</div>
 	);
 };

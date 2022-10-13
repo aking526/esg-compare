@@ -10,11 +10,8 @@ import QueryError from "../components/QueryError";
 import FilterDropdown from "../components/Rankings/FilterDropdown";
 import { MyOption, TOptionsSelected } from "../types/MyOption";
 import FilterCheckbox from "../components/Rankings/FilterCheckbox";
-import { useCalculateHeight } from "../hooks/useCalculateHeight";
-
-/*
-Fix bug with filtering!!!
- */
+import RankingsNavBtn from "../components/Rankings/RankingsNavBtn";
+import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const Rankings: React.FC = () => {
   const defaultMetric = "total_score";
@@ -34,15 +31,11 @@ const Rankings: React.FC = () => {
   const [nasdaq, setNasdaq] = useState(false);
   const [uncachedRankingsLoading, setUncachedRankingsLoading] = useState(false);
 
-  const height = useCalculateHeight();
-
-  useEffect(() => {
-    forceUpdate();
-  }, [height]);
+  const [sliceStart, setSliceStart] = useState<number>(0);
 
   useEffect(() => {
     const industryFilter = industryOptionsSelected ? `industry=${industryOptionsSelected}` : null;
-    let exchangeFilter;
+    let exchangeFilter: string | null;
     if (nyse == nasdaq) {
       exchangeFilter = null;
     } else if (nyse) {
@@ -61,7 +54,6 @@ const Rankings: React.FC = () => {
     } else {
       finalFilter = null;
     }
-    console.log(finalFilter);
 
     const fetchData = async () => {
       setUncachedRankingsLoading(true);
@@ -71,46 +63,9 @@ const Rankings: React.FC = () => {
 
     fetchData().then(() => {
       setUncachedRankingsLoading(false);
-      // forceUpdate();
-    })
-  }, [metric, industryOptionsSelected, nyse, nasdaq]);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const res = await CompaniesApi.fetchRankings(metric, industryOptionsSelected ? `industry=${industryOptionsSelected}` : null);
-  //     setUncachedRankingsLoading(true);
-  //     setRankings(res);
-  //   };
-  //   fetchData().then(() => {
-  //     setUncachedRankingsLoading(false);
-  //     forceUpdate();
-  //   });
-  // }, [industryOptionsSelected]);
-  //
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     let filters, exchange;
-  //     if (nyse == nasdaq) {
-  //       filters = null;
-  //       exchange = null;
-  //     } else if (nyse) {
-  //       filters = "exchange=NEW YORK STOCK EXCHANGE, INC.";
-  //       exchange = "nyse";
-  //     } else {
-  //       filters = "exchange=NASDAQ NMS - GLOBAL MARKET";
-  //       exchange = "nasdaq";
-  //     }
-  //
-  //     setUncachedRankingsLoading(true);
-  //     const res = await CompaniesApi.fetchRankings(metric, filters);
-  //     setRankings(res);
-  //   };
-  //
-  //   fetchData().then(() => {
-  //     setUncachedRankingsLoading(false);
-  //     forceUpdate();
-  //   });
-  // }, [nyse, nasdaq]);
+      forceUpdate();
+    });
+  }, [industryOptionsSelected, nyse, nasdaq]);
 
   const queryClient = useQueryClient();
 
@@ -124,6 +79,12 @@ const Rankings: React.FC = () => {
     return <QueryError message={industriesError.message} />;
   }
 
+  /* Check if exists in cache */
+  useEffect(() => {
+    const cachedIndustries: string[] | undefined = queryClient.getQueryData(["industries"]);
+    if (cachedIndustries) setIndustries(cachedIndustries);
+  }, []);
+
   const { isLoading: rankingsLoading, isError: rankingsIsError, error: rankingsError } = useQuery<ICompanyData[], Error>([queryKey], async () => {
     return CompaniesApi.fetchRankings(metric, filters);
   }, {
@@ -136,11 +97,11 @@ const Rankings: React.FC = () => {
     return <QueryError message={rankingsError.message} />
   }
 
-  useEffect(() => {
-    if (filters) {
-      setQueryKey(`${metric}_score_with_filters`)
-    }
-  }, [filters]);
+  // useEffect(() => {
+  //   if (filters) {
+  //     setQueryKey(`${metric}_score_with_filters`)
+  //   }
+  // }, [filters]);
 
   useEffect(() => {
     if (filters) {
@@ -191,58 +152,75 @@ const Rankings: React.FC = () => {
   };
 
   return (
-      <div className={`relative w-screen bg-slate-100 py-5 h-[${height}] overflow-y-hidden`}>
-        { !rankingsLoading && !uncachedRankingsLoading ?
-            <div className="flex flex-row">
-              <div className="font-modern border-2 rounded-lg w-fit h-min m-2 p-2">
-                <u className="text-xl">Metrics:</u>
-                <MetricBtn
-                    text="Total Score"
-                    thisMetric={"total_score"}
-                    currMetric={metric}
-                    setMetric={setMetric}
-                    styles={FilterBtnStyles}
-                />
-                <MetricBtn
-                    text="Environment Score"
-                    thisMetric={"environment_score"}
-                    currMetric={metric}
-                    setMetric={setMetric}
-                    styles={FilterBtnStyles}
-                />
-                <MetricBtn
-                    text="Social Score"
-                    thisMetric={"social_score"}
-                    currMetric={metric}
-                    setMetric={setMetric}
-                    styles={FilterBtnStyles}
-                />
-                <MetricBtn
-                    text="Governance Score"
-                    thisMetric={"governance_score"}
-                    currMetric={metric}
-                    setMetric={setMetric}
-                    styles={FilterBtnStyles}
-                />
-              </div>
-              <div>
-                <RankingsTable rankings={rankings.slice(0, 50)} metric={metric} />
-              </div>
-              <div className="flex flex-col m-2 p-2 border-2 rounded-lg w-96 h-min">
-                {!industriesLoading &&
-                  <>
-                    <u className="text-xl">Filters: </u>
-                    <FilterDropdown title="Industry:" options={dropdownOptions} passBack={handleIndustryOptSel}/>
-                  </>
-                }
-                <div className="mt-1">
-                  <h3>Stock Exchange: </h3>
-                  <FilterCheckbox label="NYSE" value={nyse} onChange={() => setNyse(prevState => !prevState)} />
-                  <FilterCheckbox label="Nasdaq" value={nasdaq} onChange={() => setNasdaq(prevState => !prevState)} />
+      <div className={`relative w-screen bg-slate-100 py-5 h-page-h overflow-y-hidden`}>
+        {/*{ !rankingsLoading && !uncachedRankingsLoading ?*/}
+          <div className="flex flex-row">
+            <div className="font-modern border-2 rounded-lg w-fit h-min m-2 p-2">
+              <u className="text-xl">Metrics:</u>
+              <MetricBtn
+                text="Total Score"
+                thisMetric={"total_score"}
+                currMetric={metric}
+                setMetric={setMetric}
+                styles={FilterBtnStyles}
+              />
+              <MetricBtn
+                text="Environment Score"
+                thisMetric={"environment_score"}
+                currMetric={metric}
+                setMetric={setMetric}
+                styles={FilterBtnStyles}
+              />
+              <MetricBtn
+                text="Social Score"
+                thisMetric={"social_score"}
+                currMetric={metric}
+                setMetric={setMetric}
+                styles={FilterBtnStyles}
+              />
+              <MetricBtn
+                text="Governance Score"
+                thisMetric={"governance_score"}
+                currMetric={metric}
+                setMetric={setMetric}
+                styles={FilterBtnStyles}
+              />
+            </div>
+            <div className="w-rankings-w">
+              { !rankingsLoading && !uncachedRankingsLoading ? (
+                <div className="flex flex-col">
+                  <RankingsTable rankings={rankings.slice(sliceStart, sliceStart + 50)} metric={metric} start={sliceStart} />
+                  <div className="flex flex-row w-rankings-w justify-center">
+                    <RankingsNavBtn handleClick={() => {
+                      setSliceStart(prevState => {
+                        return prevState === 0 ? 0 : prevState - 50;
+                      });
+                    }} icon={faArrowLeft} />
+                    <RankingsNavBtn handleClick={() => {
+                      setSliceStart(prevState => {
+                        return prevState >= rankings.length - 50 ? prevState : prevState + 50;
+                      });
+                    }} icon={faArrowRight} />
+                  </div>
                 </div>
+                ) :
+              <RankingsLoading metric={DataRefToText[metric]} />
+              }
+            </div>
+            <div className="flex flex-col m-2 p-2 border-2 rounded-lg w-96 h-min">
+              {!industriesLoading &&
+                <>
+                  <u className="text-xl">Filters: </u>
+                  <FilterDropdown title="Industry:" options={dropdownOptions} passBack={handleIndustryOptSel}/>
+                </>
+              }
+              <div className="mt-1">
+                <h3>Stock Exchange: </h3>
+                <FilterCheckbox label="NYSE" value={nyse} onChange={() => setNyse(prevState => !prevState)} />
+                <FilterCheckbox label="Nasdaq" value={nasdaq} onChange={() => setNasdaq(prevState => !prevState)} />
               </div>
             </div>
-            : <RankingsLoading metric={DataRefToText[metric]}/> }
+          </div>
       </div>
   );
 };
