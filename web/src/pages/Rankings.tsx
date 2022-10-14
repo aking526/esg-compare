@@ -33,6 +33,8 @@ const Rankings: React.FC = () => {
 
   const [sliceStart, setSliceStart] = useState<number>(0);
 
+  const [reverse, setReverse] = useState(false);
+
   useEffect(() => {
     const industryFilter = industryOptionsSelected ? `industry=${industryOptionsSelected}` : null;
     let exchangeFilter: string | null;
@@ -151,9 +153,12 @@ const Rankings: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+
+  }, [reverse]);
+
   return (
       <div className={`relative w-screen bg-slate-100 py-5 h-page-h overflow-y-hidden`}>
-        {/*{ !rankingsLoading && !uncachedRankingsLoading ?*/}
           <div className="flex flex-row">
             <div className="font-modern border-2 rounded-lg w-fit h-min m-2 p-2">
               <u className="text-xl">Metrics:</u>
@@ -190,7 +195,7 @@ const Rankings: React.FC = () => {
               { !rankingsLoading && !uncachedRankingsLoading ? (
                 <div className="flex flex-col">
                   <RankingsTable rankings={rankings.slice(sliceStart, sliceStart + 50)} metric={metric} start={sliceStart} />
-                  <div className="flex flex-row w-rankings-w justify-center">
+                  <div className="flex flex-row w-rankings-w border-2 border-slate-300 w-min">
                     <RankingsNavBtn handleClick={() => {
                       setSliceStart(prevState => {
                         return prevState === 0 ? 0 : prevState - 50;
@@ -208,13 +213,16 @@ const Rankings: React.FC = () => {
               }
             </div>
             <div className="flex flex-col m-2 p-2 border-2 rounded-lg w-96 h-min">
+              <u className="text-xl">Filters: </u>
+              <div className="border-2 border-black p-2 my-2 rounded-lg">
+                <FilterCheckbox label="Reverse rankings" value={reverse} onChange={() => setReverse(prevState => !prevState)} />
+              </div>
               {!industriesLoading &&
-                <>
-                  <u className="text-xl">Filters: </u>
+                <div className="border-2 rounded-lg p-2 border-black">
                   <FilterDropdown title="Industry:" options={dropdownOptions} passBack={handleIndustryOptSel}/>
-                </>
+                </div>
               }
-              <div className="mt-1">
+              <div className="mt-5 border-2 rounded-lg p-2 border-black">
                 <h3>Stock Exchange: </h3>
                 <FilterCheckbox label="NYSE" value={nyse} onChange={() => setNyse(prevState => !prevState)} />
                 <FilterCheckbox label="Nasdaq" value={nasdaq} onChange={() => setNasdaq(prevState => !prevState)} />
