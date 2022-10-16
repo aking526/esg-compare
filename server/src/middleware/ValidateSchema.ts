@@ -36,6 +36,8 @@ export const schemas = {
 			environment_score: Joi.number().required(),
 			social_score: Joi.number().required(),
 			governance_score: Joi.number().required(),
+			total_grade: Joi.string().required(),
+			total_level: Joi.string().required(),
 			total_score: Joi.number().required(),
 			last_processing_date: Joi.string().required()
 		}),
@@ -57,6 +59,8 @@ export const schemas = {
 			environment_score: Joi.number().required(),
 			social_score: Joi.number().required(),
 			governance_score: Joi.number().required(),
+			total_grade: Joi.string().required(),
+			total_level: Joi.string().required(),
 			total_score: Joi.number().required(),
 			last_processing_date: Joi.string().required()
 		})

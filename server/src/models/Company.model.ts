@@ -18,6 +18,8 @@ export interface ICompany {
 	environment_score: number;
 	social_score: number;
 	governance_score: number;
+	total_grade: string;
+	total_level: string;
 	total_score: number;
 	last_processing_date: string;
 }
@@ -43,6 +45,8 @@ const CompanySchema: Schema = new Schema(
 		environment_score: { type: Number, required: true },
 		social_score: { type: Number, required: true },
 		governance_score: { type: Number, required: true },
+		total_grade: { type: String, required: true },
+		total_level: { type: String, required: true },
 		total_score: { type: Number, required: true },
 		last_processing_date: { type: String, required: true }
 	},

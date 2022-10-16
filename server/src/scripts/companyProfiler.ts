@@ -22,9 +22,15 @@ const formSchema = (ticker: string, curr_ci: ISA, curr_esg: ISA) => {
 		environment_score: curr_esg["environment_score"],
 		social_score: curr_esg["social_score"],
 		governance_score: curr_esg["governance_score"],
+		total_grade: curr_esg["total_grade"],
+		total_level: curr_esg["total_level"],
 		total_score: curr_esg["total"],
 		last_processing_date: curr_esg["last_processing_date"]
 	};
+
+	if (data.industry === "Hotels, Restaurants & Leisure") {
+		data.industry = "Hotels, Restaurants, and Leisure";
+	}
 
 	return data;
 };

@@ -1,7 +1,7 @@
 import axios from "axios";
 import ISS from "../types/ISS";
 import { ICompanyData } from "../types/ICompanyData";
-import { IScoresTickers } from "../types/IScores";
+import { IScores, IGrades, ILevels } from "../types/ESGDataInterfaces";
 
 const apiClient = axios.create({
   baseURL: "/api/companies",
@@ -41,9 +41,21 @@ const fetchCompanyData = async (ticker: string | undefined) => {
 
 const getScores = async (industry: string | string[] | null | undefined ) => {
   const url = industry ? `/getScores?industry=${typeof industry === "string" ? industry : industry.join(",")}` : `/getScores`;
-  const res = await apiClient.get<IScoresTickers[]>(url);
+  const res = await apiClient.get<IScores[]>(url);
   return res.data;
 };
 
-const CompaniesApi = { getNames, getIndustries, fetchCompanyData, fetchRankings, getScores };
+const getGrades = async (industry: string | string[] | null | undefined) => {
+  const url = industry ? `/getGrades?industry=${typeof industry === "string" ? industry : industry.join(",")}` : `/getGrades`;
+  const res = await apiClient.get<IGrades[]>(url);
+  return res.data;
+};
+
+const getLevels = async (industry: string | string[] | null | undefined ) => {
+  const url = industry ? `/getLevels?industry=${typeof industry === "string" ? industry : industry.join(",")}` : `/getLevels`;
+  const res = await apiClient.get<ILevels[]>(url);
+  return res.data;
+};
+
+const CompaniesApi = { getNames, getIndustries, fetchCompanyData, fetchRankings, getScores, getGrades, getLevels };
 export default CompaniesApi;

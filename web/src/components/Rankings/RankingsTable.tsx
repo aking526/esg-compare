@@ -11,16 +11,6 @@ interface TableProps {
 	metric: string;
 }
 
-interface TableRowProps extends StylingProps {
-	row: string[];
-}
-
-interface RankingsProps {
-	rankings: ICompanyData[];
-	metric: string;
-	start: number;
-}
-
 const Table: React.FC<TableProps> = ({ heading, body, metric }) => {
 	return (
 		<table>
@@ -39,6 +29,10 @@ const Table: React.FC<TableProps> = ({ heading, body, metric }) => {
 	);
 };
 
+interface TableRowProps extends StylingProps {
+	row: string[];
+}
+
 const TableRow: React.FC<TableRowProps> = ({ row, styles }) => {
 	return (
 		<tr>
@@ -51,8 +45,14 @@ const TableRow: React.FC<TableRowProps> = ({ row, styles }) => {
 	);
 };
 
+interface RankingsProps {
+	rankings: ICompanyData[];
+	metric: string;
+	start: number;
+	reverse: boolean;
+}
 
-const RankingsTable: React.FC<RankingsProps> = ({ rankings, metric, start }) => {
+const RankingsTable: React.FC<RankingsProps> = ({ rankings, metric, start, reverse }) => {
 	const tableHeading: string[] = ["Rank", "Company", "Total Score", "Environment Score", "Social Score", "Governance Score"];
 	const getFrom: string[] = ["name", "ticker", "total_score", "environment_score", "social_score", "governance_score"];
 	const tableBody: string[][] = make2dArray(getFrom.length, rankings.length, "");
@@ -73,6 +73,8 @@ const RankingsTable: React.FC<RankingsProps> = ({ rankings, metric, start }) => 
 			tableBody[i][j+1] = curr[d];
 		}
 	}
+
+	if (reverse) tableBody.reverse();
 
 	return (
 		<div className="relative my-2 ml-10 mr-5 px-5 pb-3 rounded-xl shadow-light overflow-y-auto h-rankings-table-h">

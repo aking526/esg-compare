@@ -1,23 +1,17 @@
 import { useState, useEffect } from "react";
 import CompaniesApi from "../api/CompaniesApi";
-import { IScores, IScoresTickers } from "../types/IScores";
+import { IGrades, IScores, possibleGrades, ILevels, possibleLevels } from "../types/ESGDataInterfaces";
 
 export function useIndustryAvg(industry: string | string[] | undefined) {
-	const [data, setData] = useState<IScoresTickers[] | undefined>(undefined);
-	const [avg, setAvg] = useState<IScores | undefined>(undefined);
+	const [avgScores, setAvgScores] = useState<IScores | undefined>(undefined);
+	const [avgGrades, setAvgGrades] = useState<IGrades | undefined>(undefined);
+	const [avgLevels, setAvgLevels] = useState<ILevels | undefined>(undefined);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			const res = await CompaniesApi.getScores(industry);
-			setData(res);
-		}
+	const scoreMetrics = ["environment_score", "social_score", "governance_score", "total_score"];
+	const gradeMetrics = ["environment_grade", "social_grade", "governance_grade", "total_grade"];
+	const levelsMetrics = ["environment_level", "social_level", "governance_level", "total_level"];
 
-		fetchData();
-	}, []);
-
-	const calculateAvg = (metric: string) => {
-		if (!data) return;
-
+	const calculateAvgScore = (data: IScores[], metric: string) => {
 		let total = 0;
 		for (let i = 0; i < data.length; i++) {
 			total += data[i][metric];
@@ -25,16 +19,55 @@ export function useIndustryAvg(industry: string | string[] | undefined) {
 		return Math.round(total / data.length);
 	};
 
-	const metrics = ["environment_score", "social_score", "governance_score", "total_score"];
-	useEffect(() => {
-		if (data) {
-			let avgs: any = {};
-			for (let i = 0; i < metrics.length; i++) {
-				avgs[metrics[i]] = calculateAvg(metrics[i]);
-			}
-			setAvg(avgs);
+	const calculateAvgGrade = (data: IGrades[], metric: string) => {
+		let idxTotal = 0;
+		for (let i = 0; i < data.length; i++) {
+			idxTotal += possibleGrades.indexOf(data[i][metric]);
 		}
-	}, [data]);
 
-	return avg;
+		const avgIdx = Math.round(idxTotal / data.length);
+		return possibleGrades[avgIdx];
+	};
+
+	const calculateAvgLevel = (data: ILevels[], metric: string) => {
+		let idxTotal = 0;
+		for (let i = 0; i < data.length; i++) {
+			idxTotal += possibleLevels.indexOf(data[i][metric]);
+		}
+
+		const avgIdx = Math.round(idxTotal / data.length);
+		return possibleLevels[avgIdx];
+	};
+
+	useEffect(() => {
+		if (!industry) return;
+
+		const fetchData = async () => {
+			const scoresData = await CompaniesApi.getScores(industry);
+			let avgs: any = {};
+			for (let i = 0; i < scoreMetrics.length; i++) {
+				avgs[scoreMetrics[i]] = calculateAvgScore(scoresData, scoreMetrics[i]);
+			}
+			setAvgScores(avgs);
+
+			const gradesData = await CompaniesApi.getGrades(industry);
+			avgs = {};
+			for (let i = 0; i < gradeMetrics.length; i++) {
+				avgs[gradeMetrics[i]] = calculateAvgGrade(gradesData, gradeMetrics[i]);
+			}
+			setAvgGrades(avgs);
+
+			const levelsData = await CompaniesApi.getLevels(industry);
+			avgs = {};
+			for (let i = 0; i < levelsMetrics.length; i++) {
+				avgs[levelsMetrics[i]] = calculateAvgLevel(levelsData, levelsMetrics[i]);
+			}
+			setAvgLevels(avgs);
+		}
+
+		fetchData();
+	}, [industry]);
+
+
+	return { avgScores, avgGrades, avgLevels };
 }

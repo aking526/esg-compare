@@ -6,7 +6,7 @@ import ISA from "../types/ISA";
 import { config } from "../config/config";
 
 const createCompany = (req: Request, res: Response, next: NextFunction) => {
-	const { name, ticker, currency, exchange, industry, logo, weburl, esg_id, environment_grade, environment_level, environment_score, social_grade, social_level, social_score, governance_grade, governance_level, governance_score, total_score, last_processing_date } = req.body;
+	const { name, ticker, currency, exchange, industry, logo, weburl, esg_id, environment_grade, environment_level, environment_score, social_grade, social_level, social_score, governance_grade, governance_level, governance_score, total_grade, total_level, total_score, last_processing_date } = req.body;
 	const auth = req.params.auth;
 
 	if (auth !== config.server.auth) {
@@ -32,6 +32,8 @@ const createCompany = (req: Request, res: Response, next: NextFunction) => {
 		governance_grade,
 		governance_level,
 		governance_score,
+		total_grade,
+		total_level,
 		total_score,
 		last_processing_date
 	});
@@ -162,16 +164,56 @@ const getScores = (req: Request, res: Response, next: NextFunction) => {
 	} = {};
 
 	if (typeof industry === "string") {
-		if (industry.includes(",")) {
+		if (industry.includes(",") && !industry.includes("Hotels")) {
 			filters["industry"] = { $in: industry.split(",") };
 		}	else {
 			filters["industry"] = industry;
 		}
 	}
 
-	return Company.find(filters).select({ "ticker": 1, "environment_score": 1, "social_score": 1, "governance_score": 1, "total_score": 1, "_id": 0 })
-			.then((scores) => res.status(200).json(scores))
-			.catch((error) => res.status(500).json({ error }));
+	return Company.find(filters).select({ "environment_score": 1, "social_score": 1, "governance_score": 1, "total_score": 1, "_id": 0 })
+		.then((scores) => res.status(200).json(scores))
+		.catch((error) => res.status(500).json({ error }));
 };
 
-export default { createCompany, readCompany, readAll, updateCompany, deleteCompany, deleteById, readCompanyNames, readIndustries, readSort, getScores };
+const getGrades = (req: Request, res: Response, next: NextFunction) => {
+	const industry = req.query.industry;
+
+	let filters: {
+		[index: string]: string | number | object;
+	} = {};
+
+	if (typeof industry === "string") {
+		if (industry.includes(",") && !industry.includes("Hotels")) {
+			filters["industry"] = { $in: industry.split(",") };
+		}	else {
+			filters["industry"] = industry;
+		}
+	}
+
+	return Company.find(filters).select({ "environment_grade": 1, "social_grade": 1, "governance_grade": 1, "total_grade": 1, "_id": 0 })
+		.then((grades) => res.status(200).json(grades))
+		.catch((error) => res.status(500).json({ error }));
+};
+
+const getLevels = (req: Request, res: Response, next: NextFunction) => {
+	const industry = req.query.industry;
+
+	let filters: {
+		[index: string]: string | number | object;
+	} = {};
+
+	if (typeof industry === "string") {
+		if (industry.includes(",") && !industry.includes("Hotels")) {
+			filters["industry"] = {$in: industry.split(",")};
+		} else {
+			filters["industry"] = industry;
+		}
+	}
+
+	return Company.find(filters).select({ "environment_level": 1, "social_level": 1, "governance_level": 1, "total_level": 1, "_id": 0 })
+		.then((levels) => res.status(200).json(levels))
+		.catch((error) => res.status(500).json({ error }));
+};
+
+export default { createCompany, readCompany, readAll, updateCompany, deleteCompany, deleteById, readCompanyNames, readIndustries, readSort, getScores, getGrades, getLevels };

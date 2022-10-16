@@ -17,6 +17,9 @@ router.get("/sort/:metric", companyController.readSort);
 
 /* Special Routes */
 router.get("/getScores", companyController.getScores);
+router.get("/getGrades", companyController.getGrades);
+router.get("/getLevels", companyController.getLevels);
+
 router.get("/getNames/", companyController.readCompanyNames);
 router.get("/getIndustries/", companyController.readIndustries);
 

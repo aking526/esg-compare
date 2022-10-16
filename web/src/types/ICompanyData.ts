@@ -20,6 +20,8 @@ export interface ICompanyData extends ISA {
 	environment_score: number;
 	social_score: number;
 	governance_score: number;
+	total_grade: string;
+	total_level: string;
 	total_score: number;
 }
 
@@ -43,5 +45,7 @@ export const BlankCompanyData: ICompanyData = {
 	environment_score: -1,
 	social_score: -1,
 	governance_score: -1,
+	total_grade: "",
+	total_level: "",
 	total_score: -1
 };

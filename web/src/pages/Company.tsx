@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useIndustryAvg } from "../hooks/useIndustryAvg";
 import CompanyLoading from "../components/Company/CompanyLoading";
 import { ICompanyData, BlankCompanyData } from "../types/ICompanyData";
 import CompanyInfo from "../components/Company/CompanyInfo";
@@ -17,7 +18,7 @@ import { formatDate, getLastWeeksDate } from "../utils/date";
 import { convertStockData } from "../classes/CPair";
 import TNewsInfo from "../types/TNewsInfo";
 import ISA from "../types/ISA";
-import {useIndustryAvg} from "../hooks/useIndustryAvg";
+import { possibleGrades, possibleLevels } from "../types/ESGDataInterfaces";
 
 
 const Company: React.FC = () => {
@@ -86,7 +87,7 @@ const Company: React.FC = () => {
     }
   }, []);
 
-  const avg = useIndustryAvg(data.industry);
+  const { avgScores, avgGrades, avgLevels } = useIndustryAvg(data.industry);
 
   useEffect(() => {
     setLoaded(!dataLoading && !stockPricesLoading && !newsLoading);
@@ -94,7 +95,7 @@ const Company: React.FC = () => {
 
   return (
     <>
-      {loaded && avg && data ? (
+      {loaded && avgScores && avgGrades && avgLevels && data ? (
         <div className="flex flex-col shadow-light my-16 font-modern mx-24 p-5 bg-slate-200 rounded-2xl">
           <CompanyInfo name={data.name} ticker={data.ticker} exchange={data.exchange} industry={data.industry} logo={data.logo} weburl={data.weburl} />
           <div className="flex flex-col mt-5">
@@ -107,7 +108,9 @@ const Company: React.FC = () => {
                 score={data.environment_score}
                 grade={data.environment_grade}
                 level={data.environment_level}
-                avg_score={avg.environment_score}
+                avg_score={avgScores.environment_score}
+                avg_grade={avgGrades.environment_grade}
+                avg_level={avgLevels.environment_level}
               />
               <ESGCategory
                 name={data.name}
@@ -116,7 +119,9 @@ const Company: React.FC = () => {
                 score={data.social_score}
                 grade={data.social_grade}
                 level={data.social_level}
-                avg_score={avg.social_score}
+                avg_score={avgScores.social_score}
+                avg_grade={avgGrades.social_grade}
+                avg_level={avgLevels.social_level}
               />
               <ESGCategory
                 name={data.name}
@@ -125,11 +130,17 @@ const Company: React.FC = () => {
                 score={data.governance_score}
                 grade={data.governance_grade}
                 level={data.governance_level}
-                avg_score={avg.governance_score}
+                avg_score={avgScores.governance_score}
+                avg_grade={avgGrades.governance_grade}
+                avg_level={avgLevels.governance_level}
               />
               <ESGDChart env={data.environment_score} soc={data.social_score} gov={data.governance_score}/>
             </div>
-            <p><strong>Total Score:</strong> {data.total_score}</p>
+            <div className="flex flex-row">
+              <p className="mx-1"><strong>Total Score:</strong> <span className={data.total_score >= avgScores.total_score ? "text-green-500" : "text-red-500"}  data-tip data-for="score-tip-total">{data.total_score}</span></p>
+              <p className="mx-1"><strong>Total Grade:</strong> <span className={possibleGrades.indexOf(data.total_grade) > possibleGrades.indexOf(avgGrades.total_grade) ? "text-green-500" : data.total_grade === avgGrades.total_grade ? "text-gray-500" : "text-red-500"} data-tip data-for="grade-tip-total">{data.total_grade}</span></p>
+              <p className="mx-1"><strong>Total Level:</strong> <span className={possibleLevels.indexOf(data.total_level) > possibleLevels.indexOf(avgLevels.total_level) ? "text-green-500" : data.total_level === avgLevels.total_level ? "text-gray-500" : "text-red-500"} data-tip data-for="level-tip-total">{data.total_level}</span></p>
+            </div>
           </div>
           <div className="flex flex-col items-center mt-5">
             <strong className="text-2xl mb-1.5">Stock Info</strong>
