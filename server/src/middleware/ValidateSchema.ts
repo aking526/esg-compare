@@ -46,7 +46,7 @@ export const schemas = {
 			name: Joi.string().required(),
 			currency: Joi.string().required(),
 			exchange: Joi.string().required(),
-			industry: Joi.string().required(),
+			industry: Joi.string().allow(""),
 			logo: Joi.string().allow(""),
 			weburl: Joi.string().allow(""),
 			esg_id: Joi.number().required(),
