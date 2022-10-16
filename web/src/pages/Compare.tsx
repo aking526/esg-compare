@@ -12,6 +12,8 @@ import { convertStockData, CPair } from "../classes/CPair";
 import StockApi from "../api/StockApi";
 import { convertDateToUnix } from "../utils/date";
 import CompareStockChart from "../components/Compare/charts/CompareStockChart";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleLeft } from "@fortawesome/free-solid-svg-icons";
 
 const Compare: React.FC = () => {
 	const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -45,9 +47,12 @@ const Compare: React.FC = () => {
 	}
 
 	useEffect(() => {
-		if (tickers[0] && tickers[1]) {
+		if (tickers[0] && tickers[1] && tickers[0] !== "" && tickers[1] !== "") {
 			setAllSelected(true);
+			return;
 		}
+
+		setAllSelected(false);
 	}, [tickers]);
 
 	useEffect(() => {
@@ -62,7 +67,6 @@ const Compare: React.FC = () => {
 	}, [companies]);
 
 	useEffect(() => {
-		console.log(allSelected);
 		const fetch = async () => {
 			let newArr = [];
 			for (let i = 0; i < 2; i++) {
@@ -85,11 +89,14 @@ const Compare: React.FC = () => {
 			setStockPrices(newArr2);
 		};
 
-		if (allSelected) fetch().then(() => {
-			setDataLoaded(true);
-			setStockPricesLoaded(true);
-			forceUpdate();
-		});
+		if (allSelected) {
+			setDataLoaded(false);
+			fetch().then(() => {
+				setDataLoaded(true);
+				setStockPricesLoaded(true);
+				forceUpdate();
+			});
+		}
 	}, [allSelected]);
 
 	const copyTickers = () => {
@@ -106,11 +113,22 @@ const Compare: React.FC = () => {
 		setTickers(arr);
 	};
 
+	const handleBackButtonClicked = () => {
+		setTickers(["", ""]);
+		setData([]);
+	};
+
 	return (
 		<div className="font-modern my-16 mx-24 p-5 bg-slate-200 rounded-2xl">
 			{ allSelected ?
 				<div>
-					{ dataLoaded ?
+					<div className="flex flex-row">
+						<div className="flex items-center justify-center">
+							<FontAwesomeIcon icon={faCircleLeft} onClick={handleBackButtonClicked} />
+						</div>
+						<p className="m-2">Back</p>
+					</div>
+					{ dataLoaded && data && tickers && tickers[0] && tickers[1] ?
 							<div className="flex flex-col">
 								<div className="flex flex-row justify-evenly">
 									{ data.map((dat: ICompanyData, idx) => {
@@ -122,7 +140,7 @@ const Compare: React.FC = () => {
 														<h1 className="mr-2 font-extrabold text-4xl">{
 															<Link to={`/company/${ticker}`}>{dat.name}</Link>
 														}</h1>
-														<h2 className="ml-2 mt-2 text-2xl">({ticker.toUpperCase()})</h2>
+														<h2 className="ml-2 mt-2 text-2xl">({ticker?.toUpperCase()})</h2>
 													</div>
 													<p className="text-base">{dat.exchange}</p>
 													<div className="flex flex-row text-xs">
@@ -147,12 +165,12 @@ const Compare: React.FC = () => {
 										name: data[0].name,
 										ratings: [data[0].environment_score, data[0].social_score, data[0].governance_score, data[0].total_score]
 									}}
-								 	companyB={{
-									 ticker: tickers[1],
-									 name: data[1].name,
-									 ratings: [data[1].environment_score, data[1].social_score, data[1].governance_score, data[1].total_score]
-								 	}} />
-								</div>
+									companyB={{
+									ticker: tickers[1],
+									name: data[1].name,
+									ratings: [data[1].environment_score, data[1].social_score, data[1].governance_score, data[1].total_score]
+									}} />
+							</div>
 								{ stockPricesLoaded &&
 									<div>
 										<CompareStockChart
