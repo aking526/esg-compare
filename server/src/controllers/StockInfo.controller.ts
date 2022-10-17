@@ -21,6 +21,36 @@ const getStockInfo = async (req: Request, res: Response, next: NextFunction) => 
 	}
 };
 
+const getQuote = async (req: Request, res: Response, next: NextFunction) => {
+	const companyTicker = req.params.ticker;
+
+	try {
+		const url = `https://finnhub.io/api/v1/quote?symbol=${companyTicker.toUpperCase()}&token=${config.keys.finnhub}`;
+		const fRes = await axios.get(url);
+		const data = fRes.data;
+
+		return res.status(200).json(data);
+	} catch (e) {
+		Logging.error(e);
+		return res.status(500).json({ e });
+	}
+};
+
+const getBasicFinancials = async (req: Request, res: Response, next: NextFunction) => {
+	const companyTicker = req.params.ticker;
+
+	try {
+		const url = `https://finnhub.io/api/v1/stock/metric?symbol=${companyTicker.toUpperCase()}&metric=all&token=${config.keys.finnhub}`;
+		const fRes = await axios.get(url);
+		const data = fRes.data;
+
+		return res.status(200).json(data);
+	} catch (e) {
+		Logging.error(e);
+		return res.status(500).json({ e });
+	}
+};
+
 const getNews = async (req: Request, res: Response, next: NextFunction) => {
 	const companyTicker = req.params.ticker;
 	const from = req.params.from;
@@ -38,4 +68,4 @@ const getNews = async (req: Request, res: Response, next: NextFunction) => {
 	}
 };
 
-export default { getStockInfo, getNews };
+export default { getStockInfo, getQuote, getBasicFinancials, getNews };
