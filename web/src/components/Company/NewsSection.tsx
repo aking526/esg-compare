@@ -1,5 +1,5 @@
 import React from "react";
-import TNewsInfo from "../../types/TNewsInfo";
+import { TNewsInfo } from "../../types/StockFinancialInterfaces";
 
 interface NewsSectionProps {
 	currNews: TNewsInfo;

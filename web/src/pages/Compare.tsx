@@ -128,7 +128,7 @@ const Compare: React.FC = () => {
 						</div>
 						<p className="m-2">Back</p>
 					</div>
-					{ dataLoaded && data && tickers && tickers[0] && tickers[1] ?
+					{ dataLoaded && data[0] && data[1] && tickers[0] && tickers[1] ?
 							<div className="flex flex-col">
 								<div className="flex flex-row justify-evenly">
 									{ data.map((dat: ICompanyData, idx) => {

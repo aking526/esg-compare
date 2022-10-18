@@ -57,7 +57,7 @@ const StockPriceChart: React.FC<StockPriceChartProps> = ({ ticker, name, from, t
 
 	return (
 		<div>
-			<Line data={data} width={1000} height={400}/>
+			<Line data={data} width={800} height={400}/>
 		</div>
 	);
 };

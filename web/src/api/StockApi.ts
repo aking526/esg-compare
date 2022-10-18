@@ -1,5 +1,6 @@
 import axios from "axios";
 import ISA from "../types/ISA";
+import { IBasicFinancials, IStockQuote } from "../types/StockFinancialInterfaces";
 
 const apiClient = axios.create({
 	baseURL: "/api/stockInfo",
@@ -13,10 +14,20 @@ const fetchStockInfo = async (ticker: string | undefined, resolution: string, fr
 	return res.data;
 };
 
+const getQuote = async (ticker: string) => {
+	const res = await apiClient.get<IStockQuote>(`/getQuote/${ticker}`);
+	return res.data;
+};
+
+const getBasicFinancials = async (ticker: string) => {
+	const res = await apiClient.get<IBasicFinancials>(`/getBasicFinancials/${ticker}`);
+	return res.data;
+};
+
 const getNews = async (ticker: string | undefined, from: string, to: string) => {
 	const res = await apiClient.get(`/getNews/${ticker}/from=${from}&to=${to}`);
 	return res.data;
 };
 
-const StockApi = { fetchStockInfo, getNews };
+const StockApi = { fetchStockInfo, getQuote, getBasicFinancials, getNews };
 export default StockApi;

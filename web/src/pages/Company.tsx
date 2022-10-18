@@ -16,10 +16,15 @@ import StockApi from "../api/StockApi";
 import { convertDateToUnix } from "../utils/date";
 import { formatDate, getLastWeeksDate } from "../utils/date";
 import { convertStockData } from "../classes/CPair";
-import TNewsInfo from "../types/TNewsInfo";
+import { TNewsInfo, IBasicFinancials, IStockQuote } from "../types/StockFinancialInterfaces";
 import ISA from "../types/ISA";
 import { possibleGrades, possibleLevels } from "../types/ESGDataInterfaces";
+import SFInfoFormatter from "../components/Company/SFInfoFormatter";
 
+
+/*
+Fix the formatting for the stock quote section
+ */
 
 const Company: React.FC = () => {
   const { ticker } = useParams();
@@ -31,22 +36,68 @@ const Company: React.FC = () => {
   const [news, setNews] = useState<TNewsInfo[]>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
 
+
+  const [quote, setQuote] = useState<IStockQuote>({
+    c: -1,
+    d: -1,
+    dp: -1,
+    h: -1,
+    l: -1,
+    o: -1,
+    pc: -1,
+    t: -1
+  });
+  const [quoteLoading, setQuoteLoading] = useState(false);
+
+  useEffect(() => {
+    if (!ticker) return;
+
+    const fetch = async () => {
+      setQuoteLoading(true);
+      const res = await StockApi.getQuote(ticker);
+      setQuote(res);
+    };
+
+    fetch().then(() => setQuoteLoading(false));
+  }, []);
+
+  const [basicFinancials, setBasicFinancials] = useState<IBasicFinancials>({
+    metric: {},
+    metricType: "",
+    series: {}
+  });
+
   const queryClient = useQueryClient();
 
-  const { isLoading: dataLoading, isError: dataIsError, error: dataError } = useQuery<ICompanyData, Error>([`${ticker}_data`], async () => {
+  const { isLoading: dataLoading, isError: dataIsError, error: dataError } = useQuery([`${ticker}_data`], async () => {
+    const cachedData: ICompanyData | undefined = queryClient.getQueryData([`${ticker}_data`]);
+    if (cachedData) {
+      setData(cachedData);
+      return;
+    }
+
     return await CompaniesApi.fetchCompanyData(ticker);
   },
   {
     onSuccess: (res) => {
+      if (!res) return;
       setData(res[0]);
     }
   });
 
   const { isLoading: stockPricesLoading, isError: stockPricesIsError, error: stockPricesError } = useQuery([`${ticker}_stock_prices`], async () => {
+    const cachedStockData: ISA | undefined = queryClient.getQueryData([`${ticker}_stock_prices`]);
+    if (cachedStockData) {
+      const conv = convertStockData(cachedStockData, "c");
+      setClosingPrices(conv);
+      return;
+    }
+
     return await StockApi.fetchStockInfo(ticker, "D", from, to);
   },
   {
     onSuccess: (res) => {
+      if (!res) return;
       const conv = convertStockData(res, "c");
       setClosingPrices(conv);
     }
@@ -63,35 +114,49 @@ const Company: React.FC = () => {
     }
   });
 
+  const { isLoading: basicFinancialsLoading, isError: basicFinancialsIsError, error: basicFinancialsError } = useQuery([`${ticker}_basic_financials`], async () => {
+    if (!ticker) return;
+
+    const cachedBasicFinancials: IBasicFinancials | undefined = queryClient.getQueryData([`${ticker}_basic_financials`]);
+    if (cachedBasicFinancials) {
+      setBasicFinancials(cachedBasicFinancials);
+      return;
+    }
+
+    return await StockApi.getBasicFinancials(ticker);
+  }, {
+    onSuccess: (res) => {
+      if (!res) return;
+      setBasicFinancials(res);
+    }
+  });
+
+  if (basicFinancialsIsError) {
+    // @ts-ignore
+    return <QueryError message={basicFinancialsError?.message} />
+  }
+
   if (dataIsError) {
+    // @ts-ignore
     return <QueryError message={dataError?.message} />;
   }
 
   if (stockPricesIsError) {
     // @ts-ignore
-    return <QueryError message={stockPricesError.message} />;
+    return <QueryError message={stockPricesError?.message} />;
   }
 
   if (newsIsError) {
     // @ts-ignore
-    return <QueryError message={newsError.message} />;
+    return <QueryError message={newsError?.message} />;
   }
 
-  useEffect(() => {
-    const cachedData: ICompanyData | undefined = queryClient.getQueryData([`${ticker}_data`]);
-    const cachedStockData: ISA | undefined = queryClient.getQueryData([`${ticker}_stock_prices`]);
-    if (cachedData) setData(cachedData);
-    if (cachedStockData) {
-      const conv = convertStockData(cachedStockData, "c");
-      setClosingPrices(conv);
-    }
-  }, []);
 
   const { avgScores, avgGrades, avgLevels } = useIndustryAvg(data.industry);
 
   useEffect(() => {
-    setLoaded(!dataLoading && !stockPricesLoading && !newsLoading);
-  }, [dataLoading, stockPricesLoading, newsLoading]);
+    setLoaded(!dataLoading && !stockPricesLoading && !basicFinancialsLoading && !quoteLoading && !newsLoading);
+  }, [dataLoading, stockPricesLoading, basicFinancialsLoading, quoteLoading, newsLoading]);
 
   return (
     <>
@@ -142,11 +207,25 @@ const Company: React.FC = () => {
               <p className="mx-1"><strong>Total Level:</strong> <span className={possibleLevels.indexOf(data.total_level) > possibleLevels.indexOf(avgLevels.total_level) ? "text-green-500" : data.total_level === avgLevels.total_level ? "text-gray-500" : "text-red-500"} data-tip data-for="level-tip-total">{data.total_level}</span></p>
             </div>
           </div>
-          <div className="flex flex-col items-center mt-5">
-            <strong className="text-2xl mb-1.5">Stock Info</strong>
-            <p className="text-xs">Last Updated: {new Date().toLocaleString()}</p>
-            <div className="flex flex-row">
-              <StockPriceChart ticker={data.ticker} name={data.name} from={from} to={to} prices={closingPrices} />
+          <div className="flex flex-row mt-5">
+            <div className="flex flex-col items-center mr-1">
+              <strong className="text-2xl mb-1.5">Stock Info</strong>
+              <p className="text-xs">Last Updated: {new Date().toLocaleString()}</p>
+              <div className="flex flex-row">
+                <StockPriceChart ticker={data.ticker} name={data.name} from={from} to={to} prices={closingPrices} />
+              </div>
+            </div>
+            <div className="flex flex-col justify-evenly ml-2 items-center px-2 pb-2">
+              <div>
+                <strong className="text-2xl mb-1.5">Stock Quote</strong>
+                <SFInfoFormatter label="Current Price" value={quote.c} />
+              </div>
+              <div>
+                <strong className="text-2xl mb-1.5">Basic Financials</strong>
+                <div className="my-1">
+                  <SFInfoFormatter label="Market Cap" value={basicFinancials.metric["marketCapitalization"]} />
+                </div>
+              </div>
             </div>
           </div>
           <div className="flex flex-col mt-5">
