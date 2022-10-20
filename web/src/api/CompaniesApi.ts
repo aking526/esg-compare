@@ -3,15 +3,16 @@ import ISS from "../types/ISS";
 import { ICompanyData } from "../types/ICompanyData";
 import { IScores, IGrades, ILevels } from "../types/ESGDataInterfaces";
 
-const apiClient = axios.create({
-  baseURL: "/api/companies",
-  headers: {
-    "Content-type": "application/json"
-  }
-});
+// const apiClient = axios.create({
+//   baseURL: "/api/companies",
+//   headers: {
+//     "Content-type": "application/json"
+//   }
+// });
+const startUrl = "http://localhost:8000/api/companies";
 
 const getNames = async () => {
-  const res = await apiClient.get<ISS>("/getNames");
+  const res = await axios.get<ISS>(startUrl + "/getNames");
   const data = res.data;
 
   const f: string[][] = [[]];
@@ -24,36 +25,36 @@ const getNames = async () => {
 };
 
 const getIndustries = async () => {
-  const res = await apiClient.get<string[]>("/getIndustries");
+  const res = await axios.get<string[]>(startUrl + "/getIndustries");
   return res.data;
 };
 
 const fetchRankings = async (metric: string, filters: string | null) => {
-  const url = filters ? `/sort/${metric}?${filters}` : `/sort/${metric}`;
-  const res = await apiClient.get<ICompanyData[]>(url);
+  const url = startUrl + (filters ? `/sort/${metric}?${filters}` : `/sort/${metric}`);
+  const res = await axios.get<ICompanyData[]>(url);
   return res.data
 };
 
 const fetchCompanyData = async (ticker: string | undefined) => {
-  const res = await apiClient.get<ICompanyData>(`/get/${ticker}`);
+  const res = await axios.get<ICompanyData>(startUrl + `/get/${ticker}`);
   return res.data;
 };
 
 const getScores = async (industry: string | string[] | null | undefined ) => {
-  const url = industry ? `/getScores?industry=${typeof industry === "string" ? industry : industry.join(",")}` : `/getScores`;
-  const res = await apiClient.get<IScores[]>(url);
+  const url = startUrl + (industry ? `/getScores?industry=${typeof industry === "string" ? industry : industry.join(",")}` : `/getScores`);
+  const res = await axios.get<IScores[]>(url);
   return res.data;
 };
 
 const getGrades = async (industry: string | string[] | null | undefined) => {
-  const url = industry ? `/getGrades?industry=${typeof industry === "string" ? industry : industry.join(",")}` : `/getGrades`;
-  const res = await apiClient.get<IGrades[]>(url);
+  const url = startUrl + (industry ? `/getGrades?industry=${typeof industry === "string" ? industry : industry.join(",")}` : `/getGrades`);
+  const res = await axios.get<IGrades[]>(url);
   return res.data;
 };
 
 const getLevels = async (industry: string | string[] | null | undefined ) => {
-  const url = industry ? `/getLevels?industry=${typeof industry === "string" ? industry : industry.join(",")}` : `/getLevels`;
-  const res = await apiClient.get<ILevels[]>(url);
+  const url = startUrl + (industry ? `/getLevels?industry=${typeof industry === "string" ? industry : industry.join(",")}` : `/getLevels`);
+  const res = await axios.get<ILevels[]>(url);
   return res.data;
 };
 
