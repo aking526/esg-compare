@@ -4,7 +4,7 @@ import { ICompanyData } from "../types/ICompanyData";
 import { IScores, IGrades, ILevels } from "../types/ESGDataInterfaces";
 
 const apiClient = axios.create({
-  baseURL: "/api/companies",
+  baseURL: "localhost:8000/api/companies",
   headers: {
     "Content-type": "application/json"
   }
