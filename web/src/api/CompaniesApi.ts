@@ -9,7 +9,7 @@ import { IScores, IGrades, ILevels } from "../types/ESGDataInterfaces";
 //     "Content-type": "application/json"
 //   }
 // });
-const startUrl = "http://localhost:8000/api/companies";
+const startUrl = "/api/companies";
 
 const getNames = async () => {
   const res = await axios.get<ISS>(startUrl + "/getNames");
