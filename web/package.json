@@ -4,7 +4,8 @@
   "license": "GPL-3.0",
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "removeBuild": "rm -rf build/",
+    "build": "rm -rf build/ && craco build",
     "test": "jest",
     "test:watch": "jest --watch",
     "eject": "react-scripts eject"
