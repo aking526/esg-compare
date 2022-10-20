@@ -3,7 +3,7 @@ import ISA from "../types/ISA";
 import { IBasicFinancials, IStockQuote } from "../types/StockFinancialInterfaces";
 
 const apiClient = axios.create({
-	baseURL: "localhost:8000/api/stockInfo",
+	baseURL: "/api/stockInfo",
 	headers: {
 		"Content-type": "application/json"
 	}
