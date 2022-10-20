@@ -219,6 +219,15 @@ const Company: React.FC = () => {
               <div>
                 <strong className="text-2xl mb-1.5">Stock Quote</strong>
                 <SFInfoFormatter label="Current Price" value={quote.c} />
+                <SFInfoFormatter label="Change" value={quote.d} />
+                <SFInfoFormatter label="Percent Change" value={quote.dp} />
+                <div>
+                  <h3>Today's prices</h3>
+                  <SFInfoFormatter label="High price of the day" value={quote.h} />
+                  <SFInfoFormatter label="Low price of the day" value={quote.l} />
+                  <SFInfoFormatter label="Opening price of the day" value={quote.o} />
+                </div>
+                <SFInfoFormatter label="Previous close price" value={quote.pc} />
               </div>
               <div>
                 <strong className="text-2xl mb-1.5">Basic Financials</strong>
