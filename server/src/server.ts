@@ -3,8 +3,8 @@ import http from "http";
 import mongoose, { Error } from "mongoose";
 import { config } from "./config/config";
 import Logging from "./utils/Logging";
-import companyRoutes from "./routes/Company.routes";
-import stockRoutes from "./routes/StockInfo.routes";
+import path from "path";
+import apiRoutes from "./routes/apiRoutes";
 
 export const app = express();
 
@@ -49,12 +49,14 @@ const StartServer = () => {
 		next();
 	});
 
-	// Routes
-	app.use("/api/companies", companyRoutes);
-	app.use("/api/stockInfo", stockRoutes);
+	// Incorporate Frontend
+	app.use(express.static(path.join(__dirname, '../../web/build')));
 
-	// Healthcheck
-	app.get("/healthcheck", (req: Request, res: Response, next: NextFunction) => res.status(200).json({ message: "working" }));
+	app.get("", (req: Request, res: Response) => {
+		res.sendFile(path.join(__dirname, '../../web/build', 'index.html'));
+	});
+
+	app.use("/api", apiRoutes);
 
 	// Error handling
 	app.use((req: Request, res: Response, next: NextFunction) => { // Returns error when on localhost:8000

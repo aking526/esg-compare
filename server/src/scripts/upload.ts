@@ -6,13 +6,8 @@ import { config } from "../config/config";
 import { authCheck } from "./authCheck";
 import companyProfiler from "./companyProfiler";
 
-export const inDB = async (ticker: string) => {
-	try {
-		const res = await axios.get(`http://localhost:8000/api/companies/getNames`);
-		return ticker in res.data;
-	}	catch (e) {
-		return false;
-	}
+export const inDB = (ticker: string, cInDB: any) => {
+	return ticker in cInDB;
 };
 
 const Main = async () => {
@@ -23,11 +18,13 @@ const Main = async () => {
 	const info_data = JSON.parse(fs.readFileSync("./cache/company_info.json").toString());
 	const esg_data = JSON.parse(fs.readFileSync("./cache/esg_data.json").toString());
 
+	const cInDB = await axios.get("http://localhost:8000/api/companies/getNames");
+
 	let toUpload: string[] = [];
 	for (let i = 0; i < company_tickers.length; i++) {
 		const curr = company_tickers[i];
 		if (!(curr in esg_data) || !(curr in info_data)) continue; // check if data is downloaded
-		if (await inDB(curr)) continue; // check if company is already in database
+		if (inDB(curr, cInDB)) continue; // check if company is already in database
 
 		toUpload.push(curr);
 	}
