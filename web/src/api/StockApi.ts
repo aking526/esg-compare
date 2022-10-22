@@ -9,7 +9,11 @@ import { IBasicFinancials, IStockQuote } from "../types/StockFinancialInterfaces
 // 	}
 // });
 
-const startUrl = "/api/stockInfo"
+// Production
+// const startUrl = "/api/stockInfo"
+
+// Development
+const startUrl = "http://localhost:8000/api/stockInfo";
 
 const fetchStockInfo = async (ticker: string | undefined, resolution: string, from: string | number, to: string | number) => {
 	const res = await axios.get<ISA>(startUrl + `/get/symbol=${ticker}&resolution=${resolution}&from=${from}&to=${to}`);

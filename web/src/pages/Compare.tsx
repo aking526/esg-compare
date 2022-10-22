@@ -13,7 +13,7 @@ import StockApi from "../api/StockApi";
 import { convertDateToUnix } from "../utils/date";
 import CompareStockChart from "../components/Compare/charts/CompareStockChart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleLeft } from "@fortawesome/free-solid-svg-icons";
+import { faCircleLeft, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 
 const Compare: React.FC = () => {
 	const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -119,25 +119,33 @@ const Compare: React.FC = () => {
 	};
 
 	return (
+		<div>
+			{ allSelected &&
+				<div className="flex flex-row">
+        	<div className="flex items-center justify-center">
+          	<FontAwesomeIcon icon={faCircleLeft} onClick={handleBackButtonClicked}/>
+        	</div>
+        	<p className="m-2">Back</p>
+      	</div>
+			}
 		<div className="font-modern my-16 mx-24 p-5 bg-slate-200 rounded-2xl">
 			{ allSelected ?
 				<div>
-					<div className="flex flex-row">
-						<div className="flex items-center justify-center">
-							<FontAwesomeIcon icon={faCircleLeft} onClick={handleBackButtonClicked} />
-						</div>
-						<p className="m-2">Back</p>
-					</div>
 					{ dataLoaded && data[0] && data[1] && tickers[0] && tickers[1] ?
 							<div className="flex flex-col">
 								<div className="flex flex-row justify-evenly">
 									{ data.map((dat: ICompanyData, idx) => {
 										const ticker = tickers[idx];
 										return (
-											<div className="flex flex-row justify-between" key={idx}>
-												<div className="flex flex-col mx-5">
+											<div className="flex flex-row justify-between mx-2" key={idx}>
+												<div className="mr-2">
+													<FontAwesomeIcon icon={faCircleXmark} onClick={() => {
+														newTickers(idx, "");
+													}}/>
+												</div>
+												<div className="flex flex-col mr-5">
 													<div className="flex flex-row">
-														<h1 className="mr-2 font-extrabold text-4xl">{
+														<h1 className="mr-2 font-extrabold text-3xl">{
 															<Link to={`/company/${ticker}`}>{dat.name}</Link>
 														}</h1>
 														<h2 className="ml-2 mt-2 text-2xl">({ticker?.toUpperCase()})</h2>
@@ -189,18 +197,19 @@ const Compare: React.FC = () => {
 				:
 				<>
 					{ companies ?
-						<div className="flex flex-row justify-evenly my-16 mx-32">
+						<div className="flex flex-row justify-evenly my-16 mx-32 px-18 py-36">
 							<CompareInputSelected ticker={companies} />
 							{ !tickers[1] ? <CompareInputField index={1} names={names.data} prevSelected={companies ? companies : undefined} passBack={(t: string) => newTickers(1, t)}/> : <CompareInputSelected ticker={tickers[1]} /> }
 						</div>
 								:
-						<div className="flex flex-row items-center justify-evenly">
+						<div className="flex flex-row items-center justify-evenly px-18 py-36">
 							{ !tickers[0] ? <CompareInputField index={0} prevSelected={companies ? companies : undefined} names={names.data} passBack={(t: string) => newTickers(0, t)}/> : <CompareInputSelected ticker={tickers[0]} /> }
 							{ !tickers[1] ? <CompareInputField index={1} prevSelected={companies ? companies : undefined} names={names.data} passBack={(t: string) => newTickers(1, t)}/> : <CompareInputSelected ticker={tickers[1]} /> }
 						</div>
 					}
 				</>
 			}
+		</div>
 		</div>
 	);
 };

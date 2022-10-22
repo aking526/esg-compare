@@ -10,8 +10,7 @@ const NavBar: React.FC = () => {
     <div className="flex flex-row items-center justify-evenly bg-sky-300 p-5 font-modern text-xl">
       <h1><Link to="/">Home <FontAwesomeIcon icon={faHouse}/></Link></h1>
       <h1><Link to="/rankings">Rankings  <FontAwesomeIcon icon={faBars}/></Link></h1>
-      <h1><Link to="/compare">Compare</Link></h1>
-      <h1><Link to="/ratings-methodology">Ratings Methodology <FontAwesomeIcon icon={faSliders}/></Link></h1>
+      <h1><Link to="/compare">Compare</Link> <FontAwesomeIcon icon={faSliders}/></h1>
       <h1><Link to="/about">About <FontAwesomeIcon icon={faUserLarge}/></Link></h1>
       <a href={Github_URL}>Github <FontAwesomeIcon icon={faGithub} size="lg" /></a>
     </div>

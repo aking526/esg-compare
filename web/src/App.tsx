@@ -14,7 +14,6 @@ import TopBar from "./components/TopBar";
 import Compare from "./pages/Compare";
 import CompaniesApi from "./api/CompaniesApi";
 import QueryError from "./components/QueryError";
-import RatingsMethodology from "./pages/RatingsMethodology";
 
 function App() {
   const names = useQuery<string[][], Error>(['names'], CompaniesApi.getNames);
@@ -30,7 +29,6 @@ function App() {
       <Routes>
         <Route path="/company/:ticker" element={ <Company/> }/>
         <Route path="/compare" element={ <Compare /> }/>
-        <Route path="/ratings-methodology" element={ <RatingsMethodology/> }/>
         <Route path="/about" element={ <About/> }/>
         <Route path="/rankings" element={ <Rankings/> }/>
         <Route path="/" element={ <Home/> }/>

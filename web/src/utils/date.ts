@@ -10,7 +10,7 @@ export function convertUnixToDate(unix_timestamp: number) {
 	const month  = a.getMonth();
 	const date = a.getDate();
 
-	return month + "/" + date + "/" + year;
+	return month + 1 + "/" + date + "/" + year;
 }
 
 

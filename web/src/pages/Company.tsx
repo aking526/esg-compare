@@ -13,13 +13,12 @@ import { CPair } from "../classes/CPair";
 import CompaniesApi from "../api/CompaniesApi";
 import QueryError from "../components/QueryError";
 import StockApi from "../api/StockApi";
-import { convertDateToUnix } from "../utils/date";
+import {convertDateToUnix, convertUnixToDate} from "../utils/date";
 import { formatDate, getLastWeeksDate } from "../utils/date";
 import { convertStockData } from "../classes/CPair";
 import { TNewsInfo, IBasicFinancials, IStockQuote } from "../types/StockFinancialInterfaces";
 import ISA from "../types/ISA";
 import { possibleGrades, possibleLevels } from "../types/ESGDataInterfaces";
-import SFInfoFormatter from "../components/Company/SFInfoFormatter";
 
 
 /*
@@ -31,8 +30,13 @@ const Company: React.FC = () => {
 
   const [data, setData] = useState<ICompanyData>(BlankCompanyData);
   const [closingPrices, setClosingPrices] = useState<CPair[]>([]);
-  const [from, setFrom] = useState<number>(1577854800);
-  const [to, setTo] = useState<number>(convertDateToUnix(new Date()));
+
+  let d = new Date();
+  d.setMonth(d.getMonth() - 1)
+  let newd = new Date();
+  const [from, setFrom] = useState<number>(convertDateToUnix(d));
+  const [to, setTo] = useState<number>(convertDateToUnix(newd));
+
   const [news, setNews] = useState<TNewsInfo[]>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
 
@@ -218,21 +222,21 @@ const Company: React.FC = () => {
             <div className="flex flex-col justify-evenly ml-2 items-center px-2 pb-2">
               <div>
                 <strong className="text-2xl mb-1.5">Stock Quote</strong>
-                <SFInfoFormatter label="Current Price" value={quote.c} />
-                <SFInfoFormatter label="Change" value={quote.d} />
-                <SFInfoFormatter label="Percent Change" value={quote.dp} />
+                <div><strong>Current Price: </strong> {quote.c}</div>
+                <div><strong>Change: </strong> {quote.d}</div>
+                <div><strong>Percent Change: </strong> {quote.dp}</div>
                 <div>
                   <h3>Today's prices</h3>
-                  <SFInfoFormatter label="High price of the day" value={quote.h} />
-                  <SFInfoFormatter label="Low price of the day" value={quote.l} />
-                  <SFInfoFormatter label="Opening price of the day" value={quote.o} />
+                  <div><strong>High price of the day: </strong> {quote.h}</div>
+                  <div><strong>Low price of the day: </strong> {quote.l}</div>
+                  <div><strong>Opening price of the day: </strong> {quote.o}</div>
                 </div>
-                <SFInfoFormatter label="Previous close price" value={quote.pc} />
+                <div><strong>Previous close price: </strong> {quote.pc}</div>
               </div>
               <div>
                 <strong className="text-2xl mb-1.5">Basic Financials</strong>
                 <div className="my-1">
-                  <SFInfoFormatter label="Market Cap" value={basicFinancials.metric["marketCapitalization"]} />
+                  <div><strong>Market Cap: </strong> {basicFinancials.metric["marketCapitalization"]} million</div>
                 </div>
               </div>
             </div>
@@ -241,6 +245,7 @@ const Company: React.FC = () => {
             <strong className="text-2xl mb-1.5">News</strong>
             <div className="flex flex-row">
               {news.slice(0, 5).map((curr, idx) => {
+                if (!curr.url || curr.url === "") return null;
                 return <NewsSection currNews={curr} key={idx} />;
               })}
             </div>
