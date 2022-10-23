@@ -1,9 +1,7 @@
 import axios from "axios";
-import fs from "fs";
 import { config } from "../config/config";
 import { authCheck } from "./authCheck";
 import Logging from "../utils/Logging";
-import ISA from "../types/ISA";
 
 const checkDuplicated = async (ticker: string) => {
 	const res = await axios.get(`http://localhost:8000/api/companies/get/${ticker}`);
@@ -47,27 +45,4 @@ const removeDuplicates = async () => {
 	return removed;
 };
 
-// removeDuplicates().then((removed) => Logging.log("Removed duplicates of: " + removed.join(" ")));
-
-const fixESGJSON = () => {
-	const esg = JSON.parse(fs.readFileSync("./cache/esg_data.json").toString());
-
-	let arr: ISA[] = [];
-	for (const ticker in esg) {
-		arr.push(esg[ticker]);
-	}
-
-	let fixed: ISA = {};
-	for (let i = 0; i < arr.length; i++) {
-		const curr: ISA = arr[i];
-		fixed[curr["stock_symbol"].toLowerCase()] = curr;
-	}
-
-	fs.writeFileSync("./cache/esg_data.json", JSON.stringify(fixed, null, 4), {});
-};
-
-fixESGJSON();
-
-const sortESGJSON = () => {
-	const esg = JSON.parse(fs.readFileSync("./cache/esg_data.json").toString());
-};
+removeDuplicates().then((removed) => Logging.log("Removed duplicates of: " + removed.join(" ")));
