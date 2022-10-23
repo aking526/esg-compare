@@ -157,7 +157,9 @@ const Rankings: React.FC = () => {
     }
   };
 
-  // console.log((!reverse ? sliceStart + 1 : Math.max(rankings.length - sliceStart - 50, 0) + 1) + " " + (!reverse ? sliceStart + 50 + 1 : rankings.length - sliceStart + 1) + " sliceStart: " + sliceStart);
+  useEffect(() => {
+    setSliceStart(0);
+  }, [reverse]);
 
   return (
       <div className={`relative w-screen bg-slate-100 py-5 h-page-h overflow-y-hidden`}>
@@ -196,18 +198,18 @@ const Rankings: React.FC = () => {
             <div className="w-rankings-w">
               { !rankingsLoading && !uncachedRankingsLoading ? (
                 <div className="flex flex-col">
-                  <RankingsTable rankings={rankings.slice(!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0), !reverse ? sliceStart + 50 : Math.min(rankings.length - sliceStart, rankings.length))} metric={metric} start={!reverse ? sliceStart : rankings.length - sliceStart - 50} reverse={reverse} />
-                  <div className="flex flex-row w-rankings-w border-2 border-slate-300 w-min">
+                  <RankingsTable rankings={rankings.slice(!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0), !reverse ? sliceStart + 50 : Math.min(rankings.length - sliceStart, rankings.length))} metric={metric} start={!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0)} reverse={reverse} />
+                  <div className="flex flex-row relative border-2 rounded-b-xl bg-slate-300 border-slate-300 w-min">
                     <RankingsNavBtn handleClick={() => {
                       setSliceStart(prevState => {
                         return prevState >= 50 ? prevState - 50 : prevState;
                       });
-                    }} icon={faArrowLeft} />
+                    }} icon={faArrowLeft} color="black" />
                     <RankingsNavBtn handleClick={() => {
                       setSliceStart(prevState => {
                         return prevState >= rankings.length - 50 ? prevState : prevState + 50;
                       });
-                    }} icon={faArrowRight} />
+                    }} icon={faArrowRight} color="black" />
                   </div>
                 </div>
                 ) :

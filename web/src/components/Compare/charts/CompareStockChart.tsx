@@ -66,7 +66,7 @@ const CompareStockChart: React.FC<CompareStockChartProps> = ({ tickerA, pricesA,
 
 	return (
 		<div>
-			<Line data={data} options={options} />
+			<Line data={data} options={options} width={800} height={400} />
 		</div>
 	);
 };

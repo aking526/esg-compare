@@ -121,24 +121,24 @@ const Compare: React.FC = () => {
 	return (
 		<div>
 			{ allSelected &&
-				<div className="flex flex-row">
+				<div className="flex flex-row rounded-br-2xl bg-black p-1.5 w-fit" onClick={handleBackButtonClicked}>
         	<div className="flex items-center justify-center">
-          	<FontAwesomeIcon icon={faCircleLeft} onClick={handleBackButtonClicked}/>
+          	<FontAwesomeIcon color="white" icon={faCircleLeft} />
         	</div>
-        	<p className="m-2">Back</p>
+        	<p className="m-2 text-white">Back</p>
       	</div>
 			}
-		<div className="font-modern my-16 mx-24 p-5 bg-slate-200 rounded-2xl">
-			{ allSelected ?
-				<div>
-					{ dataLoaded && data[0] && data[1] && tickers[0] && tickers[1] ?
+			<div className={`font-modern mb-16 ${ allSelected ? "mt-8" : "mt-16" } mx-24 p-5 bg-slate-200 rounded-2xl`}>
+				{ allSelected ?
+					<div>
+						{ dataLoaded && data[0] && data[1] && tickers[0] && tickers[1] ?
 							<div className="flex flex-col">
 								<div className="flex flex-row justify-evenly">
 									{ data.map((dat: ICompanyData, idx) => {
 										const ticker = tickers[idx];
 										return (
 											<div className="flex flex-row justify-between mx-2" key={idx}>
-												<div className="mr-2">
+												<div className="flex justify-center mr-3.5">
 													<FontAwesomeIcon icon={faCircleXmark} onClick={() => {
 														newTickers(idx, "");
 													}}/>
@@ -148,7 +148,7 @@ const Compare: React.FC = () => {
 														<h1 className="mr-2 font-extrabold text-3xl">{
 															<Link to={`/company/${ticker}`}>{dat.name}</Link>
 														}</h1>
-														<h2 className="ml-2 mt-2 text-2xl">({ticker?.toUpperCase()})</h2>
+														<h2 className="ml-2 mt-1.5 text-2xl">({ticker?.toUpperCase()})</h2>
 													</div>
 													<p className="text-base">{dat.exchange}</p>
 													<div className="flex flex-row text-xs">
@@ -178,38 +178,41 @@ const Compare: React.FC = () => {
 									name: data[1].name,
 									ratings: [data[1].environment_score, data[1].social_score, data[1].governance_score, data[1].total_score]
 									}} />
-							</div>
-								{ stockPricesLoaded &&
-									<div>
+								</div>
+								<div className="flex flex-row">
+									{ stockPricesLoaded &&
 										<CompareStockChart
 											tickerA={tickers[0]}
 											pricesA={stockPrices[0]}
 											tickerB={tickers[1]}
 											pricesB={stockPrices[1]}
 										/>
+									}
+									<div>
+
 									</div>
-								}
+								</div>
 							</div>
 							:
 							<CompareLoading tickers={tickers} />
-					}
-				</div>
-				:
-				<>
-					{ companies ?
-						<div className="flex flex-row justify-evenly my-16 mx-32 px-18 py-36">
-							<CompareInputSelected ticker={companies} />
-							{ !tickers[1] ? <CompareInputField index={1} names={names.data} prevSelected={companies ? companies : undefined} passBack={(t: string) => newTickers(1, t)}/> : <CompareInputSelected ticker={tickers[1]} /> }
-						</div>
-								:
-						<div className="flex flex-row items-center justify-evenly px-18 py-36">
-							{ !tickers[0] ? <CompareInputField index={0} prevSelected={companies ? companies : undefined} names={names.data} passBack={(t: string) => newTickers(0, t)}/> : <CompareInputSelected ticker={tickers[0]} /> }
-							{ !tickers[1] ? <CompareInputField index={1} prevSelected={companies ? companies : undefined} names={names.data} passBack={(t: string) => newTickers(1, t)}/> : <CompareInputSelected ticker={tickers[1]} /> }
-						</div>
-					}
-				</>
-			}
-		</div>
+						}
+					</div>
+					:
+					<>
+						{ companies ?
+							<div className="flex flex-row justify-evenly my-16 mx-32 px-18 py-36">
+								<CompareInputSelected ticker={companies} handleClick={() => newTickers(0, "")}/>
+								{ !tickers[1] ? <CompareInputField index={1} names={names.data} prevSelected={companies ? companies : undefined} passBack={(t: string) => newTickers(1, t)}/> : <CompareInputSelected ticker={tickers[1]} handleClick={() => newTickers(1, "")}/> }
+							</div>
+									:
+							<div className="flex flex-row items-center justify-evenly px-18 py-36">
+								{ !tickers[0] ? <CompareInputField index={0} prevSelected={companies ? companies : undefined} names={names.data} passBack={(t: string) => newTickers(0, t)}/> : <CompareInputSelected ticker={tickers[0]} handleClick={() => newTickers(0, "")}/> }
+								{ !tickers[1] ? <CompareInputField index={1} prevSelected={companies ? companies : undefined} names={names.data} passBack={(t: string) => newTickers(1, t)}/> : <CompareInputSelected ticker={tickers[1]} handleClick={() => newTickers(1, "")}/> }
+							</div>
+						}
+					</>
+				}
+			</div>
 		</div>
 	);
 };

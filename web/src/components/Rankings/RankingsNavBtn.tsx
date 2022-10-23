@@ -4,17 +4,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 interface RankingsNavBtnProps {
 	handleClick: Function;
 	icon: any;
+	color: string;
 }
 
-const RankingsNavBtn: React.FC<RankingsNavBtnProps> = ({ handleClick, icon }) => {
+const RankingsNavBtn: React.FC<RankingsNavBtnProps> = ({ handleClick, icon, color }) => {
 	return (
 		<div
-			className="border-black border-2 rounded-lg mx-1 p-1 bg-black"
+			className="mx-1 p-1"
 			onClick={() => {
 				handleClick();
 			}}
 		>
-			<FontAwesomeIcon color="white" icon={icon} />
+			<FontAwesomeIcon color={color} icon={icon} />
 		</div>
 	);
 };
