@@ -6,7 +6,7 @@ import ISA from "../types/ISA";
 import { config } from "../config/config";
 
 const createCompany = (req: Request, res: Response, next: NextFunction) => {
-	const { name, ticker, currency, exchange, industry, logo, weburl, esg_id, environment_grade, environment_level, environment_score, social_grade, social_level, social_score, governance_grade, governance_level, governance_score, total_grade, total_level, total_score, last_processing_date } = req.body;
+	const { name, ticker, cik, currency, exchange, industry, logo, weburl, esg_id, environment_grade, environment_level, environment_score, social_grade, social_level, social_score, governance_grade, governance_level, governance_score, total_grade, total_level, total_score, last_processing_date } = req.body;
 	const auth = req.params.auth;
 
 	if (auth !== config.server.auth) {
@@ -17,6 +17,7 @@ const createCompany = (req: Request, res: Response, next: NextFunction) => {
 		_id: new mongoose.Types.ObjectId(),
 		ticker,
 		name,
+		cik,
 		currency,
 		exchange,
 		industry,
@@ -45,6 +46,11 @@ const createCompany = (req: Request, res: Response, next: NextFunction) => {
 
 const readCompany = async (req: Request, res: Response, next: NextFunction) => {
 	const companyTicker = req.params.ticker;
+	const key = req.params.key;
+
+	if (key !== config.server.key) {
+		return res.status(403).json({ message: "Invalid API Key"});
+	}
 
 	return Company.find({ ticker: companyTicker })
 			.then((company) => (company ? res.status(200).json(company) : res.status(404).json({ message: "Not Found" })))
@@ -52,6 +58,12 @@ const readCompany = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const readAll = (req: Request, res: Response, next: NextFunction) => {
+	const key = req.params.key;
+
+	if (key !== config.server.key) {
+		return res.status(403).json({ message: "Invalid API Key"});
+	}
+
 	return Company.find()
 			.then(companies => res.status(200).json({ companies }))
 			.catch((error) => res.status(500).json({ error }));
@@ -107,6 +119,13 @@ const deleteById = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const readCompanyNames = (req: Request, res: Response, next: NextFunction) => {
+	const key = req.params.key;
+
+
+	if (key !== config.server.key) {
+		return res.status(403).json({ message: "Invalid API Key" });
+	}
+
 	return Company.find().select({ "name": 1, "ticker": 1, "_id": 0 })
 			.then((data: (ICompanyModel & {_id: mongoose.Types.ObjectId})[]) => {
 				let formatted: ISA = {};
@@ -119,6 +138,12 @@ const readCompanyNames = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const readIndustries = (req: Request, res: Response, next: NextFunction) => {
+	const key = req.params.key;
+
+	if (key !== config.server.key) {
+		return res.status(403).json({ message: `Invalid API Key ${key}` });
+	}
+
 	return Company.find().select({ "industry": 1, "_id": 0 })
 			.then((data: (ICompanyModel & {_id: ObjectId })[]) => {
 				let formatted: string[] = [];
@@ -131,6 +156,12 @@ const readIndustries = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const readSort = (req: Request, res: Response, next: NextFunction) => {
+	const key = req.params.key;
+
+	if (key !== config.server.key) {
+		return res.status(403).json({ message: "Invalid API Key"});
+	}
+
 	const metric = req.params.metric;
 	const industry = req.query.industry;
 	const exchange = req.query.exchange;
@@ -157,6 +188,12 @@ const readSort = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getScores = (req: Request, res: Response, next: NextFunction) => {
+	const key = req.params.key;
+
+	if (key !== config.server.key) {
+		return res.status(403).json({ message: "Invalid API Key"});
+	}
+
 	const industry = req.query.industry;
 
 	let filters: {
@@ -177,6 +214,12 @@ const getScores = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getGrades = (req: Request, res: Response, next: NextFunction) => {
+	const key = req.params.key;
+
+	if (key !== config.server.key) {
+		return res.status(403).json({ message: "Invalid API Key"});
+	}
+
 	const industry = req.query.industry;
 
 	let filters: {
@@ -197,6 +240,12 @@ const getGrades = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getLevels = (req: Request, res: Response, next: NextFunction) => {
+	const key = req.params.key;
+
+	if (key !== config.server.key) {
+		return res.status(403).json({ message: "Invalid API Key"});
+	}
+
 	const industry = req.query.industry;
 
 	let filters: {
@@ -217,6 +266,12 @@ const getLevels = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const tempFixer = (req: Request, res: Response, next: NextFunction) => {
+	const auth = req.params.auth;
+
+	if (auth !== config.server.auth) {
+		return res.status(403).json({ message: "No Authorization "});
+	}
+
 	return Company.find({ industry: "Metals & Mining" })
 		.then((companies) => res.status(200).json(companies))
 		.catch((error) => res.status(500).json({ error }));

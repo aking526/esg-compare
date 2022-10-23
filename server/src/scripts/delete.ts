@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import Logging from "../utils/Logging";
 import company_list from "../../data/company_list.json";
 import { config } from "../config/config";
-import { authCheck } from "./authCheck";
+import { authCheck } from "../utils/authCheck";
 
 function deleteCompany(ticker: string, auth: string, callback: Function) {
 	authCheck(auth);

@@ -3,6 +3,7 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface ICompany {
 	ticker: string;
 	name: string;
+	cik: string;
 	currency: string;
 	exchange: string;
 	industry: string;
@@ -30,6 +31,7 @@ const CompanySchema: Schema = new Schema(
 	{
 		ticker: { type: String, required: true },
 		name: { type: String, required: true },
+		cik: { type: String, required: true },
 		currency: { type: String, required: true },
 		exchange: { type: String, required: true },
 		industry: { type: String, required: true },

@@ -9,6 +9,12 @@ const getStockInfo = async (req: Request, res: Response, next: NextFunction) => 
 	const from = req.params.from;
 	const to = req.params.to;
 
+	const key = req.params.key;
+
+	if (key !== config.server.key) {
+		return res.status(403).json({ message: `Invalid API Key ${key}` });
+	}
+
 	try {
 		const url = `https://finnhub.io/api/v1/stock/candle?symbol=${companyTicker.toUpperCase()}&resolution=${resolution}&from=${from}&to=${to}&token=${config.keys.finnhub}`;
 		const fRes = await axios.get(url);
@@ -24,6 +30,13 @@ const getStockInfo = async (req: Request, res: Response, next: NextFunction) => 
 const getQuote = async (req: Request, res: Response, next: NextFunction) => {
 	const companyTicker = req.params.ticker;
 
+	const key = req.params.key;
+
+	if (key !== config.server.key) {
+		return res.status(403).json({ message: `Invalid API Key ${key}` });
+	}
+
+
 	try {
 		const url = `https://finnhub.io/api/v1/quote?symbol=${companyTicker.toUpperCase()}&token=${config.keys.finnhub}`;
 		const fRes = await axios.get(url);
@@ -38,6 +51,12 @@ const getQuote = async (req: Request, res: Response, next: NextFunction) => {
 
 const getBasicFinancials = async (req: Request, res: Response, next: NextFunction) => {
 	const companyTicker = req.params.ticker;
+
+	const key = req.params.key;
+
+	if (key !== config.server.key) {
+		return res.status(403).json({ message: `Invalid API Key ${key}` });
+	}
 
 	try {
 		const url = `https://finnhub.io/api/v1/stock/metric?symbol=${companyTicker.toUpperCase()}&metric=all&token=${config.keys.finnhub}`;
@@ -55,6 +74,12 @@ const getNews = async (req: Request, res: Response, next: NextFunction) => {
 	const companyTicker = req.params.ticker;
 	const from = req.params.from;
 	const to = req.params.to;
+
+	const key = req.params.key;
+
+	if (key !== config.server.key) {
+		return res.status(403).json({ message: `Invalid API Key ${key}` });
+	}
 
 	try {
 		const url = `https://finnhub.io/api/v1/company-news?symbol=${companyTicker}&from=${from}&to=${to}&token=${config.keys.finnhub}`;

@@ -8,6 +8,7 @@ const MONGO_URL = `mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@cluster0.lc
 
 const SERVER_PORT = process.env.SERVER_PORT ? Number(process.env.SERVER_PORT) : 1337;
 const SERVER_AUTH = process.env.SERVER_AUTH || "";
+const SERVER_KEY = process.env.SERVER_KEY || "";
 
 const ESG_API_KEY = process.env.ESG_API_KEY || "";
 const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY || "";
@@ -19,7 +20,8 @@ export const config = {
   },
   server: {
     port: SERVER_PORT,
-    auth: SERVER_AUTH
+    auth: SERVER_AUTH,
+    key: SERVER_KEY
   },
   keys: {
     esg: ESG_API_KEY,

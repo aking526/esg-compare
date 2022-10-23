@@ -1,12 +1,13 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { ICompany } from "../models/Company.model";
-import Logging from "../utils/Logging";
+import Logging from "./Logging";
 import ISA from "../types/ISA";
 
-const formSchema = (ticker: string, curr_ci: ISA, curr_esg: ISA) => {
+const formSchema = (ticker: string, cik: string, curr_ci: ISA, curr_esg: ISA) => {
 	const data: ICompany = {
 		ticker: ticker,
 		name: curr_ci["name"],
+		cik: cik,
 		currency: curr_ci["currency"],
 		exchange: curr_ci["exchange"],
 		industry: curr_ci["finnhubIndustry"],
@@ -35,8 +36,8 @@ const formSchema = (ticker: string, curr_ci: ISA, curr_esg: ISA) => {
 	return data;
 };
 
-const buildProfile = (ticker: string, curr_ci: ISA, curr_esg: ISA, callback: Function, SERVER_AUTH: string) => {
-	const data = formSchema(ticker, curr_ci, curr_esg);
+const buildProfile = (ticker: string, cik: string, curr_ci: ISA, curr_esg: ISA, callback: Function, SERVER_AUTH: string) => {
+	const data = formSchema(ticker, cik, curr_ci, curr_esg);
 
 	axios.post(`http://localhost:8000/api/companies/create/auth=${SERVER_AUTH}`, data)
 			.then((res: AxiosResponse) => {
@@ -51,12 +52,13 @@ const buildProfile = (ticker: string, curr_ci: ISA, curr_esg: ISA, callback: Fun
 			});
 };
 
-const updateProfile = (ticker: string, curr_ci: ISA, curr_esg: ISA, callback: Function, SERVER_AUTH: string) => {
-	const data = formSchema(ticker, curr_ci, curr_esg);
+const updateProfile = (ticker: string, cik: string, curr_ci: ISA, curr_esg: ISA, callback: Function, SERVER_AUTH: string) => {
+	const data = formSchema(ticker, cik, curr_ci, curr_esg);
 
 	axios.patch(`http://localhost:8000/api/companies/update/ticker=${ticker}&auth=${SERVER_AUTH}`, data)
 			.then((res: AxiosResponse) => {
 				// Logging.log(res.data);
+				Logging.log(ticker + " uploaded");
 				callback();
 			})
 			.catch((error: AxiosError) => {

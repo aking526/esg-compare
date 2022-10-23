@@ -4,6 +4,7 @@ export interface ICompanyData extends ISA {
 	_id?: any;
 	ticker: string;
 	name: string;
+	cik: string;
 	currency: string;
 	exchange: string;
 	industry: string;
@@ -29,6 +30,7 @@ export const BlankCompanyData: ICompanyData = {
 	_id: null,
 	ticker: "",
 	name: "",
+	cik: "",
 	currency: "",
 	exchange: "",
 	industry: "",

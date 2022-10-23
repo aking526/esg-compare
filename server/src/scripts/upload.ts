@@ -3,8 +3,8 @@ import company_tickers from "../../data/company_tickers.json";
 import axios from "axios";
 import Logging from "../utils/Logging";
 import { config } from "../config/config";
-import { authCheck } from "./authCheck";
-import companyProfiler from "./companyProfiler";
+import { authCheck } from "../utils/authCheck";
+import companyProfiler from "../utils/companyProfiler";
 
 export const inDB = (ticker: string, cInDB: any) => {
 	return ticker in cInDB;
@@ -17,6 +17,7 @@ const Main = async () => {
 
 	const info_data = JSON.parse(fs.readFileSync("./cache/company_info.json").toString());
 	const esg_data = JSON.parse(fs.readFileSync("./cache/esg_data.json").toString());
+	const ciks = JSON.parse(fs.readFileSync("./data/ciks.json").toString());
 
 	const cInDB = await axios.get("http://localhost:8000/api/companies/getNames");
 
@@ -31,7 +32,7 @@ const Main = async () => {
 
 	let uploaded: string[] = [];
 	for (let i = 0; i < toUpload.length; i++) {
-		companyProfiler.buildProfile(toUpload[i], info_data[toUpload[i]], esg_data[toUpload[i]], () => {
+		companyProfiler.buildProfile(toUpload[i], ciks[toUpload[i]], info_data[toUpload[i]], esg_data[toUpload[i]], () => {
 			uploaded.push(toUpload[i]);
 			if (uploaded.length === toUpload.length) {
 				return uploaded;

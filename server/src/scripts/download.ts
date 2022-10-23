@@ -3,8 +3,9 @@ import { config } from "../config/config";
 import company_list from "../../data/company_list.json";
 import Logging from "../utils/Logging";
 import ISA from "../types/ISA";
-import { authCheck } from "./authCheck";
-import companyProfiler from "./companyProfiler";
+import { authCheck } from "../utils/authCheck";
+import companyProfiler from "../utils/companyProfiler";
+import fs from "fs";
 
 async function Main() {
 	const ESG_API_KEY = config.keys.esg;
@@ -49,12 +50,14 @@ async function Main() {
 		return data;
 	};
 
+	const ciks = JSON.parse(fs.readFileSync("./data/ciks.json").toString());
+
 	let company_info_data: ISA = await getCompanyInfo(company_list);
 	let esg_data: ISA = await getESGData(company_list);
 
 	let counter = 0;
 	for (let i = 0; i < company_list.length; i++) {
-		companyProfiler.buildProfile(company_list[i], company_info_data[company_list[i]], esg_data[company_list[i]], () => {
+		companyProfiler.buildProfile(company_list[i], ciks[company_list[i]], company_info_data[company_list[i]], esg_data[company_list[i]], () => {
 			counter++
 			Logging.log(counter + " number of profiles built");
 			if (counter === company_list.length) {

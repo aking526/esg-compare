@@ -1,6 +1,6 @@
 import axios from "axios";
 import { config } from "../config/config";
-import { authCheck } from "./authCheck";
+import { authCheck } from "../utils/authCheck";
 import Logging from "../utils/Logging";
 import ISA from "../types/ISA";
 

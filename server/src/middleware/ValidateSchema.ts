@@ -21,6 +21,7 @@ export const schemas = {
 		create: Joi.object<ICompany>({
 			ticker: Joi.string().required(),
 			name: Joi.string().required(),
+			cik: Joi.string().required(),
 			currency: Joi.string().required(),
 			exchange: Joi.string().required(),
 			industry: Joi.string().required(),
@@ -44,6 +45,7 @@ export const schemas = {
 		update: Joi.object<ICompany>({
 			ticker: Joi.string().required(),
 			name: Joi.string().required(),
+			cik: Joi.string().required(),
 			currency: Joi.string().required(),
 			exchange: Joi.string().required(),
 			industry: Joi.string().allow(""),

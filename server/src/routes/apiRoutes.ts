@@ -1,4 +1,4 @@
-import express, {NextFunction, Request, Response} from "express";
+import express, { NextFunction, Request, Response } from "express";
 import companyRoutes from "./Company.routes";
 import stockRoutes from "./StockInfo.routes";
 

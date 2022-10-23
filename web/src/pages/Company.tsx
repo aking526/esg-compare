@@ -166,7 +166,7 @@ const Company: React.FC = () => {
     <>
       {loaded && avgScores && avgGrades && avgLevels && data ? (
         <div className="flex flex-col shadow-light my-16 font-modern mx-24 p-5 bg-slate-200 rounded-2xl">
-          <CompanyInfo name={data.name} ticker={data.ticker} exchange={data.exchange} industry={data.industry} logo={data.logo} weburl={data.weburl} />
+          <CompanyInfo name={data.name} ticker={data.ticker} cik={data.cik} exchange={data.exchange} industry={data.industry} logo={data.logo} weburl={data.weburl} />
           <div className="flex flex-col mt-5">
             <strong className="text-3xl mb-1.5">ESG Data</strong>
             <div className="flex flex-row mb-1.5">
@@ -236,7 +236,11 @@ const Company: React.FC = () => {
               <div>
                 <strong className="text-2xl mb-1.5">Basic Financials</strong>
                 <div className="my-1">
-                  <div><strong>Market Cap: </strong> {basicFinancials.metric["marketCapitalization"]} million</div>
+                  <div><strong>52 Week High on {basicFinancials.metric["52WeekHighDate"]}: </strong> {basicFinancials.metric["52WeekHigh"]}</div>
+                  <div><strong>52 Week Low on {basicFinancials.metric["52WeekLowDate"]}: </strong> {basicFinancials.metric["52WeekLow"]}</div>
+                  {/* @ts-ignore */}
+                  <div><strong>Market Cap: </strong> {basicFinancials.metric["marketCapitalization"] * 1000000}</div>
+                  <div><strong>Dividend Per Share Annual: </strong> ${basicFinancials.metric["dividendPerShareAnnual"]}</div>
                 </div>
               </div>
             </div>
