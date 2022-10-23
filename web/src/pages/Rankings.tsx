@@ -11,7 +11,6 @@ import FilterDropdown from "../components/Rankings/FilterDropdown";
 import { MyOption, TOptionsSelected } from "../types/MyOption";
 import FilterCheckbox from "../components/Rankings/FilterCheckbox";
 import RankingsNavBtn from "../components/Rankings/RankingsNavBtn";
-import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 /*
 Fix reverse rankings btn bug!!!
@@ -199,17 +198,17 @@ const Rankings: React.FC = () => {
               { !rankingsLoading && !uncachedRankingsLoading ? (
                 <div className="flex flex-col">
                   <RankingsTable rankings={rankings.slice(!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0), !reverse ? sliceStart + 50 : Math.min(rankings.length - sliceStart, rankings.length))} metric={metric} start={!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0)} reverse={reverse} />
-                  <div className="flex flex-row relative border-2 rounded-b-xl bg-slate-300 border-slate-300 w-min">
+                  <div className="flex flex-row relative rounded-b-xl bg-slate-100 shadow-light w-min">
                     <RankingsNavBtn handleClick={() => {
                       setSliceStart(prevState => {
                         return prevState >= 50 ? prevState - 50 : prevState;
                       });
-                    }} icon={faArrowLeft} color="black" />
+                    }} dir="left" color="text-black" />
                     <RankingsNavBtn handleClick={() => {
                       setSliceStart(prevState => {
                         return prevState >= rankings.length - 50 ? prevState : prevState + 50;
                       });
-                    }} icon={faArrowRight} color="black" />
+                    }} dir="right" color="text-black" />
                   </div>
                 </div>
                 ) :

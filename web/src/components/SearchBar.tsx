@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import SBStylingProps from "../types/SBStylingProps";
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 interface SearchBarProps {
   placeholder: string;
@@ -96,7 +95,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data, styles }) => {
         </div>
       </div>
       <div className={`p-2 m-1 mt-2 ${styles.searchIconSize}`}>
-        <Link to={filteredData && filteredData.length !== 0 ? `/company/${filteredData[0][0]}` : "/"}><FontAwesomeIcon icon={faMagnifyingGlass}  size="lg" color="white" pulse/></Link>
+        <Link to={filteredData && filteredData.length !== 0 ? `/company/${filteredData[0][0]}` : "/"}>
+          <MagnifyingGlassIcon className="w-6 h-6 text-white" />
+        </Link>
       </div>
     </div>
   );

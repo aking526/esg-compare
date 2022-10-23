@@ -1,5 +1,5 @@
 import React from "react";
-import {capitalizeFirstLetter} from "../utils/stringFunctions";
+import { capitalizeFirstLetter } from "../utils/stringFunctions";
 
 interface HSectionProps {
 	metric: string;

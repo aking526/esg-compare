@@ -216,4 +216,10 @@ const getLevels = (req: Request, res: Response, next: NextFunction) => {
 		.catch((error) => res.status(500).json({ error }));
 };
 
-export default { createCompany, readCompany, readAll, updateCompany, deleteCompany, deleteById, readCompanyNames, readIndustries, readSort, getScores, getGrades, getLevels };
+const tempFixer = (req: Request, res: Response, next: NextFunction) => {
+	return Company.find({ industry: "Metals & Mining" })
+		.then((companies) => res.status(200).json(companies))
+		.catch((error) => res.status(500).json({ error }));
+};
+
+export default { createCompany, readCompany, readAll, updateCompany, deleteCompany, deleteById, readCompanyNames, readIndustries, readSort, getScores, getGrades, getLevels, tempFixer };

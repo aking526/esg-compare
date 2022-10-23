@@ -18,7 +18,6 @@ const changeEnergy = async () => {
 		delete changed[i]["_id"];
 		changed[i].industry = energyCompanies[i].industry.trim();
 	}
-	console.log(changed);
 
 	let cnt = 0;
 	for (let i = 0; i < changed.length; i++) {

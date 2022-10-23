@@ -21,13 +21,13 @@ const update = async () => {
 		toCheck.push(ticker);
 	}
 
-	let toUpdate: string[] = [];
-	for (let i = 0; i < toCheck.length; i++) {
-		const curr = toCheck[i];
-		if (!(curr in esg_data) || !(curr in info_data)) continue;
-
-		toUpdate.push(curr);
-	}
+	let toUpdate: string[] = ["acnt"];
+	// for (let i = 0; i < toCheck.length; i++) {
+	// 	const curr = toCheck[i];
+	// 	if (!(curr in esg_data) || !(curr in info_data)) continue;
+	//
+	// 	toUpdate.push(curr);
+	// }
 
 	let updated: string[] = [];
 	for (let i = 0; i < toUpdate.length; i++) {

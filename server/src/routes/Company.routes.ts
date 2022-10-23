@@ -23,4 +23,7 @@ router.get("/getLevels", companyController.getLevels);
 router.get("/getNames/", companyController.readCompanyNames);
 router.get("/getIndustries/", companyController.readIndustries);
 
+/* Fixing routes */
+router.get("/tempFixer", companyController.tempFixer);
+
 export default router;

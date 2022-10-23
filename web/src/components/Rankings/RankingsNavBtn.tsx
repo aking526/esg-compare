@@ -1,13 +1,13 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ArrowLeftCircleIcon, ArrowRightCircleIcon } from "@heroicons/react/20/solid";
 
 interface RankingsNavBtnProps {
 	handleClick: Function;
-	icon: any;
+	dir: string;
 	color: string;
 }
 
-const RankingsNavBtn: React.FC<RankingsNavBtnProps> = ({ handleClick, icon, color }) => {
+const RankingsNavBtn: React.FC<RankingsNavBtnProps> = ({ handleClick, dir, color }) => {
 	return (
 		<div
 			className="mx-1 p-1"
@@ -15,7 +15,11 @@ const RankingsNavBtn: React.FC<RankingsNavBtnProps> = ({ handleClick, icon, colo
 				handleClick();
 			}}
 		>
-			<FontAwesomeIcon color={color} icon={icon} />
+			{ dir === "left" ?
+					<ArrowLeftCircleIcon className={`h-7 w-7 ${color}`}/>
+					:
+					<ArrowRightCircleIcon className={`h-7 w-7 ${color}`}/>
+			}
 		</div>
 	);
 };
