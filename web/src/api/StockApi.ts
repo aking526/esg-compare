@@ -10,10 +10,10 @@ import { IBasicFinancials, IStockQuote } from "../types/StockFinancialInterfaces
 // });
 
 // Production
-// const startUrl = "/api/stockInfo"
+const startUrl = "/api/stockInfo"
 
 // Development
-const startUrl = "http://localhost:8000/api/stockInfo";
+// const startUrl = "http://localhost:8000/api/stockInfo";
 
 const fetchStockInfo = async (ticker: string | undefined, resolution: string, from: string | number, to: string | number) => {
 	const ak = process.env.REACT_APP_AK;

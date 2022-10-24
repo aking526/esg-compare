@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { convertDateToUnix } from "../utils/date";
 
 export function useSPCFrom(spcLen: string) {
-	const [from, setFrom] = useState<number | undefined>(undefined);
+	const [from, setFrom] = useState<number>(-1);
 
 	useEffect(() => {
 		let d = new Date();

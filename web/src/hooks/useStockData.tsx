@@ -4,7 +4,7 @@ import ISA from "../types/ISA";
 import { convertStockData, CPair } from "../classes/CPair";
 import StockApi from "../api/StockApi";
 
-export function useStockData(ticker: string, spcLen: string, from: number | undefined, to: number) {
+export function useStockData(ticker: string, spcLen: string, from: number, to: number) {
 	const [stockPrices, setStockPrices] = useState<CPair[]>([]);
 
 	const queryClient = useQueryClient();
