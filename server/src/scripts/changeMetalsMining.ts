@@ -32,3 +32,5 @@ const changeMetalsMining = async () => {
 };
 
 changeMetalsMining().then(() => Logging.log("Metals & Mining Function Complete"));
+
+export default changeMetalsMining;

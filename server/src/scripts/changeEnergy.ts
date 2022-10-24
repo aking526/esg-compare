@@ -32,3 +32,5 @@ const changeEnergy = async () => {
 };
 
 changeEnergy().then(() => Logging.log("Function complete"));
+
+export default changeEnergy;

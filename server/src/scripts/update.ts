@@ -4,6 +4,8 @@ import Logging from "../utils/Logging";
 import { authCheck } from "../utils/authCheck";
 import { config } from "../config/config";
 import companyProfiler from "../utils/companyProfiler";
+import changeEnergy from "./changeEnergy";
+import changeMetalsMining from "./changeMetalsMining";
 
 const update = async () => {
 	const SERVER_AUTH = config.server.auth;
@@ -41,6 +43,8 @@ const update = async () => {
 		}, SERVER_AUTH);
 	}
 
+	await changeEnergy();
+	await changeMetalsMining()
 
 	return updated;
 };
