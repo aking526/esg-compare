@@ -50,11 +50,11 @@ const StartServer = () => {
 	});
 
 	// Incorporate Frontend
-	app.use(express.static(path.join(__dirname, '../../../web/build')));
-
-	app.get("/", (req: Request, res: Response) => {
-		res.sendFile(path.join(__dirname, '../../../web/build', 'index.html'));
-	});
+	// app.use(express.static(path.join(__dirname, '../../../web/build')));
+	//
+	// app.get("/", (req: Request, res: Response) => {
+	// 	res.sendFile(path.join(__dirname, '../../../web/build', 'index.html'));
+	// });
 
 	app.use("/api", apiRoutes);
 

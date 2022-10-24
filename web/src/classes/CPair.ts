@@ -25,6 +25,7 @@ export function getDatesFormatted(arr: CPair[]) {
 
 export const convertStockData = (data: ISA, which: string) => {
 	const iter: number[] = data[which];
+	if (!iter) return [];
 	let cc: CPair[] = [];
 	for (let i = 0; i < iter.length; i++) {
 		cc[i] = new CPair(data["t"][i], iter[i]);

@@ -20,6 +20,8 @@ import { TNewsInfo, IBasicFinancials, IStockQuote } from "../types/StockFinancia
 import ISA from "../types/ISA";
 import { possibleGrades, possibleLevels } from "../types/ESGDataInterfaces";
 import SPCLenBtn from "../components/SPCLenBtn";
+import { useSPCFrom } from "../hooks/useSPCFrom";
+import {useStockData} from "../hooks/useStockData";
 
 /*
 Fix the formatting for the stock quote section
@@ -27,22 +29,22 @@ Fix the formatting for the stock quote section
 
 const Company: React.FC = () => {
   const { ticker } = useParams();
+  if (!ticker) return <h1>Please select a company</h1>;
 
   const [data, setData] = useState<ICompanyData>(BlankCompanyData);
 
-  const [closingPrices, setClosingPrices] = useState<CPair[]>([]);
-  const [spLoading, setSpLoading] = useState(false);
-
-  let d = new Date();
-  d.setMonth(d.getMonth() - 1);
-  const [from, setFrom] = useState<number>(convertDateToUnix(d));
+  const [spcLen, setSpcLen] = useState("1 month");
+  const from = useSPCFrom(spcLen);
   const [to, setTo] = useState<number>(convertDateToUnix(new Date()));
+  const closingPrices = useStockData(ticker, spcLen, from, to);
+
+  if (closingPrices.isError) {
+    // @ts-ignore
+    return <QueryError message={closingPrices.error?.message} />
+  }
 
   const [news, setNews] = useState<TNewsInfo[]>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
-
-  const [spcLen, setSpcLen] = useState("1 month");
-
 
   const [quote, setQuote] = useState<IStockQuote>({
     c: -1,
@@ -94,36 +96,6 @@ const Company: React.FC = () => {
     }
   });
 
-  // const { isLoading: stockPricesLoading, isError: stockPricesIsError, error: stockPricesError } = useQuery([`${ticker}_stock_prices`], async () => {
-  //   const cachedStockData: ISA | undefined = queryClient.getQueryData([`${ticker}_stock_prices`]);
-  //   if (cachedStockData) {
-  //     const conv = convertStockData(cachedStockData, "c");
-  //     setClosingPrices(conv);
-  //     return;
-  //   }
-  //
-  //   return await StockApi.fetchStockInfo(ticker, "D", from, to);
-  // },
-  // {
-  //   onSuccess: (res) => {
-  //     if (!res) return;
-  //     const conv = convertStockData(res, "c");
-  //     setClosingPrices(conv);
-  //   }
-  // });
-
-  useEffect(() => {
-    const fetchSP = async () => {
-      setSpLoading(true);
-      const sp = await StockApi.fetchStockInfo(ticker, "D", from, to);
-      if (!sp) return;
-      const conv = convertStockData(sp, "c");
-      setClosingPrices(conv);
-    };
-
-    fetchSP().then(() => setSpLoading(false));
-  }, [from]);
-
   const { isLoading: newsLoading, isError: newsIsError, error: newsError } = useQuery([`${ticker}_news`], async () => {
     const now = new Date();
     const lastWeek = getLastWeeksDate(now);
@@ -140,8 +112,7 @@ const Company: React.FC = () => {
 
     const cachedBasicFinancials: IBasicFinancials | undefined = queryClient.getQueryData([`${ticker}_basic_financials`]);
     if (cachedBasicFinancials) {
-      setBasicFinancials(cachedBasicFinancials);
-      return;
+      return cachedBasicFinancials;
     }
 
     return await StockApi.getBasicFinancials(ticker);
@@ -162,38 +133,16 @@ const Company: React.FC = () => {
     return <QueryError message={dataError?.message} />;
   }
 
-  // if (stockPricesIsError) {
-  //   // @ts-ignore
-  //   return <QueryError message={stockPricesError?.message} />;
-  // }
-
   if (newsIsError) {
     // @ts-ignore
     return <QueryError message={newsError?.message} />;
   }
 
-
   useEffect(() => {
-    let d = new Date();
-    if (spcLen === "1 week") {
-      d.setDate(d.getDate() - 7);
-    } else if (spcLen === "1 month") {
-      d.setMonth(d.getMonth() - 1);
-    } else if (spcLen === "6 months") {
-      d.setMonth(d.getMonth() - 6);
-    } else if (spcLen === "1 year") {
-      d.setFullYear(d.getFullYear() - 1);
-    }
-
-    setFrom(convertDateToUnix(d));
-  }, [spcLen]);
-
-  useEffect(() => {
-    console.log("dataLoading: " + dataLoading + " basicFinancialsLoading: " + basicFinancialsLoading + " quoteLoading: " + quoteLoading + " newsLoading: " + newsLoading);
+    // console.log("dataLoading: " + dataLoading + " basicFinancialsLoading: " + basicFinancialsLoading + " quoteLoading: " + quoteLoading + " newsLoading: " + newsLoading);
     setLoaded(!dataLoading && !basicFinancialsLoading && !quoteLoading);
   }, [dataLoading, basicFinancialsLoading, quoteLoading, newsLoading]);
 
-  console.log(loaded);
   return (
     <>
       {loaded && avgScores && avgGrades && avgLevels ? (
@@ -248,8 +197,8 @@ const Company: React.FC = () => {
               <strong className="text-2xl mb-1.5">Stock Info</strong>
               <p className="text-xs">Last Updated: {new Date().toLocaleString()}</p>
               <div className="flex flex-row">
-                { !spLoading ?
-                  <StockPriceChart ticker={data.ticker} name={data.name} from={from} to={to} prices={closingPrices}/>
+                { !closingPrices.isLoading && from ?
+                  <StockPriceChart ticker={data.ticker} name={data.name} from={from} to={to} prices={closingPrices.data}/>
                     :
                   <div className="w-[800px] h-[400px]"></div>
                 }
