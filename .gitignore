@@ -5,7 +5,6 @@
 /web/node_modules
 /web/.env
 /web/keys.txt
-/web/src/api
 
 /web/public/favicon.ico
 /web/public/logo192.png
