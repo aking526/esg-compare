@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node build/src/server.js",
     "build": "rm -rf build/ && tsc",
+    "prod": "node build/src/server.js",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "test": "jest",
     "clean": "watchman watch-del-all && yarn cache clean"
