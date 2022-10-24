@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/static/css/main.5e04e5f4.css",
-    "main.js": "/static/js/main.0957c25b.js",
+    "main.js": "/static/js/main.c479837b.js",
     "static/media/world-ga8f31bec6_640.jpg": "/static/media/world-ga8f31bec6_640.edf9d17933ba38c4ac48.jpg",
     "static/media/windmill-ga48edb172_640.jpg": "/static/media/windmill-ga48edb172_640.cd7b6b36e3d1bd02f083.jpg",
     "index.html": "/index.html",
     "main.5e04e5f4.css.map": "/static/css/main.5e04e5f4.css.map",
-    "main.0957c25b.js.map": "/static/js/main.0957c25b.js.map"
+    "main.c479837b.js.map": "/static/js/main.c479837b.js.map"
   },
   "entrypoints": [
     "static/css/main.5e04e5f4.css",
-    "static/js/main.0957c25b.js"
+    "static/js/main.c479837b.js"
   ]
 }

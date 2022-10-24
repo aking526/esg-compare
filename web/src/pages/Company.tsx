@@ -189,12 +189,14 @@ const Company: React.FC = () => {
   }, [spcLen]);
 
   useEffect(() => {
-    setLoaded(!dataLoading && !basicFinancialsLoading && !quoteLoading && !newsLoading);
+    console.log("dataLoading: " + dataLoading + " basicFinancialsLoading: " + basicFinancialsLoading + " quoteLoading: " + quoteLoading + " newsLoading: " + newsLoading);
+    setLoaded(!dataLoading && !basicFinancialsLoading && !quoteLoading);
   }, [dataLoading, basicFinancialsLoading, quoteLoading, newsLoading]);
 
+  console.log(loaded);
   return (
     <>
-      {loaded && avgScores && avgGrades && avgLevels && data ? (
+      {loaded && avgScores && avgGrades && avgLevels ? (
         <div className="flex flex-col shadow-light my-16 font-modern mx-24 p-5 bg-slate-200 rounded-2xl">
           <CompanyInfo name={data.name} ticker={data.ticker} cik={data.cik} exchange={data.exchange} industry={data.industry} logo={data.logo} weburl={data.weburl} />
           <div className="flex flex-col mt-5">
@@ -307,12 +309,12 @@ const Company: React.FC = () => {
           </div>
           <div className="flex flex-col mt-5">
             <strong className="text-2xl mb-1.5">News</strong>
-            <div className="flex flex-row">
-              {news.slice(0, 5).map((curr, idx) => {
-                if (!curr.url || curr.url === "") return null;
-                return <NewsSection currNews={curr} key={idx} />;
-              })}
-            </div>
+            {/*<div className="flex flex-row">*/}
+            {/*  {news.slice(0, 5).map((curr, idx) => {*/}
+            {/*    if (!curr.url || curr.url === "") return null;*/}
+            {/*    return <NewsSection currNews={curr} key={idx} />;*/}
+            {/*  })}*/}
+            {/*</div>*/}
           </div>
         </div>
         ) :
