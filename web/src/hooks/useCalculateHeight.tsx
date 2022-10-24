@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
 export function useCalculateHeight() {
-	const [height, setHeight] = useState<null | number>(null);
+	// @ts-ignore
+	const [height, setHeight] = useState<number>(window.innerHeight - document.getElementById("top-bar")?.offsetHeight - document.getElementById("search-bar")?.offsetHeight);
 
 	useEffect(() => {
 		const handleResize = () => {

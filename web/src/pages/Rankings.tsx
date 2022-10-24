@@ -11,10 +11,11 @@ import FilterDropdown from "../components/Rankings/FilterDropdown";
 import { MyOption, TOptionsSelected } from "../types/MyOption";
 import FilterCheckbox from "../components/Rankings/FilterCheckbox";
 import RankingsNavBtn from "../components/Rankings/RankingsNavBtn";
+import { useCalculateHeight } from "../hooks/useCalculateHeight";
 
 /*
-Fix reverse rankings btn bug!!!
-*/
+Fix the bug with the height
+ */
 
 const Rankings: React.FC = () => {
   const defaultMetric = "total_score";
@@ -160,8 +161,27 @@ const Rankings: React.FC = () => {
     setSliceStart(0);
   }, [reverse]);
 
+  const height = useCalculateHeight();
+  // ${!height ? "h-page-h" : `h-[${height.toString()}px]` }
+  console.log(height + "px");
+
+  useEffect(() => {
+    forceUpdate();
+  }, [height]);
+  // useEffect(() => {
+  //   const preventScroll = (e: WheelEvent) => {
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     return false;
+  //   }
+  //
+  //   document.getElementById("#container")?.addEventListener("wheel", preventScroll, { passive: false });
+  //
+  //   return () => document.getElementById("#container")?.removeEventListener("wheel", preventScroll);
+  // }, []);
+
   return (
-      <div className={`relative w-screen bg-slate-100 py-5 h-page-h overflow-y-hidden`}>
+      <div id="#container" className={`relative w-screen bg-slate-100 py-5 h-[${height}px] overflow-y-hidden`}>
           <div className="flex flex-row">
             <div className="font-modern border-2 rounded-lg w-fit h-min m-2 p-2">
               <u className="text-xl">Metrics:</u>

@@ -13,13 +13,13 @@ import { CPair } from "../classes/CPair";
 import CompaniesApi from "../api/CompaniesApi";
 import QueryError from "../components/QueryError";
 import StockApi from "../api/StockApi";
-import {convertDateToUnix, convertUnixToDate} from "../utils/date";
+import { convertDateToUnix, convertUnixToDate } from "../utils/date";
 import { formatDate, getLastWeeksDate } from "../utils/date";
 import { convertStockData } from "../classes/CPair";
 import { TNewsInfo, IBasicFinancials, IStockQuote } from "../types/StockFinancialInterfaces";
 import ISA from "../types/ISA";
 import { possibleGrades, possibleLevels } from "../types/ESGDataInterfaces";
-
+import SPCLenBtn from "../components/SPCLenBtn";
 
 /*
 Fix the formatting for the stock quote section
@@ -29,16 +29,19 @@ const Company: React.FC = () => {
   const { ticker } = useParams();
 
   const [data, setData] = useState<ICompanyData>(BlankCompanyData);
+
   const [closingPrices, setClosingPrices] = useState<CPair[]>([]);
+  const [spLoading, setSpLoading] = useState(false);
 
   let d = new Date();
-  d.setMonth(d.getMonth() - 1)
-  let newd = new Date();
+  d.setMonth(d.getMonth() - 1);
   const [from, setFrom] = useState<number>(convertDateToUnix(d));
-  const [to, setTo] = useState<number>(convertDateToUnix(newd));
+  const [to, setTo] = useState<number>(convertDateToUnix(new Date()));
 
   const [news, setNews] = useState<TNewsInfo[]>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
+
+  const [spcLen, setSpcLen] = useState("1 month");
 
 
   const [quote, setQuote] = useState<IStockQuote>({
@@ -71,6 +74,8 @@ const Company: React.FC = () => {
     series: {}
   });
 
+  const { avgScores, avgGrades, avgLevels } = useIndustryAvg(data.industry);
+
   const queryClient = useQueryClient();
 
   const { isLoading: dataLoading, isError: dataIsError, error: dataError } = useQuery([`${ticker}_data`], async () => {
@@ -89,23 +94,35 @@ const Company: React.FC = () => {
     }
   });
 
-  const { isLoading: stockPricesLoading, isError: stockPricesIsError, error: stockPricesError } = useQuery([`${ticker}_stock_prices`], async () => {
-    const cachedStockData: ISA | undefined = queryClient.getQueryData([`${ticker}_stock_prices`]);
-    if (cachedStockData) {
-      const conv = convertStockData(cachedStockData, "c");
-      setClosingPrices(conv);
-      return;
-    }
+  // const { isLoading: stockPricesLoading, isError: stockPricesIsError, error: stockPricesError } = useQuery([`${ticker}_stock_prices`], async () => {
+  //   const cachedStockData: ISA | undefined = queryClient.getQueryData([`${ticker}_stock_prices`]);
+  //   if (cachedStockData) {
+  //     const conv = convertStockData(cachedStockData, "c");
+  //     setClosingPrices(conv);
+  //     return;
+  //   }
+  //
+  //   return await StockApi.fetchStockInfo(ticker, "D", from, to);
+  // },
+  // {
+  //   onSuccess: (res) => {
+  //     if (!res) return;
+  //     const conv = convertStockData(res, "c");
+  //     setClosingPrices(conv);
+  //   }
+  // });
 
-    return await StockApi.fetchStockInfo(ticker, "D", from, to);
-  },
-  {
-    onSuccess: (res) => {
-      if (!res) return;
-      const conv = convertStockData(res, "c");
+  useEffect(() => {
+    const fetchSP = async () => {
+      setSpLoading(true);
+      const sp = await StockApi.fetchStockInfo(ticker, "D", from, to);
+      if (!sp) return;
+      const conv = convertStockData(sp, "c");
       setClosingPrices(conv);
-    }
-  });
+    };
+
+    fetchSP().then(() => setSpLoading(false));
+  }, [from]);
 
   const { isLoading: newsLoading, isError: newsIsError, error: newsError } = useQuery([`${ticker}_news`], async () => {
     const now = new Date();
@@ -145,10 +162,10 @@ const Company: React.FC = () => {
     return <QueryError message={dataError?.message} />;
   }
 
-  if (stockPricesIsError) {
-    // @ts-ignore
-    return <QueryError message={stockPricesError?.message} />;
-  }
+  // if (stockPricesIsError) {
+  //   // @ts-ignore
+  //   return <QueryError message={stockPricesError?.message} />;
+  // }
 
   if (newsIsError) {
     // @ts-ignore
@@ -156,11 +173,24 @@ const Company: React.FC = () => {
   }
 
 
-  const { avgScores, avgGrades, avgLevels } = useIndustryAvg(data.industry);
+  useEffect(() => {
+    let d = new Date();
+    if (spcLen === "1 week") {
+      d.setDate(d.getDate() - 7);
+    } else if (spcLen === "1 month") {
+      d.setMonth(d.getMonth() - 1);
+    } else if (spcLen === "6 months") {
+      d.setMonth(d.getMonth() - 6);
+    } else if (spcLen === "1 year") {
+      d.setFullYear(d.getFullYear() - 1);
+    }
+
+    setFrom(convertDateToUnix(d));
+  }, [spcLen]);
 
   useEffect(() => {
-    setLoaded(!dataLoading && !stockPricesLoading && !basicFinancialsLoading && !quoteLoading && !newsLoading);
-  }, [dataLoading, stockPricesLoading, basicFinancialsLoading, quoteLoading, newsLoading]);
+    setLoaded(!dataLoading && !basicFinancialsLoading && !quoteLoading && !newsLoading);
+  }, [dataLoading, basicFinancialsLoading, quoteLoading, newsLoading]);
 
   return (
     <>
@@ -216,7 +246,37 @@ const Company: React.FC = () => {
               <strong className="text-2xl mb-1.5">Stock Info</strong>
               <p className="text-xs">Last Updated: {new Date().toLocaleString()}</p>
               <div className="flex flex-row">
-                <StockPriceChart ticker={data.ticker} name={data.name} from={from} to={to} prices={closingPrices} />
+                { !spLoading ?
+                  <StockPriceChart ticker={data.ticker} name={data.name} from={from} to={to} prices={closingPrices}/>
+                    :
+                  <div className="w-[800px] h-[400px]"></div>
+                }
+              </div>
+              <div className="flex flex-row justify-between">
+                <SPCLenBtn
+                  initialValue={false}
+                  text="1 week"
+                  currSelected={spcLen}
+                  set={setSpcLen}
+                />
+                <SPCLenBtn
+                  initialValue={true}
+                  text="1 month"
+                  currSelected={spcLen}
+                  set={setSpcLen}
+                />
+                <SPCLenBtn
+                  initialValue={false}
+                  text="6 months"
+                  currSelected={spcLen}
+                  set={setSpcLen}
+                />
+                <SPCLenBtn
+                  initialValue={false}
+                  text="1 year"
+                  currSelected={spcLen}
+                  set={setSpcLen}
+                />
               </div>
             </div>
             <div className="flex flex-col justify-evenly ml-2 items-center px-2 pb-2">

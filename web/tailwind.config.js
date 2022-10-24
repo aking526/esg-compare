@@ -16,7 +16,7 @@ module.exports = {
       }
     },
     fontFamily: {
-      "modern": ["Roboto", "Calibre", "Helvetica Neue", "sans-serif"]
+      "modern": ["Roboto", "Helvetica", "Arial", "sans-serif"]
     },
   },
   plugins: [],
