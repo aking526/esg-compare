@@ -75,7 +75,7 @@ const ExecEsgBatch = async (dayCnt: number, customList: string[] | undefined) =>
 
 	const getNewList = (list: string[]) => {
 		let arr = [];
-		for (let i = 100; i < list.length; i++) {
+		for (let i = list.length - 1; i >= 0; i--) {
 			const ticker = list[i];
 			if (ticker in e) continue;
 			if (arr.length >= 50) break;
@@ -86,7 +86,7 @@ const ExecEsgBatch = async (dayCnt: number, customList: string[] | undefined) =>
 		return arr;
 	};
 
-	let thisd = getNewList(sp500_tickers);
+	let thisd = getNewList(company_tickers);
 	if (customList) thisd = customList;
 
 	if (thisd.length === 0) {

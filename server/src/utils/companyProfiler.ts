@@ -39,7 +39,7 @@ const formSchema = (ticker: string, cik: string, curr_ci: ISA, curr_esg: ISA) =>
 const buildProfile = (ticker: string, cik: string, curr_ci: ISA, curr_esg: ISA, callback: Function, SERVER_AUTH: string) => {
 	const data = formSchema(ticker, cik, curr_ci, curr_esg);
 
-	axios.post(`http://localhost:8000/api/companies/create/auth=${SERVER_AUTH}`, data)
+	axios.post(`http://localhost:80/api/companies/create/auth=${SERVER_AUTH}`, data)
 			.then((res: AxiosResponse) => {
 				// Logging.log(res.data);
 				callback();
@@ -55,7 +55,7 @@ const buildProfile = (ticker: string, cik: string, curr_ci: ISA, curr_esg: ISA, 
 const updateProfile = (ticker: string, cik: string, curr_ci: ISA, curr_esg: ISA, callback: Function, SERVER_AUTH: string) => {
 	const data = formSchema(ticker, cik, curr_ci, curr_esg);
 
-	axios.patch(`http://localhost:8000/api/companies/update/ticker=${ticker}&auth=${SERVER_AUTH}`, data)
+	axios.patch(`http://localhost:80/api/companies/update/ticker=${ticker}&auth=${SERVER_AUTH}`, data)
 			.then((res: AxiosResponse) => {
 				// Logging.log(res.data);
 				Logging.log(ticker + " uploaded");

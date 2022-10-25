@@ -22,7 +22,7 @@ const Main = async () => {
 	const esg_data = JSON.parse(fs.readFileSync("./cache/esg_data.json").toString());
 	const ciks = JSON.parse(fs.readFileSync("./data/ciks.json").toString());
 
-	const cidbres = await axios.get(`http://localhost:8000/api/companies/getNames&token=${SERVER_KEY}`);
+	const cidbres = await axios.get(`http://localhost:80/api/companies/getNames&token=${SERVER_KEY}`);
 	const cInDB = cidbres.data;
 
 	let toUpload: string[] = [];
