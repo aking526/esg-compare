@@ -9,7 +9,6 @@ import ESGCategory from "../components/Company/ESGCategory";
 import ESGDChart from "../components/Company/charts/ESGDChart";
 import StockPriceChart from "../components/Company/charts/StockPriceChart";
 import NewsSection from "../components/Company/NewsSection";
-import { CPair } from "../classes/CPair";
 import CompaniesApi from "../api/CompaniesApi";
 import QueryError from "../components/QueryError";
 import StockApi from "../api/StockApi";
@@ -17,11 +16,10 @@ import { convertDateToUnix, convertUnixToDate } from "../utils/date";
 import { formatDate, getLastWeeksDate } from "../utils/date";
 import { convertStockData } from "../classes/CPair";
 import { TNewsInfo, IBasicFinancials, IStockQuote } from "../types/StockFinancialInterfaces";
-import ISA from "../types/ISA";
 import { possibleGrades, possibleLevels } from "../types/ESGDataInterfaces";
 import SPCLenBtn from "../components/SPCLenBtn";
 import { useSPCFrom } from "../hooks/useSPCFrom";
-import {useStockData} from "../hooks/useStockData";
+import { useStockData } from "../hooks/useStockData";
 
 /*
 Fix the formatting for the stock quote section
@@ -38,7 +36,7 @@ const Company: React.FC = () => {
   const [to, setTo] = useState<number>(convertDateToUnix(new Date()));
   const closingPrices = useStockData(ticker, spcLen, from, to);
 
-  if (closingPrices.isError) {
+  if (closingPrices?.isError) {
     // @ts-ignore
     return <QueryError message={closingPrices.error?.message} />
   }
@@ -197,8 +195,8 @@ const Company: React.FC = () => {
               <strong className="text-2xl mb-1.5">Stock Info</strong>
               <p className="text-xs">Last Updated: {new Date().toLocaleString()}</p>
               <div className="flex flex-row">
-                { !closingPrices.isLoading && from ?
-                  <StockPriceChart ticker={data.ticker} name={data.name} from={from} to={to} prices={closingPrices.data}/>
+                { closingPrices && !closingPrices.isLoading ?
+                  <StockPriceChart ticker={data.ticker} name={data.name} from={from} to={to} prices={closingPrices.prices}/>
                     :
                   <div className="w-[800px] h-[400px]"></div>
                 }
@@ -225,6 +223,12 @@ const Company: React.FC = () => {
                 <SPCLenBtn
                   initialValue={false}
                   text="1 year"
+                  currSelected={spcLen}
+                  set={setSpcLen}
+                />
+                <SPCLenBtn
+                  initialValue={false}
+                  text="5 years"
                   currSelected={spcLen}
                   set={setSpcLen}
                 />

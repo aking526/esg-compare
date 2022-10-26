@@ -1,4 +1,4 @@
-import React, {useEffect, WheelEventHandler} from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { ICompanyData } from "../../types/ICompanyData";
 import DataRefToText from "../../mods/DataRefToText";
@@ -77,7 +77,7 @@ const RankingsTable: React.FC<RankingsProps> = ({ rankings, metric, start, rever
 	if (reverse) tableBody.reverse();
 
 	return (
-		<div id="#rankings" className="relative mt-2 ml-10 mr-5 px-5 pb-3 rounded-t-xl rounded-bl-xl shadow-light overflow-y-auto h-rankings-table-h">
+		<div id="#rankings" className="relative mt-2 ml-10 mr-5 px-5 pb-3 rounded-xl border-none shadow-light overflow-y-auto h-rankings-table-h">
 			<Table heading={tableHeading} body={tableBody} metric={metric}/>
 		</div>
 	);

@@ -31,11 +31,11 @@ interface CompareStockChartProps {
 
 const CompareStockChart: React.FC<CompareStockChartProps> = ({ tickerA, pricesA, tickerB, pricesB }) => {
 	const data = {
-		labels: getDatesFormatted(pricesA).slice(pricesA.length - 20, pricesA.length),
+		labels: getDatesFormatted(pricesA),
 		datasets: [
 			{
 				label: `${tickerA.toUpperCase()} Stock Price`,
-				data: getPrices(pricesA).slice(pricesA.length - 20, pricesA.length),
+				data: getPrices(pricesA),
 				backgroundColor: [
 					"rgba(255, 99, 132, 0.5)"
 				],
@@ -44,7 +44,7 @@ const CompareStockChart: React.FC<CompareStockChartProps> = ({ tickerA, pricesA,
 			},
 			{
 				label: `${tickerB.toUpperCase()} Stock Price`,
-				data: getPrices(pricesB).slice(pricesB.length - 20, pricesB.length),
+				data: getPrices(pricesB),
 				backgroundColor: [
 					"rgba(53, 162, 235, 0.5)"
 				],
@@ -66,7 +66,7 @@ const CompareStockChart: React.FC<CompareStockChartProps> = ({ tickerA, pricesA,
 
 	return (
 		<div>
-			<Line data={data} options={options} width={800} height={400} />
+			<Line data={data} options={options} width={1200} height={400} />
 		</div>
 	);
 };

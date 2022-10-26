@@ -11,10 +11,10 @@ import { IScores, IGrades, ILevels } from "../types/ESGDataInterfaces";
 // });
 
 // Production
-const startUrl = "/api/companies";
+// const startUrl = "/api/companies";
 
 // Development
-// const startUrl = "http://localhost:8000/api/companies";
+const startUrl = "http://localhost:80/api/companies";
 
 const getNames = async () => {
   const ak = process.env.REACT_APP_AK;

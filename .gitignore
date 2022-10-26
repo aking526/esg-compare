@@ -4,7 +4,6 @@
 
 /web/node_modules
 /web/.env
-/web/keys.txt
 
 /web/public/favicon.ico
 /web/public/logo192.png

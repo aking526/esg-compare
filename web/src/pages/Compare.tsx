@@ -5,18 +5,15 @@ import CompaniesApi from "../api/CompaniesApi";
 import { ICompanyData } from "../types/ICompanyData";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSPCFrom } from "../hooks/useSPCFrom";
+import { useStockData } from "../hooks/useStockData";
 import { Link, useNavigate } from "react-router-dom";
 import QueryError from "../components/QueryError";
 import CompareLoading from "../components/Compare/CompareLoading";
 import CompareBarChart from "../components/Compare/charts/CompareBarChart";
-import { convertStockData, CPair } from "../classes/CPair";
-import StockApi from "../api/StockApi";
 import { convertDateToUnix } from "../utils/date";
 import CompareStockChart from "../components/Compare/charts/CompareStockChart";
 import { XCircleIcon, ArrowLeftCircleIcon } from "@heroicons/react/20/solid";
 import SPCLenBtn from "../components/SPCLenBtn";
-import ISA from "../types/ISA";
-import {useStockData} from "../hooks/useStockData";
 
 const Compare: React.FC = () => {
 	const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -33,9 +30,6 @@ const Compare: React.FC = () => {
 	const [data, setData] = useState<ICompanyData[]>([]);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
-	// const [stockPrices, setStockPrices] = useState<CPair[][]>([]);
-	// const [stockPricesLoaded, setStockPricesLoaded] = useState(false);
-
 	const [spcLen, setSpcLen] = useState("1 month");
 	const from = useSPCFrom(spcLen);
 	const [to, setTo] = useState<number>(convertDateToUnix(new Date()));
@@ -43,14 +37,14 @@ const Compare: React.FC = () => {
 	const stock0 = useStockData(tickers[0], spcLen, from, to);
 	const stock1 = useStockData(tickers[1], spcLen, from, to);
 
-	if (stock1.isError) {
+	if (stock1?.isError) {
 		// @ts-ignore
-		return <QueryError message={stock1.error.message} />
+		return <QueryError message={stock1?.error.message} />;
 	}
 
-	if (stock0.isError) {
+	if (stock0?.isError) {
 		// @ts-ignore
-		return <QueryError message={stock0.error.message} />
+		return <QueryError message={stock0?.error.message} />;
 	}
 
 	const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
@@ -86,6 +80,7 @@ const Compare: React.FC = () => {
 	}, [companies]);
 
 	useEffect(() => {
+		setSpcLen("1 month");
 		if (!allSelected) return;
 
 		const fetch = async () => {
@@ -109,29 +104,9 @@ const Compare: React.FC = () => {
 		});
 	}, [allSelected]);
 
-	// useEffect(() => {
-	// 	if (!allSelected || !from) return;
-	//
-	// 	const fetch = async () => {
-	// 		setStockPricesLoaded(false);
-	// 		let newArr2: CPair[][] = [];
-	// 		for (let i = 0; i < 2; i++) {
-	// 			const cachedStockData: ISA | undefined = queryClient.getQueryData([`${tickers[i]}_stock_prices`, spcLen, from]);
-	// 			if (cachedStockData) {
-	// 				const conv = convertStockData(cachedStockData, "c");
-	// 				newArr2.push(conv);
-	// 				continue;
-	// 			}
-	//
-	// 			const data = await StockApi.fetchStockInfo(tickers[i], "D", from, to);
-	// 			const conv = convertStockData(data, "c");
-	// 			newArr2.push(conv);
-	// 		}
-	// 		setStockPrices(newArr2);
-	// 	};
-	//
-	// 	fetch().then(() => setStockPricesLoaded(true));
-	// }, [allSelected, spcLen, from]);
+	useEffect(() => {
+		forceUpdate();
+	}, [stock0?.prices, stock1?.prices]);
 
 	const copyTickers = () => {
 		let arr = [];
@@ -156,11 +131,11 @@ const Compare: React.FC = () => {
 		<div>
 			{ allSelected &&
 				<div className="flex flex-row rounded-br-2xl bg-black p-1.5 w-fit" onClick={handleBackButtonClicked}>
-        	<div className="flex items-center justify-center">
-          	<ArrowLeftCircleIcon className="w-8 h-8" color="white" />
-        	</div>
-        	<p className="m-2 text-white">Back</p>
-      	</div>
+					<div className="flex items-center justify-center">
+						<ArrowLeftCircleIcon className="w-8 h-8" color="white" />
+					</div>
+					<p className="m-2 text-white">Back</p>
+				</div>
 			}
 			<div className={`font-modern mb-16 ${ allSelected ? "mt-8" : "mt-16" } mx-24 p-5 bg-slate-200 rounded-2xl`}>
 				{ allSelected ?
@@ -199,60 +174,68 @@ const Compare: React.FC = () => {
 													/>
 												</div>
 											</div>
-										);
-									})}
-								</div>
-								<div>
-									<CompareBarChart companyA={{
-										ticker: tickers[0],
-										name: data[0].name,
-										ratings: [data[0].environment_score, data[0].social_score, data[0].governance_score, data[0].total_score]
-									}}
-									companyB={{
-									ticker: tickers[1],
-									name: data[1].name,
-									ratings: [data[1].environment_score, data[1].social_score, data[1].governance_score, data[1].total_score]
-									}} />
-								</div>
-								{ !stock0.isLoading && !stock1.isLoading ?
-									<CompareStockChart
-											tickerA={tickers[0]}
-											pricesA={stock0.data}
-											tickerB={tickers[1]}
-											pricesB={stock1.data}
-									/>
-									:
-									<div className="w-[800px] h-[400px]"></div>
-								}
-								<div className="flex flex-row justify-between">
-									<SPCLenBtn
+											);
+										})}
+									</div>
+									<div>
+										<CompareBarChart
+											companyA={{
+												ticker: tickers[0],
+												name: data[0].name,
+												ratings: [data[0].environment_score, data[0].social_score, data[0].governance_score, data[0].total_score]
+											}}
+											companyB={{
+												ticker: tickers[1],
+												name: data[1].name,
+												ratings: [data[1].environment_score, data[1].social_score, data[1].governance_score, data[1].total_score]
+											}}
+										/>
+									</div>
+									<div className="w-[1200px] h-[400px]">
+										{ stock0 && stock1 && !stock0.isLoading && !stock1.isLoading &&
+											<CompareStockChart
+												tickerA={tickers[0]}
+												pricesA={stock0.prices}
+												tickerB={tickers[1]}
+												pricesB={stock1.prices}
+											/>
+										}
+									</div>
+									<div className="flex flex-row justify-between">
+										<SPCLenBtn
 											initialValue={false}
 											text="1 week"
 											currSelected={spcLen}
 											set={setSpcLen}
-									/>
-									<SPCLenBtn
+										/>
+										<SPCLenBtn
 											initialValue={true}
 											text="1 month"
 											currSelected={spcLen}
 											set={setSpcLen}
-									/>
-									<SPCLenBtn
+										/>
+										<SPCLenBtn
 											initialValue={false}
 											text="6 months"
 											currSelected={spcLen}
 											set={setSpcLen}
-									/>
-									<SPCLenBtn
+										/>
+										<SPCLenBtn
 											initialValue={false}
 											text="1 year"
 											currSelected={spcLen}
 											set={setSpcLen}
-									/>
+										/>
+										<SPCLenBtn
+											initialValue={false}
+											text="5 years"
+											currSelected={spcLen}
+											set={setSpcLen}
+										/>
+									</div>
 								</div>
-							</div>
-							:
-							<CompareLoading tickers={tickers} />
+								:
+								<CompareLoading tickers={tickers} />
 						}
 					</div>
 					:
@@ -265,7 +248,7 @@ const Compare: React.FC = () => {
 								}}/>
 								{ !tickers[1] ? <CompareInputField index={1} names={names.data} prevSelected={companies ? companies : undefined} passBack={(t: string) => newTickers(1, t)}/> : <CompareInputSelected ticker={tickers[1]} handleClick={() => newTickers(1, "")}/> }
 							</div>
-									:
+							:
 							<div className="flex flex-row items-center justify-evenly px-18 py-36">
 								{ !tickers[0] ? <CompareInputField index={0} prevSelected={companies ? companies : undefined} names={names.data} passBack={(t: string) => newTickers(0, t)}/> : <CompareInputSelected ticker={tickers[0]} handleClick={() => newTickers(0, "")}/> }
 								{ !tickers[1] ? <CompareInputField index={1} prevSelected={companies ? companies : undefined} names={names.data} passBack={(t: string) => newTickers(1, t)}/> : <CompareInputSelected ticker={tickers[1]} handleClick={() => newTickers(1, "")}/> }

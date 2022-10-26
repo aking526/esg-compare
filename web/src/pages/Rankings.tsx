@@ -218,7 +218,7 @@ const Rankings: React.FC = () => {
               { !rankingsLoading && !uncachedRankingsLoading ? (
                 <div className="flex flex-col">
                   <RankingsTable rankings={rankings.slice(!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0), !reverse ? sliceStart + 50 : Math.min(rankings.length - sliceStart, rankings.length))} metric={metric} start={!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0)} reverse={reverse} />
-                  <div className="flex flex-row relative rounded-b-xl bg-slate-100 shadow-light w-min">
+                  <div className="flex flex-row relative rounded-b-xl bg-slate-100 shadow-light w-min ml-auto mr-auto">
                     <RankingsNavBtn handleClick={() => {
                       setSliceStart(prevState => {
                         return prevState >= 50 ? prevState - 50 : prevState;

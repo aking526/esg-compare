@@ -8,8 +8,9 @@ export function useStockData(ticker: string, spcLen: string, from: number, to: n
 	const [stockPrices, setStockPrices] = useState<CPair[]>([]);
 
 	const queryClient = useQueryClient();
+
 	const sp = useQuery([`${ticker}_stock_prices`, spcLen, from], async () => {
-		if (!from) return;
+		if (ticker === "") return {};
 
 		const cachedStockData: ISA | undefined = queryClient.getQueryData([`${ticker}_stock_prices`, spcLen, from]);
 		if (cachedStockData) {
@@ -24,5 +25,5 @@ export function useStockData(ticker: string, spcLen: string, from: number, to: n
 		}
 	});
 
-	return { data: stockPrices, isLoading: sp.isLoading, isError: sp.isError, error: sp.error };
+	return { prices: stockPrices, isLoading: sp.isLoading, isError: sp.isError, error: sp.error };
 }

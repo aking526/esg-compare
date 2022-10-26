@@ -1,8 +1,8 @@
 import React from "react";
 import { capitalizeFirstLetter } from "../utils/stringFunctions";
 import HSection from "../components/HSection";
-import EnvironmentWindmillImg from "../../public/assets/environment/windmill-ga48edb172_640.jpg";
-import SocialGlobeImg from "../../public/assets/social/world-ga8f31bec6_640.jpg";
+import EnvironmentWindmillImg from "../../assets/environment/windmill-ga48edb172_640.jpg";
+import SocialGlobeImg from "../../assets/social/world-ga8f31bec6_640.jpg";
 
 const Home: React.FC = () => {
 	return (

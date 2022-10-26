@@ -28,11 +28,12 @@ const TopBar: React.FC<TopBarProps> = ({ names }) => {
 	}, []);
 
 	return (
-		<div id="top-bar" className="relative flex flex-row justify-between items-center py-2 px-3 w-screen bg-black font-modern text-white">
-			<p className="text-sm">ESG Investing Tracker</p>
+		<div id="top-bar" className="relative flex flex-row items-center py-2 px-3 w-screen bg-black font-modern text-white">
+			<p className="absolute text-base px-1.5">ESG Compare</p>
 			<SearchBar
 				placeholder="Search by ticker or name..."
 				data={names}
+				positioning="ml-auto mr-auto"
 				styles={{
 					containerWidth: "w-72",
 					width: "w-64",
@@ -45,7 +46,7 @@ const TopBar: React.FC<TopBarProps> = ({ names }) => {
 					searchIconColor: "white"
 				}}
       />
-			<p className="text-sm">{currDateTime}</p>
+			<p className="absolute text-base right-[1%] px-1.5">{currDateTime}</p>
 		</div>
 	);
 };

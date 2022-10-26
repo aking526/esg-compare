@@ -14,6 +14,8 @@ export function useSPCFrom(spcLen: string) {
 			d.setMonth(d.getMonth() - 6);
 		} else if (spcLen === "1 year") {
 			d.setFullYear(d.getFullYear() - 1);
+		} else if (spcLen === "5 years") {
+			d.setFullYear(d.getFullYear() - 5);
 		}
 
 		setFrom(convertDateToUnix(d));

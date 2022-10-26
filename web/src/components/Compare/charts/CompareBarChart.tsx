@@ -64,7 +64,7 @@ const CompareBarChart: React.FC<CompareBarChartProps> = ({ companyA, companyB })
 
 	return (
 		<div>
-			<Bar data={data} options={options} />
+			<Bar data={data} options={options} height={500} width={1200}/>
 		</div>
 	);
 };
