@@ -130,14 +130,14 @@ const Compare: React.FC = () => {
 	return (
 		<div>
 			{ allSelected &&
-				<div className="flex flex-row rounded-br-2xl bg-black p-1.5 w-fit" onClick={handleBackButtonClicked}>
+				<div className="relative flex flex-row rounded-br-2xl bg-black p-1.5 w-fit" onClick={handleBackButtonClicked}>
 					<div className="flex items-center justify-center">
 						<ArrowLeftCircleIcon className="w-8 h-8" color="white" />
 					</div>
 					<p className="m-2 text-white">Back</p>
 				</div>
 			}
-			<div className={`font-modern mb-16 ${ allSelected ? "mt-8" : "mt-16" } mx-24 p-5 bg-slate-200 rounded-2xl`}>
+			<div className={`font-modern ${ allSelected ? "my-8" : "my-16" } mx-24 p-5 bg-slate-200 rounded-2xl`}>
 				{ allSelected ?
 					<div>
 						{ dataLoaded && data[0] && data[1] && tickers[0] && tickers[1] ?

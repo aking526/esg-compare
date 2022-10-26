@@ -26,6 +26,23 @@ const getNames = async () => {
   for (const ticker in data) {
     f.push([ticker, data[ticker]]);
   }
+  f.sort((s1: string[], s2: string[]) => {
+    const a = s1[1], b = s2[1];
+
+    const isLetter = (c: string) => {
+      return (65 <= c.charCodeAt(0) && c.charCodeAt(0) <= 90) || (97 <= c.charCodeAt(0) && c.charCodeAt(0) <= 122);
+    };
+
+    for (let i = 0; i < Math.min(a.length, b.length); i++) {
+      if (!isLetter(a[i]) && isLetter(b[i])) return 1;
+      if (!isLetter(b[i]) && isLetter(a[i])) return -1;
+
+      if (a[i].toLowerCase() < b[i].toLowerCase()) return -1;
+      else if (a[i].toLowerCase() > b[i].toLowerCase()) return 1;
+    }
+
+    return 1;
+  });
 
   return f;
 };
