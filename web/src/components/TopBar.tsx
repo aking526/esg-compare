@@ -35,7 +35,7 @@ const TopBar: React.FC<TopBarProps> = ({ names }) => {
 	}, []);
 
 	return (
-		<div id="top-bar" className="sticky flex flex-row items-center py-2 px-3 w-screen bg-black font-modern text-white">
+		<div id="top-bar" className="relative flex flex-row items-center py-2 px-3 w-screen bg-black font-modern text-white">
 			<p className="absolute text-base px-1.5">ESG Compare</p>
 			<SearchBar
 				placeholder="Search by ticker or name..."

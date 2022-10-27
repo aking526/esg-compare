@@ -10,7 +10,7 @@ export function useStockData(ticker: string, spcLen: string, from: number, to: n
 	const queryClient = useQueryClient();
 
 	const sp = useQuery([`${ticker}_stock_prices`, spcLen, from], async () => {
-		if (ticker === "") return {};
+		if (ticker === "" || ticker === undefined) return {};
 
 		const cachedStockData: ISA | undefined = queryClient.getQueryData([`${ticker}_stock_prices`, spcLen, from]);
 		if (cachedStockData) {

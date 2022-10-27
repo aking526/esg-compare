@@ -21,7 +21,6 @@ ChartJS.register(
 	Legend
 );
 
-
 interface CompareBarChartProps {
 	companyA: IBCCompany;
 	companyB: IBCCompany;

@@ -36,6 +36,7 @@ const Rankings: React.FC = () => {
   const [reverse, setReverse] = useState(false);
 
   useEffect(() => {
+    setSliceStart(0);
     const industryFilter = industryOptionsSelected ? `industry=${industryOptionsSelected}` : null;
     let exchangeFilter: string | null;
     if (nyse == nasdaq) {
@@ -106,6 +107,7 @@ const Rankings: React.FC = () => {
   // }, [filters]);
 
   useEffect(() => {
+    setSliceStart(0);
     if (filters) {
       setQueryKey(`${metric}_rankings_with_filters`);
     } else {
@@ -116,6 +118,7 @@ const Rankings: React.FC = () => {
   }, [metric]);
 
   useEffect(() => {
+    setSliceStart(0);
     if (!industries) {
       setIndustryOptionsSelected(null);
       return;
@@ -158,8 +161,6 @@ const Rankings: React.FC = () => {
   }, [reverse]);
 
   const height = useCalculateHeight();
-  // ${!height ? "h-page-h" : `h-[${height.toString()}px]` }
-  console.log(height + "px");
 
   useEffect(() => {
     forceUpdate();
@@ -177,78 +178,78 @@ const Rankings: React.FC = () => {
   // }, []);
 
   return (
-      <div id="#container" className={`relative flex justify-evenly bg-white py-5 h-[${height}px] overflow-y-hidden font-modern`}>
-          <div className="flex flex-row">
-            <div className="font-modern rounded-lg bg-slate-100 shadow-light w-fit h-min m-2 p-2">
-              <u className="text-xl">Metrics:</u>
-              <MetricBtn
-                text="Total Score"
-                thisMetric={"total_score"}
-                currMetric={metric}
-                setMetric={setMetric}
-                styles={FilterBtnStyles}
-              />
-              <MetricBtn
-                text="Environment Score"
-                thisMetric={"environment_score"}
-                currMetric={metric}
-                setMetric={setMetric}
-                styles={FilterBtnStyles}
-              />
-              <MetricBtn
-                text="Social Score"
-                thisMetric={"social_score"}
-                currMetric={metric}
-                setMetric={setMetric}
-                styles={FilterBtnStyles}
-              />
-              <MetricBtn
-                text="Governance Score"
-                thisMetric={"governance_score"}
-                currMetric={metric}
-                setMetric={setMetric}
-                styles={FilterBtnStyles}
-              />
-            </div>
-            <div className="w-rankings-w">
-              { !rankingsLoading && !uncachedRankingsLoading ? (
-                <div className="flex flex-col">
-                  <RankingsTable rankings={rankings.slice(!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0), !reverse ? sliceStart + 50 : Math.min(rankings.length - sliceStart, rankings.length))} metric={metric} start={!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0)} reverse={reverse} />
-                  <div className="flex flex-row relative rounded-b-xl bg-slate-100 shadow-light w-min ml-auto mr-auto">
-                    <RankingsNavBtn handleClick={() => {
-                      setSliceStart(prevState => {
-                        return prevState >= 50 ? prevState - 50 : prevState;
-                      });
-                    }} dir="left" color="text-black" />
-                    <RankingsNavBtn handleClick={() => {
-                      setSliceStart(prevState => {
-                        return prevState >= rankings.length - 50 ? prevState : prevState + 50;
-                      });
-                    }} dir="right" color="text-black" />
-                  </div>
-                </div>
-                ) :
-              <RankingsLoading metric={DataRefToText[metric]} />
-              }
-            </div>
-            <div className="flex flex-col m-2 p-2 shadow-light bg-slate-100 rounded-lg w-fit h-min">
-              <u className="text-xl">Filters: </u>
-              <div className="border-2 border-black p-2 my-2 rounded-lg">
-                <FilterCheckbox label="Reverse rankings" value={reverse} onChange={() => setReverse(prevState => !prevState)} />
-              </div>
-              {!industriesLoading &&
-                <div className="border-2 rounded-lg p-2 border-black">
-                  <FilterDropdown title="Industry:" options={dropdownOptions} passBack={handleIndustryOptSel}/>
-                </div>
-              }
-              <div className="mt-5 border-2 rounded-lg p-2 border-black">
-                <h3>Stock Exchange: </h3>
-                <FilterCheckbox label="NYSE" value={nyse} onChange={() => setNyse(prevState => !prevState)} />
-                <FilterCheckbox label="Nasdaq" value={nasdaq} onChange={() => setNasdaq(prevState => !prevState)} />
+    <div id="#container" className={`relative flex justify-evenly bg-white py-5 h-[${height}px] overflow-y-hidden font-modern`}>
+      <div className="flex flex-row">
+        <div className="font-modern rounded-lg bg-slate-100 shadow-light w-fit h-min m-2 p-2">
+          <u className="text-xl">Metrics:</u>
+          <MetricBtn
+            text="Total Score"
+            thisMetric={"total_score"}
+            currMetric={metric}
+            setMetric={setMetric}
+            styles={FilterBtnStyles}
+          />
+          <MetricBtn
+            text="Environment Score"
+            thisMetric={"environment_score"}
+            currMetric={metric}
+            setMetric={setMetric}
+            styles={FilterBtnStyles}
+          />
+          <MetricBtn
+            text="Social Score"
+            thisMetric={"social_score"}
+            currMetric={metric}
+            setMetric={setMetric}
+            styles={FilterBtnStyles}
+          />
+          <MetricBtn
+            text="Governance Score"
+            thisMetric={"governance_score"}
+            currMetric={metric}
+            setMetric={setMetric}
+            styles={FilterBtnStyles}
+          />
+        </div>
+        <div className="w-rankings-w">
+          { !rankingsLoading && !uncachedRankingsLoading ? (
+            <div className="flex flex-col">
+              <RankingsTable rankings={rankings.slice(!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0), !reverse ? sliceStart + 50 : Math.min(rankings.length - sliceStart, rankings.length))} metric={metric} start={!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0)} reverse={reverse} />
+              <div className="flex flex-row relative rounded-b-xl bg-slate-100 shadow-light w-min ml-auto mr-auto">
+                <RankingsNavBtn handleClick={() => {
+                  setSliceStart(prevState => {
+                    return prevState >= 50 ? prevState - 50 : prevState;
+                  });
+                }} dir="left" color={sliceStart >= 50 ? "text-black" : "text-white" } />
+                <RankingsNavBtn handleClick={() => {
+                  setSliceStart(prevState => {
+                    return prevState >= rankings.length - 50 ? prevState : prevState + 50;
+                  });
+                }} dir="right" color={sliceStart < rankings.length - 50 ? "text-black" : "text-white"} />
               </div>
             </div>
+            ) :
+          <RankingsLoading metric={DataRefToText[metric]} />
+          }
+        </div>
+        <div className="flex flex-col m-2 p-2 shadow-light bg-slate-100 rounded-lg w-fit h-min">
+          <u className="text-xl">Filters: </u>
+          <div className="border-2 border-black p-2 my-2 rounded-lg">
+            <FilterCheckbox label="Reverse rankings" value={reverse} onChange={() => setReverse(prevState => !prevState)} />
           </div>
+          {!industriesLoading &&
+            <div className="border-2 rounded-lg p-2 border-black">
+              <FilterDropdown title="Industry:" options={dropdownOptions} passBack={handleIndustryOptSel}/>
+            </div>
+          }
+          <div className="mt-5 border-2 rounded-lg p-2 border-black">
+            <h3>Stock Exchange: </h3>
+            <FilterCheckbox label="NYSE" value={nyse} onChange={() => setNyse(prevState => !prevState)} />
+            <FilterCheckbox label="Nasdaq" value={nasdaq} onChange={() => setNasdaq(prevState => !prevState)} />
+          </div>
+        </div>
       </div>
+    </div>
   );
 };
 

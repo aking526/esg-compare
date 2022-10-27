@@ -1,11 +1,21 @@
 import { useState, useEffect } from "react";
 import CompaniesApi from "../api/CompaniesApi";
-import { IGrades, IScores, possibleGrades, ILevels, possibleLevels } from "../types/ESGDataInterfaces";
+import {
+	IGrades,
+	IScores,
+	possibleGrades,
+	ILevels,
+	possibleLevels,
+	NullScores,
+	NullGrades,
+	NullLevels
+} from "../types/ESGDataInterfaces";
 
 export function useIndustryAvg(industry: string | string[] | undefined) {
-	const [avgScores, setAvgScores] = useState<IScores | undefined>(undefined);
-	const [avgGrades, setAvgGrades] = useState<IGrades | undefined>(undefined);
-	const [avgLevels, setAvgLevels] = useState<ILevels | undefined>(undefined);
+	const [isLoading, setIsLoading] = useState(false);
+	const [avgScores, setAvgScores] = useState<IScores>(NullScores);
+	const [avgGrades, setAvgGrades] = useState<IGrades>(NullGrades);
+	const [avgLevels, setAvgLevels] = useState<ILevels>(NullLevels);
 
 	const scoreMetrics = ["environment_score", "social_score", "governance_score", "total_score"];
 	const gradeMetrics = ["environment_grade", "social_grade", "governance_grade", "total_grade"];
@@ -43,6 +53,7 @@ export function useIndustryAvg(industry: string | string[] | undefined) {
 		if (!industry) return;
 
 		const fetchData = async () => {
+			setIsLoading(true);
 			const scoresData = await CompaniesApi.getScores(industry);
 			let avgs: any = {};
 			for (let i = 0; i < scoreMetrics.length; i++) {
@@ -65,9 +76,9 @@ export function useIndustryAvg(industry: string | string[] | undefined) {
 			setAvgLevels(avgs);
 		}
 
-		fetchData();
+		fetchData().then(() => setIsLoading(false));
 	}, [industry]);
 
 
-	return { avgScores, avgGrades, avgLevels };
+	return { avgScores, avgGrades, avgLevels, isLoading };
 }

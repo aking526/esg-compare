@@ -6,9 +6,11 @@ interface CInputFieldProps {
 	prevSelected: string | undefined;
 	names: string[][] | undefined;
 	passBack: Function;
+	hasIndustryAvgOption: boolean;
+	onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const CompareInputField: React.FC<CInputFieldProps> = ({ index, prevSelected, names, passBack  }) => {
+const CompareInputField: React.FC<CInputFieldProps> = ({ index, prevSelected, names, passBack, hasIndustryAvgOption, onClick }) => {
 	const [ticker, setTicker] = useState<string | undefined>(undefined);
 
 	useEffect(() => {
@@ -23,6 +25,11 @@ const CompareInputField: React.FC<CInputFieldProps> = ({ index, prevSelected, na
 			<CompareSearchBar placeholder="Search a company..." data={names} prevSelected={prevSelected} passBack={(t: string) => {
 				setTicker(t);
 			}}/>
+			{ hasIndustryAvgOption && onClick &&
+				<div className="mt-2 border-2 border-gray-400 rounded-xl p-2 bg-gray-400">
+					<button onClick={onClick}>Compare to Industry Average</button>
+				</div>
+			}
 		</div>
 	);
 };

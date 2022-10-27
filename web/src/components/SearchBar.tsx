@@ -95,10 +95,18 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data, positioning, s
           }
         </div>
       </div>
-      <div className={`p-2 m-1 mt-2 ${styles.searchIconSize}`}>
-        <Link to={filteredData && filteredData.length !== 0 ? `/company/${filteredData[0][0]}` : "/"}>
-          <MagnifyingGlassIcon className="w-6 h-6 text-white" />
-        </Link>
+      <div>
+        {filteredData && filteredData.length !== 0 ?
+          <Link to={`/company/${filteredData[0][0]}`}>
+            <div className={`p-2 m-1 mt-2 ${styles.searchIconSize}`}>
+              <MagnifyingGlassIcon className="w-6 h-6 text-white"/>
+            </div>
+          </Link>
+            :
+          <div className={`p-2 m-1 mt-2 ${styles.searchIconSize} hover:cursor-pointer`}>
+            <MagnifyingGlassIcon className="w-6 h-6 text-white"/>
+          </div>
+        }
       </div>
     </div>
   );

@@ -16,13 +16,13 @@ import CompaniesApi from "./api/CompaniesApi";
 import QueryError from "./components/QueryError";
 
 function App() {
-  // const names = useQuery<string[][], Error>(['names'], CompaniesApi.getNames);
-  // if (names.isError) return <QueryError message={names.error.message} />;
+  const names = useQuery<string[][], Error>(['names'], CompaniesApi.getNames);
+  if (names.isError) return <QueryError message={names.error.message} />;
 
   return (
     <Router>
-      {/*<TopBar names={names.data} />*/}
-      <TopBar names={[["", ""]]} />
+      <TopBar names={names.data} />
+      {/*<TopBar names={[["", ""]]} />*/}
       <NavBar />
       <Routes>
         <Route path="/company/:ticker" element={ <Company/> }/>

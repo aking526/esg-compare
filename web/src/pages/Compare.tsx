@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useReducer } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useIndustryAvg } from "../hooks/useIndustryAvg";
+import { useStockData } from "../hooks/useStockData";
+import { useSPCFrom } from "../hooks/useSPCFrom";
+import { Link, useNavigate } from "react-router-dom";
 import CompareInputField from "../components/Compare/CompareInputField";
 import CompareInputSelected from "../components/Compare/CompareInputSelected";
 import CompaniesApi from "../api/CompaniesApi";
-import { ICompanyData } from "../types/ICompanyData";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSPCFrom } from "../hooks/useSPCFrom";
-import { useStockData } from "../hooks/useStockData";
-import { Link, useNavigate } from "react-router-dom";
+import { BlankCompanyData, ICompanyData } from "../types/ICompanyData";
 import QueryError from "../components/QueryError";
 import CompareLoading from "../components/Compare/CompareLoading";
 import CompareBarChart from "../components/Compare/charts/CompareBarChart";
@@ -37,15 +38,10 @@ const Compare: React.FC = () => {
 	const stock0 = useStockData(tickers[0], spcLen, from, to);
 	const stock1 = useStockData(tickers[1], spcLen, from, to);
 
-	if (stock1?.isError) {
-		// @ts-ignore
-		return <QueryError message={stock1?.error.message} />;
-	}
-
-	if (stock0?.isError) {
-		// @ts-ignore
-		return <QueryError message={stock0?.error.message} />;
-	}
+	// @ts-ignore
+	if (stock1?.isError) return <QueryError message={stock1?.error.message} />;
+	// @ts-ignore
+	if (stock0?.isError) return <QueryError message={stock0?.error.message} />;
 
 	const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
@@ -127,6 +123,29 @@ const Compare: React.FC = () => {
 		setData([]);
 	};
 
+	const [compareToIA, setCompareToIA] = useState(false);
+	const IA = useIndustryAvg(data[0] ? data[0].industry : undefined);
+	const handleCompareToIndustryClicked: React.MouseEventHandler<HTMLButtonElement> = () => {
+		setCompareToIA(true);
+	};
+
+	useEffect(() => {
+		if (!compareToIA || !tickers[0]) return;
+
+		const fetchOne = async () => {
+			setDataLoaded(false);
+			const cachedData: ICompanyData | undefined = queryClient.getQueryData([`${tickers[0]}_data`]);
+			if (cachedData) {
+				setData([cachedData, BlankCompanyData]);
+				return;
+			}
+			const cd = await CompaniesApi.fetchCompanyData(tickers[0]);
+			setData([cd, BlankCompanyData]);
+		};
+
+		fetchOne().then(() => setDataLoaded(true));
+	}, [compareToIA]);
+
 	return (
 		<div>
 			{ allSelected &&
@@ -138,7 +157,38 @@ const Compare: React.FC = () => {
 				</div>
 			}
 			<div className={`font-modern ${ allSelected ? "my-8" : "my-16" } mx-24 p-5 bg-slate-200 rounded-2xl`}>
-				{ allSelected ?
+				{ compareToIA &&
+					<div>
+						{ data[0] && !IA.isLoading ?
+						<div className="flex flex-col">
+							<div className="flex flex-row">
+								<div className="flex flex-col">
+									<h1>{tickers[0]}</h1>
+								</div>
+								<p>Compared To</p>
+								<div className="flex flex-col">
+									<h1>{data[0].industry} Industry Average</h1>
+								</div>
+								<CompareBarChart
+									companyA={{
+										ticker: tickers[0],
+										name: data[0].name,
+										ratings: [data[0].environment_score, data[0].social_score, data[0].governance_score, data[0].total_score]
+									}}
+									companyB={{
+										ticker: "--IA",
+										name: `${data[0].industry} Industry Average`,
+										ratings: [IA.avgScores.environment_score, IA.avgScores.social_score, IA.avgScores.governance_score, IA.avgScores.total_score]
+									}}
+								/>
+							</div>
+						</div>
+								:
+						<CompareLoading tickers={[tickers[0], "Industry Average"]} />
+					}
+					</div>
+				}
+				{ allSelected && !compareToIA ?
 					<div>
 						{ dataLoaded && data[0] && data[1] && tickers[0] && tickers[1] ?
 							<div className="flex flex-col">
@@ -238,21 +288,66 @@ const Compare: React.FC = () => {
 								<CompareLoading tickers={tickers} />
 						}
 					</div>
-					:
+						:
 					<>
-						{ companies ?
-							<div className="flex flex-row justify-evenly my-16 mx-32 px-18 py-36">
-								<CompareInputSelected ticker={companies} handleClick={() => {
-									navigate("/compare");
-									newTickers(0, "");
-								}}/>
-								{ !tickers[1] ? <CompareInputField index={1} names={names.data} prevSelected={companies ? companies : undefined} passBack={(t: string) => newTickers(1, t)}/> : <CompareInputSelected ticker={tickers[1]} handleClick={() => newTickers(1, "")}/> }
-							</div>
-							:
-							<div className="flex flex-row items-center justify-evenly px-18 py-36">
-								{ !tickers[0] ? <CompareInputField index={0} prevSelected={companies ? companies : undefined} names={names.data} passBack={(t: string) => newTickers(0, t)}/> : <CompareInputSelected ticker={tickers[0]} handleClick={() => newTickers(0, "")}/> }
-								{ !tickers[1] ? <CompareInputField index={1} prevSelected={companies ? companies : undefined} names={names.data} passBack={(t: string) => newTickers(1, t)}/> : <CompareInputSelected ticker={tickers[1]} handleClick={() => newTickers(1, "")}/> }
-							</div>
+						{ !compareToIA &&
+							<>
+								{ companies ?
+									<div className="flex flex-row justify-evenly my-16 mx-32 px-18 py-36">
+										<CompareInputSelected ticker={companies} handleClick={() => {
+											navigate("/compare");
+											newTickers(0, "");
+										}}/>
+										{ !tickers[1] ?
+											<CompareInputField
+												index={1}
+												names={names.data}
+												prevSelected={companies ? companies : undefined}
+												passBack={(t: string) => newTickers(1, t)}
+												hasIndustryAvgOption={true}
+												onClick={handleCompareToIndustryClicked}
+											/>
+											:
+											<CompareInputSelected
+												ticker={tickers[1]}
+												handleClick={() => newTickers(1, "")}
+											/>
+										}
+									</div>
+										:
+									<div className="flex flex-row items-center justify-evenly px-18 py-36">
+										{ !tickers[0] ?
+											<CompareInputField
+												index={0}
+												prevSelected={companies ? companies : undefined}
+												names={names.data}
+												passBack={(t: string) => newTickers(0, t)}
+												hasIndustryAvgOption={false}
+											/>
+												:
+											<CompareInputSelected
+												ticker={tickers[0]}
+												handleClick={() => newTickers(0, "")}
+										/>
+										}
+										{ !tickers[1] ?
+											<CompareInputField
+												index={1}
+												prevSelected={companies ? companies : undefined}
+												names={names.data}
+												passBack={(t: string) => newTickers(1, t)}
+												hasIndustryAvgOption={true}
+												onClick={handleCompareToIndustryClicked}
+											/>
+												:
+											<CompareInputSelected
+												ticker={tickers[1]}
+												handleClick={() => newTickers(1, "")}
+											/>
+										}
+									</div>
+								}
+							</>
 						}
 					</>
 				}

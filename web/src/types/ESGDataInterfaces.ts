@@ -7,12 +7,26 @@ export interface IScores extends ISA {
 	total_score: number;
 }
 
+export const NullScores: IScores = {
+	environment_score: -1,
+	social_score: -1,
+	governance_score: -1,
+	total_score: -1
+};
+
 export interface IGrades extends ISA {
 	environment_grade: string;
 	social_grade: string;
 	governance_grade: string;
 	total_grade: string;
 }
+
+export const NullGrades: IGrades = {
+	environment_grade: "",
+	social_grade: "",
+	governance_grade: "",
+	total_grade: ""
+};
 
 export const possibleGrades = ["D", "DD", "DDD", "C", "CC", "CCC", "B", "BB", "BBB", "A", "AA", "AAA"];
 
@@ -23,5 +37,11 @@ export interface ILevels extends ISA {
 	total_level: string;
 }
 
+export const NullLevels: ILevels = {
+	environment_level: "",
+	social_level: "",
+	governance_level: "",
+	total_level: ""
+};
 
 export const possibleLevels = ["Low", "Medium", "High", "Excellent"];
