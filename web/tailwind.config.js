@@ -12,11 +12,11 @@ module.exports = {
       spacing: {
         "page-h": "620px",
         "rankings-w": "912px",
-        "rankings-table-h": "535px"
+        "rankings-table-h": "545px"
       }
     },
     fontFamily: {
-      "modern": ["Roboto", "Helvetica", "Arial", "sans-serif"]
+      "modern": ["Open Sans", "Roboto", "Helvetica", "Arial", "sans-serif"]
     },
   },
   plugins: [],

@@ -8,13 +8,18 @@ interface TopBarProps {
 
 const TopBar: React.FC<TopBarProps> = ({ names }) => {
 	const [currDateTime, setCurrDateTime] = useState<string>((new Date()).toLocaleString());
-	const [onComparePage, setOnComparePage] = useState(false);
 
 	const location = useLocation();
-
 	useEffect(() => {
-		if (location.pathname.includes("compare")) setOnComparePage(true);
-		else setOnComparePage(false);
+		if (location.pathname === "/") {
+			document.title = "ESG Compare";
+		} else if (location.pathname === "/rankings") {
+			document.title = "ESG Rankings";
+		} else if (location.pathname.includes("/company")) {
+			document.title = "Company Profile";
+		} else if (location.pathname.includes("/compare")) {
+			document.title = "Compare ESG";
+		}
 	}, [location]);
 
 	const currCallback = useCallback(() => {

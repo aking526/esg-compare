@@ -13,10 +13,6 @@ import FilterCheckbox from "../components/Rankings/FilterCheckbox";
 import RankingsNavBtn from "../components/Rankings/RankingsNavBtn";
 import { useCalculateHeight } from "../hooks/useCalculateHeight";
 
-/*
-Fix the bug with the height
- */
-
 const Rankings: React.FC = () => {
   const defaultMetric = "total_score";
   const FilterBtnStyles = "border-2 rounded-xl border-black p-1 my-0.5";
@@ -181,9 +177,9 @@ const Rankings: React.FC = () => {
   // }, []);
 
   return (
-      <div id="#container" className={`relative w-screen bg-slate-100 py-5 h-[${height}px] overflow-y-hidden`}>
+      <div id="#container" className={`relative flex justify-evenly bg-white py-5 h-[${height}px] overflow-y-hidden font-modern`}>
           <div className="flex flex-row">
-            <div className="font-modern border-2 rounded-lg w-fit h-min m-2 p-2">
+            <div className="font-modern rounded-lg bg-slate-100 shadow-light w-fit h-min m-2 p-2">
               <u className="text-xl">Metrics:</u>
               <MetricBtn
                 text="Total Score"
@@ -235,7 +231,7 @@ const Rankings: React.FC = () => {
               <RankingsLoading metric={DataRefToText[metric]} />
               }
             </div>
-            <div className="flex flex-col m-2 p-2 border-2 rounded-lg w-96 h-min">
+            <div className="flex flex-col m-2 p-2 shadow-light bg-slate-100 rounded-lg w-fit h-min">
               <u className="text-xl">Filters: </u>
               <div className="border-2 border-black p-2 my-2 rounded-lg">
                 <FilterCheckbox label="Reverse rankings" value={reverse} onChange={() => setReverse(prevState => !prevState)} />

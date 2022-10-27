@@ -37,7 +37,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({ title, options, passBac
 
 	return (
 		<span
-			className="inline-block w-80"
+			className="inline-block w-64"
 			data-toggle="popover"
 			data-trigger="focus"
 			data-content="Please select industry/ies"

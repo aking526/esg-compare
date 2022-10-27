@@ -28,9 +28,13 @@ const ESGDChart: React.FC<EPCProps> = ({ env, soc, gov}) => {
 		]
 	});
 
+	const options = {
+
+	};
+
 	return (
 		<div className="relative">
-			<Doughnut data={data} options={{}} />
+			<Doughnut data={data} options={options} width={250} />
 		</div>
 	);
 };

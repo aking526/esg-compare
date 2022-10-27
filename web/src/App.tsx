@@ -17,10 +17,7 @@ import QueryError from "./components/QueryError";
 
 function App() {
   const names = useQuery<string[][], Error>(['names'], CompaniesApi.getNames);
-
-  if (names.isError) {
-    return <QueryError message={names.error.message} />;
-  }
+  if (names.isError) return <QueryError message={names.error.message} />;
 
   return (
     <Router>

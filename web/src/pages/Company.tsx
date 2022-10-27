@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useIndustryAvg } from "../hooks/useIndustryAvg";
@@ -8,26 +8,22 @@ import CompanyInfo from "../components/Company/CompanyInfo";
 import ESGCategory from "../components/Company/ESGCategory";
 import ESGDChart from "../components/Company/charts/ESGDChart";
 import StockPriceChart from "../components/Company/charts/StockPriceChart";
-import NewsSection from "../components/Company/NewsSection";
 import CompaniesApi from "../api/CompaniesApi";
 import QueryError from "../components/QueryError";
 import StockApi from "../api/StockApi";
-import { convertDateToUnix, convertUnixToDate } from "../utils/date";
+import { convertDateToUnix } from "../utils/date";
 import { formatDate, getLastWeeksDate } from "../utils/date";
-import { convertStockData } from "../classes/CPair";
 import { TNewsInfo, IBasicFinancials, IStockQuote } from "../types/StockFinancialInterfaces";
 import { possibleGrades, possibleLevels } from "../types/ESGDataInterfaces";
 import SPCLenBtn from "../components/SPCLenBtn";
 import { useSPCFrom } from "../hooks/useSPCFrom";
 import { useStockData } from "../hooks/useStockData";
 
-/*
-Fix the formatting for the stock quote section
- */
-
 const Company: React.FC = () => {
   const { ticker } = useParams();
   if (!ticker) return <h1>Please select a company</h1>;
+
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
   const [data, setData] = useState<ICompanyData>(BlankCompanyData);
 
@@ -35,11 +31,8 @@ const Company: React.FC = () => {
   const from = useSPCFrom(spcLen);
   const [to, setTo] = useState<number>(convertDateToUnix(new Date()));
   const closingPrices = useStockData(ticker, spcLen, from, to);
-
-  if (closingPrices?.isError) {
-    // @ts-ignore
-    return <QueryError message={closingPrices.error?.message} />
-  }
+  // @ts-ignore
+  if (closingPrices?.isError) return <QueryError message={closingPrices.error?.message} />
 
   const [news, setNews] = useState<TNewsInfo[]>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -121,24 +114,22 @@ const Company: React.FC = () => {
     }
   });
 
-  if (basicFinancialsIsError) {
-    // @ts-ignore
-    return <QueryError message={basicFinancialsError?.message} />
-  }
+  // @ts-ignore
+  if (basicFinancialsIsError) return <QueryError message={basicFinancialsError?.message} />;
+  // @ts-ignore
+  if (dataIsError) return <QueryError message={dataError?.message} />;
+  // @ts-ignore
+  if (newsIsError) return <QueryError message={newsError?.message} />;
 
-  if (dataIsError) {
-    // @ts-ignore
-    return <QueryError message={dataError?.message} />;
-  }
 
-  if (newsIsError) {
-    // @ts-ignore
-    return <QueryError message={newsError?.message} />;
-  }
+  const [naxW, setNaxW] = useState<number>(0);
+  useEffect(() => {
+    forceUpdate();
+  }, [naxW]);
 
   useEffect(() => {
     // console.log("dataLoading: " + dataLoading + " basicFinancialsLoading: " + basicFinancialsLoading + " quoteLoading: " + quoteLoading + " newsLoading: " + newsLoading);
-    setLoaded(!dataLoading && !basicFinancialsLoading && !quoteLoading);
+    setLoaded(!dataLoading && !basicFinancialsLoading && !quoteLoading && !newsLoading);
   }, [dataLoading, basicFinancialsLoading, quoteLoading, newsLoading]);
 
   return (
@@ -149,45 +140,64 @@ const Company: React.FC = () => {
           <div className="flex flex-col mt-5">
             <strong className="text-3xl mb-1.5">ESG Data</strong>
             <div className="flex flex-row mb-1.5">
-              <ESGCategory
-                name={data.name}
-                industry={data.industry}
-                category="Environment"
-                score={data.environment_score}
-                grade={data.environment_grade}
-                level={data.environment_level}
-                avg_score={avgScores.environment_score}
-                avg_grade={avgGrades.environment_grade}
-                avg_level={avgLevels.environment_level}
-              />
-              <ESGCategory
-                name={data.name}
-                industry={data.industry}
-                category="Social"
-                score={data.social_score}
-                grade={data.social_grade}
-                level={data.social_level}
-                avg_score={avgScores.social_score}
-                avg_grade={avgGrades.social_grade}
-                avg_level={avgLevels.social_level}
-              />
-              <ESGCategory
-                name={data.name}
-                industry={data.industry}
-                category="Governance"
-                score={data.governance_score}
-                grade={data.governance_grade}
-                level={data.governance_level}
-                avg_score={avgScores.governance_score}
-                avg_grade={avgGrades.governance_grade}
-                avg_level={avgLevels.governance_level}
-              />
+              <div className="flex flex-col">
+                <div className="flex flex-row mb-1.5">
+                  <ESGCategory
+                    id="env-scores"
+                    passBack={(width: number) => {
+                      setNaxW(prevState => Math.max(prevState, width));
+                    }}
+                    width={naxW}
+                    name={data.name}
+                    industry={data.industry}
+                    category="Environment"
+                    score={data.environment_score}
+                    grade={data.environment_grade}
+                    level={data.environment_level}
+                    avg_score={avgScores.environment_score}
+                    avg_grade={avgGrades.environment_grade}
+                    avg_level={avgLevels.environment_level}
+                  />
+                  <ESGCategory
+                    id="soc-scores"
+                    passBack={(width: number) => {
+                      setNaxW(prevState => Math.max(prevState, width));
+                    }}
+                    width={naxW}
+                    name={data.name}
+                    industry={data.industry}
+                    category="Social"
+                    score={data.social_score}
+                    grade={data.social_grade}
+                    level={data.social_level}
+                    avg_score={avgScores.social_score}
+                    avg_grade={avgGrades.social_grade}
+                    avg_level={avgLevels.social_level}
+                  />
+                  <ESGCategory
+                    id="gov-scores"
+                    passBack={(width: number) => {
+                      setNaxW(prevState => Math.max(prevState, width));
+                    }}
+                    width={naxW}
+                    name={data.name}
+                    industry={data.industry}
+                    category="Governance"
+                    score={data.governance_score}
+                    grade={data.governance_grade}
+                    level={data.governance_level}
+                    avg_score={avgScores.governance_score}
+                    avg_grade={avgGrades.governance_grade}
+                    avg_level={avgLevels.governance_level}
+                  />
+                </div>
+                <div className="flex flex-row">
+                  <p className="mx-1"><strong>Total Score:</strong> <span className={data.total_score >= avgScores.total_score ? "text-green-500" : "text-red-500"}  data-tip data-for="score-tip-total">{data.total_score}</span></p>
+                  <p className="mx-1"><strong>Total Grade:</strong> <span className={possibleGrades.indexOf(data.total_grade) > possibleGrades.indexOf(avgGrades.total_grade) ? "text-green-500" : data.total_grade === avgGrades.total_grade ? "text-gray-500" : "text-red-500"} data-tip data-for="grade-tip-total">{data.total_grade}</span></p>
+                  <p className="mx-1"><strong>Total Level:</strong> <span className={possibleLevels.indexOf(data.total_level) > possibleLevels.indexOf(avgLevels.total_level) ? "text-green-500" : data.total_level === avgLevels.total_level ? "text-gray-500" : "text-red-500"} data-tip data-for="level-tip-total">{data.total_level}</span></p>
+                </div>
+              </div>
               <ESGDChart env={data.environment_score} soc={data.social_score} gov={data.governance_score}/>
-            </div>
-            <div className="flex flex-row">
-              <p className="mx-1"><strong>Total Score:</strong> <span className={data.total_score >= avgScores.total_score ? "text-green-500" : "text-red-500"}  data-tip data-for="score-tip-total">{data.total_score}</span></p>
-              <p className="mx-1"><strong>Total Grade:</strong> <span className={possibleGrades.indexOf(data.total_grade) > possibleGrades.indexOf(avgGrades.total_grade) ? "text-green-500" : data.total_grade === avgGrades.total_grade ? "text-gray-500" : "text-red-500"} data-tip data-for="grade-tip-total">{data.total_grade}</span></p>
-              <p className="mx-1"><strong>Total Level:</strong> <span className={possibleLevels.indexOf(data.total_level) > possibleLevels.indexOf(avgLevels.total_level) ? "text-green-500" : data.total_level === avgLevels.total_level ? "text-gray-500" : "text-red-500"} data-tip data-for="level-tip-total">{data.total_level}</span></p>
             </div>
           </div>
           <div className="flex flex-row mt-5">
@@ -234,40 +244,56 @@ const Company: React.FC = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col justify-evenly ml-2 items-center px-2 pb-2">
+            <div className="flex flex-col justify-evenly ml-2 px-2 pb-2">
               <div>
                 <strong className="text-2xl mb-1.5">Stock Quote</strong>
-                <div><strong>Current Price: </strong> {quote.c}</div>
-                <div><strong>Change: </strong> {quote.d}</div>
-                <div><strong>Percent Change: </strong> {quote.dp}</div>
+                <div><strong>Current Price:</strong> &nbsp;${quote.c}</div>
+                <div><strong>Change:</strong> &nbsp;${quote.d}</div>
+                <div><strong>Percent Change:</strong> &nbsp;{quote.dp}</div>
                 <div>
                   <h3>Today's prices</h3>
-                  <div><strong>High price of the day: </strong> {quote.h}</div>
-                  <div><strong>Low price of the day: </strong> {quote.l}</div>
-                  <div><strong>Opening price of the day: </strong> {quote.o}</div>
+                  <div><strong>High price of the day:</strong> &nbsp;${quote.h}</div>
+                  <div><strong>Low price of the day:</strong> &nbsp;${quote.l}</div>
+                  <div><strong>Opening price of the day:</strong> &nbsp;${quote.o}</div>
                 </div>
-                <div><strong>Previous close price: </strong> {quote.pc}</div>
+                <div><strong>Previous close price:</strong> &nbsp;${quote.pc}</div>
               </div>
               <div>
                 <strong className="text-2xl mb-1.5">Basic Financials</strong>
                 <div className="my-1">
-                  <div><strong>52 Week High on {basicFinancials.metric["52WeekHighDate"]}: </strong> {basicFinancials.metric["52WeekHigh"]}</div>
-                  <div><strong>52 Week Low on {basicFinancials.metric["52WeekLowDate"]}: </strong> {basicFinancials.metric["52WeekLow"]}</div>
+                  <div><strong>52 Week High on {basicFinancials.metric["52WeekHighDate"]}:</strong> &nbsp;${basicFinancials.metric["52WeekHigh"]}</div>
+                  <div><strong>52 Week Low on {basicFinancials.metric["52WeekLowDate"]}:</strong> &nbsp;${basicFinancials.metric["52WeekLow"]}</div>
                   {/* @ts-ignore */}
-                  <div><strong>Market Cap: </strong> {basicFinancials.metric["marketCapitalization"] * 1000000}</div>
-                  <div><strong>Dividend Per Share Annual: </strong> ${basicFinancials.metric["dividendPerShareAnnual"]}</div>
+                  <div><strong>Market Cap:</strong>  &nbsp;${basicFinancials.metric["marketCapitalization"].toLocaleString("en-US")} mil.</div>
+                  <div><strong>Dividend Per Share Annual:</strong> &nbsp;${basicFinancials.metric["dividendPerShareAnnual"]}</div>
                 </div>
               </div>
             </div>
           </div>
           <div className="flex flex-col mt-5">
             <strong className="text-2xl mb-1.5">News</strong>
-            {/*<div className="flex flex-row">*/}
-            {/*  {news.slice(0, 5).map((curr, idx) => {*/}
-            {/*    if (!curr.url || curr.url === "") return null;*/}
-            {/*    return <NewsSection currNews={curr} key={idx} />;*/}
-            {/*  })}*/}
-            {/*</div>*/}
+            <div className="flex flex-row">
+              {news.slice(0, 5).map((currNews, idx) => {
+                if (!currNews.url || currNews.url === "") return null;
+                return (
+                  <div className="flex flex-col m-3" key={idx}>
+                    <h3 className="mb-1.5"><a href={currNews.url}>{currNews.headline}</a></h3>
+                    <img
+                      id={`news-img-${idx}`}
+                      width={100}
+                      height={100}
+                      src={currNews.image}
+                      alt=""
+                      onError={() => {
+                        // @ts-ignore
+                        document.getElementById(`news-img-${idx}`).style.display = "none";
+                      }}
+                    />
+                    <p>Source: {currNews.source}</p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
         ) :
