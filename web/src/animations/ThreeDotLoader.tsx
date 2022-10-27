@@ -26,8 +26,10 @@ const DotVariants = {
 
 const DotTransition = {
 	duration: 0.5,
-	reverse: Infinity,
-	ease: "easeInOut"
+	ease: "easeInOut",
+	repeatType: "reverse",
+	repeat: Infinity,
+	repeatDelay: 0.175
 };
 
 const DotStyle = "block m-2 w-8 h-8 bg-slate-900 rounded-full";
@@ -35,10 +37,30 @@ const DotStyle = "block m-2 w-8 h-8 bg-slate-900 rounded-full";
 const ThreeDotLoader: React.FC<StylingProps> = ({ styles }) => {
 	return (
 		<div className={`pt-10 w-full flex justify-center items-center ${styles}`}>
-			<motion.div className="w-40 h-20 flex space-around" variants={ContainerVariants} initial="initial" animate="animate">
-				<motion.span className={DotStyle} variants={DotVariants} transition={DotTransition} />
-				<motion.span className={DotStyle} variants={DotVariants} transition={DotTransition} />
-				<motion.span className={DotStyle} variants={DotVariants} transition={DotTransition} />
+			<motion.div
+				className="w-40 h-20 flex space-around"
+				variants={ContainerVariants}
+				initial="initial"
+				animate="animate"
+			>
+				<motion.span
+					className={DotStyle}
+					variants={DotVariants}
+					// @ts-ignore
+					transition={DotTransition}
+				/>
+				<motion.span
+					className={DotStyle}
+					variants={DotVariants}
+					// @ts-ignore
+					transition={DotTransition}
+				/>
+				<motion.span
+					className={DotStyle}
+					variants={DotVariants}
+					// @ts-ignore
+					transition={DotTransition}
+				/>
 			</motion.div>
 		</div>
 	);

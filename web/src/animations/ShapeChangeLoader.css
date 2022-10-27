@@ -1,0 +1,10 @@
+#scl {
+  --sky: #00ccff;
+
+  margin-top: 8%;
+  margin-bottom: 8%;
+
+  width: 200px;
+  height: 200px;
+  background: var(--sky);
+}
