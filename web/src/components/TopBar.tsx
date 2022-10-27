@@ -19,6 +19,8 @@ const TopBar: React.FC<TopBarProps> = ({ names }) => {
 			document.title = "Company Profile";
 		} else if (location.pathname.includes("/compare")) {
 			document.title = "Compare ESG";
+		} else if (location.pathname === "/about") {
+			document.title = "About";
 		}
 	}, [location]);
 
