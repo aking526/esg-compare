@@ -10,7 +10,7 @@ export function useStockData(ticker: string, spcLen: string, from: number, to: n
 	const queryClient = useQueryClient();
 
 	const sp = useQuery([`${ticker}_stock_prices`, spcLen, from], async () => {
-		if (ticker === "" || ticker === undefined) return {};
+		if (ticker === "" || ticker === undefined || !ticker) return { message: "No Ticker" };
 
 		const cachedStockData: ISA | undefined = queryClient.getQueryData([`${ticker}_stock_prices`, spcLen, from]);
 		if (cachedStockData) {
@@ -24,6 +24,10 @@ export function useStockData(ticker: string, spcLen: string, from: number, to: n
 			setStockPrices(convertStockData(res, "c"));
 		}
 	});
+
+	if (!ticker) {
+		queryClient.removeQueries([`${ticker}_stock_prices`]);
+	}
 
 	return { prices: stockPrices, isLoading: sp.isLoading, isError: sp.isError, error: sp.error };
 }

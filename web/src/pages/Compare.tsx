@@ -121,6 +121,7 @@ const Compare: React.FC = () => {
 	const handleBackButtonClicked = () => {
 		setTickers(["", ""]);
 		setData([]);
+		setCompareToIA(false);
 	};
 
 	const [compareToIA, setCompareToIA] = useState(false);
@@ -140,7 +141,7 @@ const Compare: React.FC = () => {
 				return;
 			}
 			const cd = await CompaniesApi.fetchCompanyData(tickers[0]);
-			setData([cd, BlankCompanyData]);
+			setData([cd[0], BlankCompanyData]);
 		};
 
 		fetchOne().then(() => setDataLoaded(true));
@@ -148,7 +149,7 @@ const Compare: React.FC = () => {
 
 	return (
 		<div>
-			{ allSelected &&
+			{ (allSelected || compareToIA) &&
 				<div className="relative flex flex-row rounded-br-2xl bg-black p-1.5 w-fit" onClick={handleBackButtonClicked}>
 					<div className="flex items-center justify-center">
 						<ArrowLeftCircleIcon className="w-8 h-8" color="white" />
@@ -162,26 +163,26 @@ const Compare: React.FC = () => {
 						{ data[0] && !IA.isLoading ?
 						<div className="flex flex-col">
 							<div className="flex flex-row">
-								<div className="flex flex-col">
-									<h1>{tickers[0]}</h1>
+								<div className="flex flex-col mx-1">
+									<h1>{data[0].name} - {tickers[0].toUpperCase()}</h1>
 								</div>
 								<p>Compared To</p>
-								<div className="flex flex-col">
+								<div className="flex flex-col mx-1">
 									<h1>{data[0].industry} Industry Average</h1>
 								</div>
-								<CompareBarChart
-									companyA={{
-										ticker: tickers[0],
-										name: data[0].name,
-										ratings: [data[0].environment_score, data[0].social_score, data[0].governance_score, data[0].total_score]
-									}}
-									companyB={{
-										ticker: "--IA",
-										name: `${data[0].industry} Industry Average`,
-										ratings: [IA.avgScores.environment_score, IA.avgScores.social_score, IA.avgScores.governance_score, IA.avgScores.total_score]
-									}}
-								/>
 							</div>
+							<CompareBarChart
+								companyA={{
+									ticker: tickers[0],
+									name: data[0].name,
+									ratings: [data[0].environment_score, data[0].social_score, data[0].governance_score, data[0].total_score]
+								}}
+								companyB={{
+									ticker: "--IA",
+									name: `${data[0].industry} Industry Average`,
+									ratings: [IA.avgScores.environment_score, IA.avgScores.social_score, IA.avgScores.governance_score, IA.avgScores.total_score]
+								}}
+							/>
 						</div>
 								:
 						<CompareLoading tickers={[tickers[0], "Industry Average"]} />

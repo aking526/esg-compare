@@ -251,7 +251,6 @@ const Company: React.FC = () => {
                 <div><strong>Change:</strong> &nbsp;${quote.d}</div>
                 <div><strong>Percent Change:</strong> &nbsp;{quote.dp}</div>
                 <div>
-                  <h3>Today's prices</h3>
                   <div><strong>High price of the day:</strong> &nbsp;${quote.h}</div>
                   <div><strong>Low price of the day:</strong> &nbsp;${quote.l}</div>
                   <div><strong>Opening price of the day:</strong> &nbsp;${quote.o}</div>
@@ -275,9 +274,18 @@ const Company: React.FC = () => {
             <div className="flex flex-row">
               {news.slice(0, 5).map((currNews, idx) => {
                 if (!currNews.url || currNews.url === "") return null;
+                const split = currNews.headline.split(" ");
+                let cnt = 0;
+                let slicedHeadline = "";
+                for (let i = 0; i < split.length; i++) {
+                  if (cnt < 50) {
+                    slicedHeadline += split[i] + " ";
+                    cnt += split[i].length;
+                  } else break;
+                }
                 return (
-                  <div className="flex flex-col m-3" key={idx}>
-                    <h3 className="mb-1.5"><a href={currNews.url}>{currNews.headline}</a></h3>
+                  <div className={`flex flex-col m-3 w-[20%] ${idx < 4 ? "border-r-2" : ""} border-black p-1.5`} key={idx}>
+                    <h3 className="mb-1.5"><a href={currNews.url}>{slicedHeadline}...</a></h3>
                     <img
                       id={`news-img-${idx}`}
                       width={100}
