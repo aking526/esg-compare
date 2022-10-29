@@ -237,9 +237,13 @@ const Rankings: React.FC = () => {
           <div className="border-2 border-black p-2 my-2 rounded-lg">
             <FilterCheckbox label="Reverse rankings" value={reverse} onChange={() => setReverse(prevState => !prevState)} />
           </div>
-          {!industriesLoading &&
-            <div className="border-2 rounded-lg p-2 border-black">
+          {!industriesLoading ?
+            <div className="border-2 rounded-lg p-2 border-black w-72 h-[85px]">
               <FilterDropdown title="Industry:" options={dropdownOptions} passBack={handleIndustryOptSel}/>
+            </div>
+              :
+            <div className="border-2 rounded-lg p-2 border-black w-72 h-[85px]">
+              <p>Industry:</p>
             </div>
           }
           <div className="mt-5 border-2 rounded-lg p-2 border-black">

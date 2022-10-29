@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import StylingProps from "../types/StylingProps";
-import "./ShapeChangeLoader.css";
+import "../styles/ShapeChangeLoader.css";
 
 interface ShapeChangeLoaderProps extends StylingProps {
 	text: string;

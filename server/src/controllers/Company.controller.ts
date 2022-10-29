@@ -272,7 +272,7 @@ const tempFixer = (req: Request, res: Response, next: NextFunction) => {
 		return res.status(403).json({ message: "No Authorization "});
 	}
 
-	return Company.find({ industry: "Metals & Mining" })
+	return Company.find({ industry: "Textiles, Apparel and Luxury Goods" })
 		.then((companies) => res.status(200).json(companies))
 		.catch((error) => res.status(500).json({ error }));
 };

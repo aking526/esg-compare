@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useIndustryAvg } from "../hooks/useIndustryAvg";
 import { useStockData } from "../hooks/useStockData";
-import { useSPCFrom } from "../hooks/useSPCFrom";
 import { Link, useNavigate } from "react-router-dom";
 import CompareInputField from "../components/Compare/CompareInputField";
 import CompareInputSelected from "../components/Compare/CompareInputSelected";
@@ -11,7 +10,6 @@ import { BlankCompanyData, ICompanyData } from "../types/ICompanyData";
 import QueryError from "../components/QueryError";
 import CompareLoading from "../components/Compare/CompareLoading";
 import CompareBarChart from "../components/Compare/charts/CompareBarChart";
-import { convertDateToUnix } from "../utils/date";
 import CompareStockChart from "../components/Compare/charts/CompareStockChart";
 import { XCircleIcon, ArrowLeftCircleIcon } from "@heroicons/react/20/solid";
 import SPCLenBtn from "../components/SPCLenBtn";
@@ -26,24 +24,40 @@ const Compare: React.FC = () => {
 	const instate = companies ? [companies, undefined] : [undefined, undefined];
 
 	const [tickers, setTickers] = useState<string[]>(instate);
+
+	/*
+	Store the previously selected tickers in localStorage
+	Delete them if user goes to different page
+	 */
+	useEffect(() => {
+		if (!companies && window.localStorage.getItem("compare_tickers")) {
+			// @ts-ignore
+			setTickers(window.localStorage.getItem("compare_tickers").split(","));
+		}
+
+		return () => {
+			window.localStorage.setItem("compare_tickers", ["",""].join(","));
+		};
+	}, []);
+
+	useEffect(() => {
+		window.localStorage.setItem("compare_tickers", tickers.join(","));
+	}, [tickers]);
+
 	const [allSelected, setAllSelected] = useState(false);
 
 	const [data, setData] = useState<ICompanyData[]>([]);
 	const [dataLoaded, setDataLoaded] = useState(false);
 
 	const [spcLen, setSpcLen] = useState("1 month");
-	const from = useSPCFrom(spcLen);
-	const [to, setTo] = useState<number>(convertDateToUnix(new Date()));
 
-	const stock0 = useStockData(tickers[0], spcLen, from, to);
-	const stock1 = useStockData(tickers[1], spcLen, from, to);
+	const stock0 = useStockData(tickers[0], spcLen);
+	const stock1 = useStockData(tickers[1], spcLen);
 
 	// @ts-ignore
 	if (stock1?.isError) return <QueryError message={stock1?.error.message} />;
 	// @ts-ignore
 	if (stock0?.isError) return <QueryError message={stock0?.error.message} />;
-
-	const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
 	const navigate = useNavigate();
 
@@ -72,7 +86,6 @@ const Compare: React.FC = () => {
 		} else {
 			setTickers([companies, undefined]);
 		}
-		forceUpdate();
 	}, [companies]);
 
 	useEffect(() => {
@@ -85,7 +98,7 @@ const Compare: React.FC = () => {
 			for (let i = 0; i < 2; i++) {
 				const cachedData: ICompanyData | undefined = queryClient.getQueryData([`${tickers[i]}_data`]);
 				if (cachedData) {
-					newArr.push(cachedData);
+					newArr.push(cachedData[0]);
 					continue;
 				}
 				const data = await CompaniesApi.fetchCompanyData(tickers[i]);
@@ -96,13 +109,8 @@ const Compare: React.FC = () => {
 
 		fetch().then(() => {
 			setDataLoaded(true);
-			forceUpdate();
 		});
 	}, [allSelected]);
-
-	useEffect(() => {
-		forceUpdate();
-	}, [stock0?.prices, stock1?.prices]);
 
 	const copyTickers = () => {
 		let arr = [];
@@ -137,7 +145,7 @@ const Compare: React.FC = () => {
 			setDataLoaded(false);
 			const cachedData: ICompanyData | undefined = queryClient.getQueryData([`${tickers[0]}_data`]);
 			if (cachedData) {
-				setData([cachedData, BlankCompanyData]);
+				setData([cachedData[0], BlankCompanyData]);
 				return;
 			}
 			const cd = await CompaniesApi.fetchCompanyData(tickers[0]);
@@ -157,18 +165,23 @@ const Compare: React.FC = () => {
 					<p className="m-2 text-white">Back</p>
 				</div>
 			}
-			<div className={`font-modern ${ allSelected ? "my-8" : "my-16" } mx-24 p-5 bg-slate-200 rounded-2xl`}>
+			<div className={`font-modern ${ allSelected ? "my-8" : "my-16" } mx-24 px-5 py-8 ${ allSelected || compareToIA ? "bg-gray-50" : "bg-gray-100" } rounded-2xl shadow-light`}>
 				{ compareToIA &&
 					<div>
 						{ data[0] && !IA.isLoading ?
 						<div className="flex flex-col">
-							<div className="flex flex-row">
+							<div className="flex flex-row justify-center items-center">
 								<div className="flex flex-col mx-1">
-									<h1>{data[0].name} - {tickers[0].toUpperCase()}</h1>
+									<div>
+										<Link to={`/company/${tickers[0].toLowerCase()}`}>
+											<span className="text-3xl font-extrabold mr-2">{data[0].name}</span>
+											<span className="ml-2 text-xl">({tickers[0].toUpperCase()})</span>
+										</Link>
+									</div>
 								</div>
-								<p>Compared To</p>
+								<p className="mx-4">Compared To</p>
 								<div className="flex flex-col mx-1">
-									<h1>{data[0].industry} Industry Average</h1>
+									<h1 className="text-3xl font-extrabold">{data[0].industry} Industry Average</h1>
 								</div>
 							</div>
 							<CompareBarChart
@@ -255,7 +268,7 @@ const Compare: React.FC = () => {
 									<div className="flex flex-row justify-between">
 										<SPCLenBtn
 											initialValue={false}
-											text="1 week"
+											text="5 days"
 											currSelected={spcLen}
 											set={setSpcLen}
 										/>

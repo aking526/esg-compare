@@ -10,7 +10,7 @@ interface RankingsNavBtnProps {
 const RankingsNavBtn: React.FC<RankingsNavBtnProps> = ({ handleClick, dir, color }) => {
 	return (
 		<div
-			className="mx-1 p-1"
+			className="mx-1 p-1 hover:cursor-pointer"
 			onClick={() => {
 				handleClick();
 			}}

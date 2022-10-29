@@ -29,12 +29,17 @@ const ESGDChart: React.FC<EPCProps> = ({ env, soc, gov}) => {
 	});
 
 	const options = {
-
+		responsive: true,
+		plugins: {
+			legend: {
+				position: "top" as const
+			}
+		}
 	};
 
 	return (
 		<div className="relative">
-			<Doughnut data={data} options={options} width={250} />
+			<Doughnut data={data} options={options} width={300} height={200} />
 		</div>
 	);
 };

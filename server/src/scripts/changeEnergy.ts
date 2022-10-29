@@ -9,7 +9,7 @@ const changeEnergy = async () => {
 
 	authCheck(SERVER_AUTH);
 
-	const res = await axios.get("http://localhost:8000/api/companies/sort/total_score?industry=Energy%20");
+	const res = await axios.get("http://localhost:80/api/companies/sort/total_score?industry=Energy%20");
 	const energyCompanies: ISA[] = res.data;
 
 	const changed: ISA[] = [];

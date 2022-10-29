@@ -11,13 +11,12 @@ import StockPriceChart from "../components/Company/charts/StockPriceChart";
 import CompaniesApi from "../api/CompaniesApi";
 import QueryError from "../components/QueryError";
 import StockApi from "../api/StockApi";
-import { convertDateToUnix } from "../utils/date";
 import { formatDate, getLastWeeksDate } from "../utils/date";
 import { TNewsInfo, IBasicFinancials, IStockQuote } from "../types/StockFinancialInterfaces";
 import { possibleGrades, possibleLevels } from "../types/ESGDataInterfaces";
 import SPCLenBtn from "../components/SPCLenBtn";
-import { useSPCFrom } from "../hooks/useSPCFrom";
 import { useStockData } from "../hooks/useStockData";
+import "../styles/Company.css";
 
 const Company: React.FC = () => {
   const { ticker } = useParams();
@@ -28,9 +27,7 @@ const Company: React.FC = () => {
   const [data, setData] = useState<ICompanyData>(BlankCompanyData);
 
   const [spcLen, setSpcLen] = useState("1 month");
-  const from = useSPCFrom(spcLen);
-  const [to, setTo] = useState<number>(convertDateToUnix(new Date()));
-  const closingPrices = useStockData(ticker, spcLen, from, to);
+  const closingPrices = useStockData(ticker, spcLen);
   // @ts-ignore
   if (closingPrices?.isError) return <QueryError message={closingPrices.error?.message} />
 
@@ -71,13 +68,42 @@ const Company: React.FC = () => {
 
   const queryClient = useQueryClient();
 
-  const { isLoading: dataLoading, isError: dataIsError, error: dataError } = useQuery([`${ticker}_data`], async () => {
-    const cachedData: ICompanyData | undefined = queryClient.getQueryData([`${ticker}_data`]);
-    if (cachedData) {
-      setData(cachedData);
-      return;
+  const removeSources = (news: TNewsInfo[], sources: string[]) => {
+    let n = [];
+    for (let i = 0; i < news.length; i++) {
+      let is = false;
+      for (let j = 0; j < sources.length; j++) {
+        if (news[i].source === sources[j]) {
+          is = true;
+          break;
+        }
+      }
+      if (is) continue;
+      n.push(news[i]);
     }
 
+    return n;
+  }
+
+  useEffect(() => {
+    const cachedData: ICompanyData | undefined = queryClient.getQueryData([`${ticker}_data`]);
+    if (cachedData) {
+      console.log("cached data");
+      setData(cachedData[0]);
+    }
+
+    const cachedNews: TNewsInfo[] | undefined = queryClient.getQueryData([`${ticker}_news`]);
+    if (cachedNews) {
+      setNews(removeSources(cachedNews, ["SeekingAlpha"]));
+    }
+
+    const cachedBasicFinancials: IBasicFinancials | undefined = queryClient.getQueryData([`${ticker}_basic_financials`]);
+    if (cachedBasicFinancials) {
+      setBasicFinancials(cachedBasicFinancials);
+    }
+  }, []);
+
+  const { isLoading: dataLoading, isError: dataIsError, error: dataError } = useQuery([`${ticker}_data`], async () => {
     return await CompaniesApi.fetchCompanyData(ticker);
   },
   {
@@ -94,17 +120,12 @@ const Company: React.FC = () => {
   },
   {
     onSuccess: (res) => {
-      setNews(res);
+      setNews(removeSources(res, ["SeekingAlpha"]));
     }
   });
 
   const { isLoading: basicFinancialsLoading, isError: basicFinancialsIsError, error: basicFinancialsError } = useQuery([`${ticker}_basic_financials`], async () => {
     if (!ticker) return;
-
-    const cachedBasicFinancials: IBasicFinancials | undefined = queryClient.getQueryData([`${ticker}_basic_financials`]);
-    if (cachedBasicFinancials) {
-      return cachedBasicFinancials;
-    }
 
     return await StockApi.getBasicFinancials(ticker);
   }, {
@@ -128,17 +149,17 @@ const Company: React.FC = () => {
   }, [naxW]);
 
   useEffect(() => {
-    // console.log("dataLoading: " + dataLoading + " basicFinancialsLoading: " + basicFinancialsLoading + " quoteLoading: " + quoteLoading + " newsLoading: " + newsLoading);
     setLoaded(!dataLoading && !basicFinancialsLoading && !quoteLoading && !newsLoading);
   }, [dataLoading, basicFinancialsLoading, quoteLoading, newsLoading]);
 
+  console.log(data);
   return (
     <>
       {loaded && avgScores && avgGrades && avgLevels ? (
-        <div className="flex flex-col shadow-light my-16 font-modern mx-24 p-5 bg-slate-200 rounded-2xl">
+        <div className="flex flex-col shadow-light my-16 font-modern mx-20 p-5 bg-white rounded-2xl">
           <CompanyInfo name={data.name} ticker={data.ticker} cik={data.cik} exchange={data.exchange} industry={data.industry} logo={data.logo} weburl={data.weburl} />
           <div className="flex flex-col mt-5">
-            <strong className="text-3xl mb-1.5">ESG Data</strong>
+            <strong className="text-2xl mb-1.5">ESG Data</strong>
             <div className="flex flex-row mb-1.5">
               <div className="flex flex-col">
                 <div className="flex flex-row mb-1.5">
@@ -202,11 +223,11 @@ const Company: React.FC = () => {
           </div>
           <div className="flex flex-row mt-5">
             <div className="flex flex-col items-center mr-1">
-              <strong className="text-2xl mb-1.5">Stock Info</strong>
+              <strong className="text-2xl mb-1.5">Share Price</strong>
               <p className="text-xs">Last Updated: {new Date().toLocaleString()}</p>
               <div className="flex flex-row">
                 { closingPrices && !closingPrices.isLoading ?
-                  <StockPriceChart ticker={data.ticker} name={data.name} from={from} to={to} prices={closingPrices.prices}/>
+                  <StockPriceChart ticker={data.ticker} name={data.name} spcLen={spcLen} prices={closingPrices.prices}/>
                     :
                   <div className="w-[800px] h-[400px]"></div>
                 }
@@ -214,7 +235,7 @@ const Company: React.FC = () => {
               <div className="flex flex-row justify-between">
                 <SPCLenBtn
                   initialValue={false}
-                  text="1 week"
+                  text="5 days"
                   currSelected={spcLen}
                   set={setSpcLen}
                 />
@@ -244,68 +265,78 @@ const Company: React.FC = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col justify-evenly ml-2 px-2 pb-2">
+            <div className="flex flex-col ml-2 px-2 pb-2 mt-20">
+              <strong className="text-2xl mb-1.5">Market Summary</strong>
               <div>
-                <strong className="text-2xl mb-1.5">Stock Quote</strong>
-                <div><strong>Current Price:</strong> &nbsp;${quote.c}</div>
-                <div><strong>Change:</strong> &nbsp;${quote.d}</div>
-                <div><strong>Percent Change:</strong> &nbsp;{quote.dp}</div>
+                <div><strong>Current Price:</strong> &nbsp;${quote.c.toFixed(2)}</div>
+                <div><strong>Change:</strong> &nbsp;${quote.d.toFixed(2)}</div>
+                <div><strong>Percent Change:</strong> &nbsp;{quote.dp.toFixed(2)}%</div>
                 <div>
-                  <div><strong>High price of the day:</strong> &nbsp;${quote.h}</div>
-                  <div><strong>Low price of the day:</strong> &nbsp;${quote.l}</div>
-                  <div><strong>Opening price of the day:</strong> &nbsp;${quote.o}</div>
+                  <div><strong>Open:</strong> &nbsp;${quote.o.toFixed(2)}</div>
+                  <div><strong>High:</strong> &nbsp;${quote.h.toFixed(2)}</div>
+                  <div><strong>Low:</strong> &nbsp;${quote.l.toFixed(2)}</div>
                 </div>
-                <div><strong>Previous close price:</strong> &nbsp;${quote.pc}</div>
+                <div><strong>Previous close price:</strong> &nbsp;${quote.pc.toFixed(2)}</div>
+                <div><strong>52 Week High on {basicFinancials.metric["52WeekHighDate"]}:</strong> &nbsp;${basicFinancials.metric["52WeekHigh"]}</div>
+                <div><strong>52 Week Low on {basicFinancials.metric["52WeekLowDate"]}:</strong> &nbsp;${basicFinancials.metric["52WeekLow"]}</div>
               </div>
+              <br/>
               <div>
-                <strong className="text-2xl mb-1.5">Basic Financials</strong>
                 <div className="my-1">
-                  <div><strong>52 Week High on {basicFinancials.metric["52WeekHighDate"]}:</strong> &nbsp;${basicFinancials.metric["52WeekHigh"]}</div>
-                  <div><strong>52 Week Low on {basicFinancials.metric["52WeekLowDate"]}:</strong> &nbsp;${basicFinancials.metric["52WeekLow"]}</div>
                   {/* @ts-ignore */}
                   <div><strong>Market Cap:</strong>  &nbsp;${basicFinancials.metric["marketCapitalization"].toLocaleString("en-US")} mil.</div>
-                  <div><strong>Dividend Per Share Annual:</strong> &nbsp;${basicFinancials.metric["dividendPerShareAnnual"]}</div>
+                  <div><strong>26 Week Return:</strong> &nbsp;${ typeof basicFinancials.metric["26WeekPriceReturnDaily"] === "number" && basicFinancials.metric["26WeekPriceReturnDaily"].toFixed(2)}</div>
+                  <div><strong>10 Day Trading Volume:</strong> &nbsp;${ typeof basicFinancials.metric["10DayAverageTradingVolume"] === "number" && basicFinancials.metric["10DayAverageTradingVolume"].toFixed(2)}</div>
+                  { basicFinancials.metric["dividendPerShareAnnual"] && <div><strong>Dividend Per Share Annual:</strong> &nbsp;${basicFinancials.metric["dividendPerShareAnnual"]}</div> }
                 </div>
               </div>
             </div>
           </div>
-          <div className="flex flex-col mt-5">
-            <strong className="text-2xl mb-1.5">News</strong>
-            <div className="flex flex-row">
-              {news.slice(0, 5).map((currNews, idx) => {
-                if (!currNews.url || currNews.url === "") return null;
-                const split = currNews.headline.split(" ");
-                let cnt = 0;
-                let slicedHeadline = "";
-                for (let i = 0; i < split.length; i++) {
-                  if (cnt < 50) {
-                    slicedHeadline += split[i] + " ";
-                    cnt += split[i].length;
-                  } else break;
-                }
-                return (
-                  <div className={`flex flex-col m-3 w-[20%] ${idx < 4 ? "border-r-2" : ""} border-black p-1.5`} key={idx}>
-                    <h3 className="mb-1.5"><a href={currNews.url}>{slicedHeadline}...</a></h3>
-                    <img
-                      id={`news-img-${idx}`}
-                      width={100}
-                      height={100}
-                      src={currNews.image}
-                      alt=""
-                      onError={() => {
-                        // @ts-ignore
-                        document.getElementById(`news-img-${idx}`).style.display = "none";
-                      }}
-                    />
-                    <p>Source: {currNews.source}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-        ) :
-          <CompanyLoading company={ticker}/>
+          { news.length !== 0 &&
+            <div className="flex flex-col mt-5">
+              <strong className="text-2xl mb-1.5">News</strong>
+              <div className="flex flex-row">
+                {news.slice(0, 5).map((currNews, idx) => {
+                  if (!currNews.url || currNews.url === "") return null;
+
+                  const split = currNews.headline.split(" ");
+                  let cnt = 0;
+                  let slicedHeadline = "";
+                  for (let i = 0; i < split.length; i++) {
+                    if (cnt < 50) {
+                      slicedHeadline += split[i] + " ";
+                      cnt += split[i].length;
+                    } else break;
+                  }
+
+                  return (
+                    <div className={`my-3 mr-2 w-[20%] p-2 ${idx < Math.min(4, news.length - 1) ? "border-r-2" : ""} border-black p-1.5`} key={idx}>
+                      <a href={currNews.url}>
+                        <div className="flex flex-col">
+                          <h3 id="news-headline">{slicedHeadline}...</h3>
+                          <img
+                            id={`news-img-${idx}`}
+                            width={100}
+                            height={100}
+                            src={currNews.image}
+                            alt=""
+                            onError={() => {
+                              // @ts-ignore
+                              document.getElementById(`news-img-${idx}`).style.display = "none";
+                            }}
+                          />
+                          <p>Source: {currNews.source}</p>
+                       </div>
+                     </a>
+                   </div>
+                  );
+                })}
+              </div>
+           </div>
+          }
+        </div>)
+          :
+        <CompanyLoading company={ticker}/>
       }
     </>
   );

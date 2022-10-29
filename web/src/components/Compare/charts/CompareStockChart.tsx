@@ -13,13 +13,13 @@ import { Line } from "react-chartjs-2";
 import { CPair, getDatesFormatted, getPrices } from "../../../classes/CPair";
 
 ChartJS.register(
-		CategoryScale,
-		LinearScale,
-		PointElement,
-		LineElement,
-		Title,
-		Tooltip,
-		Legend
+	CategoryScale,
+	LinearScale,
+	PointElement,
+	LineElement,
+	Title,
+	Tooltip,
+	Legend
 );
 
 interface CompareStockChartProps {
@@ -40,7 +40,8 @@ const CompareStockChart: React.FC<CompareStockChartProps> = ({ tickerA, pricesA,
 					"rgba(255, 99, 132, 0.5)"
 				],
 				borderColor: "rgba(255, 99, 132, 0.5)",
-				borderWidth: 1
+				borderWidth: 2,
+				pointRadius: 1.5
 			},
 			{
 				label: `${tickerB.toUpperCase()} Stock Price`,
@@ -49,7 +50,8 @@ const CompareStockChart: React.FC<CompareStockChartProps> = ({ tickerA, pricesA,
 					"rgba(53, 162, 235, 0.5)"
 				],
 				borderColor: "rgba(53, 162, 235, 0.5)",
-				borderWidth: 1
+				borderWidth: 2,
+				pointRadius: 1.5
 			}
 		]
 	};

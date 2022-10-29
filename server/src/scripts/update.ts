@@ -4,8 +4,6 @@ import Logging from "../utils/Logging";
 import { authCheck } from "../utils/authCheck";
 import { config } from "../config/config";
 import companyProfiler from "../utils/companyProfiler";
-import changeEnergy from "./changeEnergy";
-import changeMetalsMining from "./changeMetalsMining";
 
 const update = async () => {
 	const SERVER_AUTH = config.server.auth;
@@ -35,16 +33,13 @@ const update = async () => {
 	let updated: string[] = [];
 	for (let i = 0; i < toUpdate.length; i++) {
 		const curr = toUpdate[i];
-		companyProfiler.updateProfile(curr, ciks[curr], info_data[curr], esg_data[curr], () => {
+		await companyProfiler.updateProfile(curr, ciks[curr], () => {
 			updated.push(curr);
 			if (updated.length == toUpdate.length) {
 				return updated;
 			}
-		}, SERVER_AUTH);
+		}, SERVER_AUTH, esg_data[curr]);
 	}
-
-	await changeEnergy();
-	await changeMetalsMining()
 
 	return updated;
 };

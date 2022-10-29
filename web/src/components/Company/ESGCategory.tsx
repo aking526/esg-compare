@@ -34,7 +34,7 @@ const ESGCategory: React.FC<ESGCategoryProps> = ({ id, passBack, width, name, in
 	return (
 			// @ts-ignore
 		<div id={id} className="relative my-1 mr-6 border-2 border-black p-3 h-min" style={styles}>
-			<u className="text-2xl">{category}</u>
+			<u className="text-xl">{category}</u>
 
 			<div className="flex flex-col mt-1.5 justify-between">
 				<div className="my-2"><strong>{`${category} Score: `}</strong> <span className={score >= avg_score ? "text-green-500" : "text-red-500"}  data-tip data-for={`score-tip-${category.toLowerCase()}`}>{score}</span></div>

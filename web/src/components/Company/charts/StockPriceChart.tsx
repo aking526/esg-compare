@@ -7,7 +7,8 @@ import {
 	LineElement,
 	Title,
 	Tooltip,
-	Legend
+	Legend,
+	Filler
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { CPair, getDatesFormatted, getPrices } from "../../../classes/CPair";
@@ -19,45 +20,51 @@ ChartJS.register(
 	LineElement,
 	Title,
 	Tooltip,
-	Legend
+	Legend,
+	Filler
 );
 
 
 interface StockPriceChartProps {
 	ticker: string;
 	name: string;
-	from: number;
-	to: number;
+	spcLen: string,
 	prices: CPair[];
 }
 
-const StockPriceChart: React.FC<StockPriceChartProps> = ({ ticker, name, from, to, prices }) => {
+const StockPriceChart: React.FC<StockPriceChartProps> = ({ ticker, name, spcLen, prices }) => {
 	const data = {
 		labels: getDatesFormatted(prices),
 		datasets: [
 			{
 				label: "Price",
 				data: getPrices(prices),
-				backgroundColor: [
-					"rgb(125 211 252)",
-				],
-				borderColor: "black",
-				borderWidth: 0.5
+				backgroundColor: "rgba(125, 211, 252, 0.25)",
+				borderColor: "rgba(125, 211, 252, 1)",
+				fill: true,
+				pointRadius: 0.5,
+				borderWidth: 1.5
 			}
 		]
 	};
 
-	const options = {
+	const lineOptions = {
 		plugins: {
+			legend: {
+
+			},
 			zoomAndPan: {
 
 			}
+		},
+		animation: {
+			duration: 2000
 		}
 	};
 
 	return (
 		<div>
-			<Line data={data} width={800} height={400}/>
+			<Line data={data} options={lineOptions} width={800} height={400}/>
 		</div>
 	);
 };
