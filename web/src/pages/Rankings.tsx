@@ -156,7 +156,7 @@ const Rankings: React.FC = () => {
   return (
     <div id="#container" className={`relative flex justify-evenly bg-white py-5 h-[${height}px] overflow-y-hidden font-modern`}>
       <div className="flex flex-row">
-        <div className="font-modern rounded-lg bg-slate-100 shadow-light w-fit h-min m-2 p-2">
+        <div className="font-modern rounded-lg bg-white shadow-light w-fit h-min m-2 p-2">
           <u className="text-xl">Sort By:</u>
           <MetricBtn
             text="Total Score"
@@ -191,24 +191,24 @@ const Rankings: React.FC = () => {
           { !rankingsLoading && !uncachedRankingsLoading ? (
             <div className="flex flex-col">
               <RankingsTable rankings={rankings.slice(!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0), !reverse ? sliceStart + 50 : Math.min(rankings.length - sliceStart, rankings.length))} metric={metric} start={!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0)} reverse={reverse} />
-              <div className="flex flex-row relative rounded-b-xl bg-slate-100 shadow-light w-min ml-auto mr-auto">
+              <div className="flex flex-row relative rounded-b-xl bg-white shadow-light w-min ml-auto mr-auto">
                 <RankingsNavBtn handleClick={() => {
                   setSliceStart(prevState => {
                     return prevState >= 50 ? prevState - 50 : prevState;
                   });
-                }} dir="left" color={sliceStart >= 50 ? "text-black" : "text-white" } />
+                }} dir="left" color={sliceStart >= 50 ? "text-black" : "text-gray-200" } />
                 <RankingsNavBtn handleClick={() => {
                   setSliceStart(prevState => {
                     return prevState >= rankings.length - 50 ? prevState : prevState + 50;
                   });
-                }} dir="right" color={sliceStart < rankings.length - 50 ? "text-black" : "text-white"} />
+                }} dir="right" color={sliceStart < rankings.length - 50 ? "text-black" : "text-gray-200"} />
               </div>
             </div>
             ) :
           <RankingsLoading metric={DataRefToText[metric]} />
           }
         </div>
-        <div className="flex flex-col m-2 p-2 shadow-light bg-slate-100 rounded-lg w-fit h-min">
+        <div className="flex flex-col m-2 p-2 shadow-light bg-white rounded-lg w-fit h-min">
           <u className="text-xl">Filters: </u>
           <div className="border-2 border-black p-2 my-2 rounded-lg">
             <FilterCheckbox label="Reverse rankings" value={reverse} onChange={() => setReverse(prevState => !prevState)} />

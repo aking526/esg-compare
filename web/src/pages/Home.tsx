@@ -1,91 +1,103 @@
 import React from "react";
-import HExSection from "../components/HExSection";
-import EnvironmentWindmillImg from "../../assets/environment/windmill-ga48edb172_640.jpg";
-import SocialGlobeImg from "../../assets/social/world-ga8f31bec6_640.jpg";
+import EnvironmentNatureImg from "../../assets/environment/pexels-philip-ackermann-1666021.jpg";
+import SocialFactoryImg from "../../assets/social/remy-gieling-KP6XQIEjjPA-unsplash.jpg";
+import GovernanceMeetingImg from "../../assets/governance/pexels-fauxels-3183172.jpg";
 
 const Home: React.FC = () => {
 	return (
-		<div className="flex flex-col my-10 mx-8 font-modern">
-			<div className="mb-1">
-				<div className="mb-2">
-					<h1 className="text-2xl">What is ESG?</h1>
-					<p className="text-lg">ESG stands for environmental, social, and governance. An ESG score is a measure of a company’s performance along these criteria.</p>
-					<div className="flex flex-row border-2 p-2 shadow-light rounded-2xl">
-						<div className="flex flex-row mt-2">
-							<div className="flex flex-col">
-								<b className="text-xl font-extrabold">(E) Environment</b>
-								<div className="flex flex-col justify-center pr-6 pl-1 py-10">
-									<p className="text-lg">Environmental criteria focus on a company’s environmental stewardship. They examine how a company uses natural resources and impacts the environment. Factors may include a company’s efforts to reduce greenhouse gases, decrease carbon emissions, conserve water, reduce waste and toxic emissions, and water pollution. </p>
-									<HExSection metric="Environment" factors={[
-										"Energy Efficiency",
-										"Green House Gas Emissions",
-										"Deforestation",
-										"Water Management"
-									]} styles="text-xs" />
+		<div>
+			<div className="flex flex-col my-10 mx-28 font-modern">
+				<div className="mb-1">
+					<div className="mb-2">
+						<div className="flex flex-row">
+							<b className="text-5xl text-main-red font-extrabold mr-16">What is ESG?</b>
+							<div className="flex flex-col ml-16 mt-2.5 text-3xl">
+								<p className="mb-2">ESG stands for environmental, social, and governance. </p>
+								<p className="mt-2">An ESG rating is a measure of a company’s performance along these criteria.</p>
+							</div>
+						</div>
+						<div className="flex flex-row justify-between mt-10">
+							<div className="flex flex-col border-2 p-2 hover:shadow-light pt-4 w-[30%] bg-band">
+								<b className="text-4xl text-main-red font-extrabold ml-1.5">(E) Environment</b>
+								<div className="flex justify-center px-8 py-8">
+									<p className="text-2xl">Environmental criteria focus on a company’s environmental stewardship. The environmental segment of ESG examines how a company uses natural resources and impacts the environment. Environmental factors are primarily concerned with climate change issues.</p>
 								</div>
 							</div>
 							<img
-								src={EnvironmentWindmillImg}
+								src={EnvironmentNatureImg}
 								alt="Tree Windmill Sustainability"
-								className="rounded-2xl"
-								width="384px"
-								height="268.8px"
+								className="w-[30%] mt-0.5 hover:shadow-light"
+							/>
+							<div className="border-2 p-2 hover:shadow-light pt-10 w-[30%] bg-band">
+								<ul className="flex flex-col justify-center text-2xl px-8">
+									<li className="mb-2">&#x2022; Reducing greenhouse gasses</li>
+									<li className="mb-2">&#x2022; Decreasing carbon emissions and fossil fuel use</li>
+									<li className="mb-2">&#x2022; Conserving water and other natural resources</li>
+									<li className="mb-2">&#x2022; Reducing waste and toxic emissions</li>
+									<li className="mb-2">&#x2022; Adopting clean technology</li>
+									<li className="mb-2">&#x2022; Adopting green building practices</li>
+								</ul>
+							</div>
+						</div>
+						<div className="flex flex-row justify-between mt-10">
+							<img
+								src={SocialFactoryImg}
+								alt="Factory Workers"
+								className="w-[30%] hover:shadow-light"
+							/>
+							<div className="flex flex-col hover:shadow-light p-2 pt-4 w-[30%] h-[547px]">
+								<b className="text-4xl font-extrabold text-main-red ml-1.5">(S) Social</b>
+								<div className="flex justify-center px-8 py-8">
+									<p className="text-2xl">Social criteria focus on a company's social responsibility. The social segment of ESG examines how a company manages its relationships with its workforce and other stakeholders in its community. Social factors are primarily concerned with social consequences of business decisions.</p>
+								</div>
+							</div>
+							<div className="border-2 p-2 hover:shadow-light pt-10 w-[30%]">
+								<ul className="flex flex-col justify-center text-2xl px-8">
+									<li className="mb-2">&#x2022; Labor management</li>
+									<li className="mb-2">&#x2022; Human capital development</li>
+									<li className="mb-2">&#x2022; Supply chain labor standards</li>
+									<li className="mb-2">&#x2022; Safe and healthy working standards</li>
+									<li className="mb-2">&#x2022; Product safety and quality</li>
+									<li className="mb-2">&#x2022; Privacy and data security</li>
+								</ul>
+							</div>
+						</div>
+						<div className="flex flex-row justify-between mt-10">
+							<div className="flex flex-col p-2 hover:shadow-light pt-4 w-[30%]">
+								<b className="text-4xl font-extrabold text-main-red ml-1.5">(G) Governance</b>
+								<div className="flex justify-center px-8 py-8">
+									<p className="text-2xl">Governance criteria focus on the integrity of a company’s governance structure. The governance segment of ESG examines whether a company’s leadership is operating within an ethical and responsible framework. Governance factors are primarily concerned with leadership accountability.</p>
+								</div>
+							</div>
+							<div className="border-2 p-2 hover:shadow-light pt-10 w-[30%]">
+								<ul className="flex flex-col justify-center text-2xl px-8">
+									<li className="mb-2">&#x2022; Board diversity</li>
+									<li className="mb-2">&#x2022; Executive pay</li>
+									<li className="mb-2">&#x2022; Corporate ownership structure and control</li>
+									<li className="mb-2">&#x2022; Accounting compliance and transparency</li>
+									<li className="mb-2">&#x2022; Business ethics</li>
+									<li className="mb-2">&#x2022; Financial system instability</li>
+								</ul>
+							</div>
+							<img
+								src={GovernanceMeetingImg}
+								alt="Corporate Governance"
+								className="w-[30%] hover:shadow-light"
 							/>
 						</div>
 					</div>
-					<div className="flex flex-row mt-2 ml-2 shadow-light rounded-lg mt-3 p-2 bg-gray-200">
-						<img
-							src={SocialGlobeImg}
-							alt="World Hands Unity"
-							className="relative rounded-2xl m-2 float-right left-auto"
-							width="300px"
-							height="300px"
-						/>
-						<div className="flex flex-col ml-6">
-							<b className="text-xl font-extrabold">(S) Social</b>
-							<div className="flex flex-col justify-center pr-10 py-10">
-								<p className="text-lg text-justify">Social criteria focus on how a company manages its relationships with its workforce and its community. They include a company’s labor relations, efforts on workplace diversity and equity, adherence to safe and healthy working conditions, and commitment to human rights.</p>
-								<HExSection metric="Social" factors={[
-									"Diversity and Inclusion",
-									"Working Conditions",
-									"Employee Relations",
-									"Community Relations",
-									"Human Rights",
-									"Child Labor"
-								]} styles="text-xs" />
-							</div>
-						</div>
-					</div>
-					<div className="flex flex-row mt-2 shadow-light rounded-lg mt-2 p-2">
-						<div className="flex flex-col">
-							<b className="text-xl font-extrabold">(G) Governance</b>
-							<div className="flex flex-col justify-center pr-6 pl-1 py-19 text-justify py-10">
-								<p className="text-lg text-justify">Governance criteria focuses on a company’s practices in respect of board diversity, business ethics, corruption and bribery, executive compensation policies and general risk management. </p>
-									<HExSection metric="Governance" factors={[
-										"Board Structure",
-										"Business ethics",
-										"Shareholder democracy",
-										"Executive compensation"
-									]} styles="text-xs" />
-							</div>
-						</div>
-					</div>
 				</div>
-				<div className="mt-5">
-					<h1 className="text-xl">Why are ESG ratings important?</h1>
-					<p>ESG ratings are important for two reasons because they facilitate socially responsible investing and they incentivize companies to be more socially responsible.  We don’t want to purchase products from companies that do bad things to our planet or the society.  Similarly, we should not invest in companies that are bad for the planet or the society.  If we care about addressing societal inequities and protecting the environment, we should invest our money in companies that care about the same things.  If we invest responsibly, it can also incentivize corporations from making efforts to do better for the planet and the society.  ESG ratings are measured differently and can be inconsistent from one agency to another.  This is not a perfect metric, and some argue the correlation between ESG ratings and sustainable business or financial performance is even tenuous. But without ESG ratings, how a company performs along the ESG criteria becomes invisible and unusable data. And by using a quantitative metric, we can raise awareness of the importance of this topic.  We can get companies to care about sustainability. </p>
+				<div className="mt-10 bg-band p-5 hover:shadow-light">
+					<h1 className="text-2xl">Ratings Methodology</h1>
+					<p>The ESG ratings used on this website are derived from the ESG ratings published by ESG Enterprise. See their full methodology here: <a className="text-blue-600" href="https://app.esgenterprise.com/uploads/ESG-Enterprise-Risk-Ratings-MethodologyV3.pdf">ESG Enterprise Ratings Methodology</a>.</p>
 				</div>
 			</div>
-			<div className="mt-2">
-				<h1 className="text-2xl">Ratings Methodology</h1>
-				<p>See full methodology here: <a className="text-blue-600" href="https://app.esgenterprise.com/uploads/ESG-Enterprise-Risk-Ratings-MethodologyV3.pdf">ESG Enterprise</a></p>
-			</div>
-			<div className="flex flex-col">
-				<h1 className="text-xl">Disclaimer</h1>
-				<p>This website is not engaged in rendering legal, accounting, investment, or other professional advice or services. Your use of this website and of any content, information, or data accessed on or through this website is at your own risk. We do not make any warranties about or otherwise guarantee the accuracy or completeness of any content, information, or data accessed on or through this website. Certain content, information, or data accessed through or on this website may be inaccurate, incomplete, or not appropriate for a particular purpose.</p>
-				<p>All information, text, data, images, graphics, graphs, charts, or material contained in this website have been provided here solely for informational purposes based upon information generally available to the public, with the exception of the shown ESG scores and ratings, which have been sourced from ESG Enterprise <a className="text-blue-600" href="esgenterprise.com">(esgenterprise.com)</a>. Different parties may utilize different methodologies and data inputs in arriving at their ESG scores and ratings, and thus ESG scores and ratings for any particular company may vary.</p>
-			</div>
+		<div className="flex flex-col mt-3 py-5 text-white font-modern bg-black px-28">
+			<h1 className="text-sm mb-1.5">Disclaimer</h1>
+			<p className="text-xs mb-1">This website is not engaged in rendering legal, accounting, investment, or other professional advice or services. Your use of this website and of any content, information, or data accessed on or through this website is at your own risk. We do not make any warranties about or otherwise guarantee the accuracy or completeness of any content, information, or data accessed on or through this website. Certain content, information, or data accessed through or on this website may be inaccurate, incomplete, or not appropriate for a particular purpose.</p>
+			<p className="text-xs">All information, text, data, images, graphics, graphs, charts, or material contained in this website have been provided here solely for informational purposes based upon information generally available to the public, with the exception of the shown ESG scores and ratings, which have been sourced from ESG Enterprise (<a className="text-blue-600" href="esgenterprise.com">esgenterprise.com</a>). Different parties may utilize different methodologies and data inputs in arriving at their ESG scores and ratings, and thus ESG scores and ratings for any particular company may vary.</p>
 		</div>
+	</div>
 	);
 };
 

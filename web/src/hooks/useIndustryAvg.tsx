@@ -8,7 +8,10 @@ import {
 	possibleLevels,
 	NullScores,
 	NullGrades,
-	NullLevels
+	NullLevels,
+	scoreMetrics,
+	gradeMetrics,
+	levelsMetrics
 } from "../types/ESGDataInterfaces";
 
 export function useIndustryAvg(industry: string | string[] | undefined) {
@@ -16,10 +19,6 @@ export function useIndustryAvg(industry: string | string[] | undefined) {
 	const [avgScores, setAvgScores] = useState<IScores>(NullScores);
 	const [avgGrades, setAvgGrades] = useState<IGrades>(NullGrades);
 	const [avgLevels, setAvgLevels] = useState<ILevels>(NullLevels);
-
-	const scoreMetrics = ["environment_score", "social_score", "governance_score", "total_score"];
-	const gradeMetrics = ["environment_grade", "social_grade", "governance_grade", "total_grade"];
-	const levelsMetrics = ["environment_level", "social_level", "governance_level", "total_level"];
 
 	const calculateAvgScore = (data: IScores[], metric: string) => {
 		let total = 0;

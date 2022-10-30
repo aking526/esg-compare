@@ -18,7 +18,7 @@ const Table: React.FC<TableProps> = ({ heading, body, metric }) => {
 				<tr>
 					{heading.map((head, idx) => {
 						const isGreen = head === DataRefToText[metric] ? "text-green-600" : "";
-						return <th key={idx} className={`pt-2 p-2 bg-slate-100 sticky top-0 ${isGreen}`}>{head}</th>
+						return <th key={idx} className={`pt-2 p-2 bg-white sticky top-0 ${isGreen}`}>{head}</th>
 					})}
 				</tr>
 			</thead>
@@ -77,7 +77,7 @@ const RankingsTable: React.FC<RankingsProps> = ({ rankings, metric, start, rever
 	if (reverse) tableBody.reverse();
 
 	return (
-		<div id="#rankings" className="relative mt-2 ml-10 mr-5 px-5 pb-3 bg-slate-100 rounded-xl border-none shadow-light overflow-y-auto h-rankings-table-h">
+		<div id="#rankings" className="relative mt-2 ml-10 mr-5 px-5 pb-3 bg-white rounded-xl border-none shadow-light overflow-y-auto h-rankings-table-h">
 			<Table heading={tableHeading} body={tableBody} metric={metric}/>
 		</div>
 	);

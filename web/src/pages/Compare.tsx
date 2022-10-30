@@ -11,7 +11,7 @@ import QueryError from "../components/QueryError";
 import CompareLoading from "../components/Compare/CompareLoading";
 import CompareBarChart from "../components/Compare/charts/CompareBarChart";
 import CompareStockChart from "../components/Compare/charts/CompareStockChart";
-import { XCircleIcon, ArrowLeftCircleIcon } from "@heroicons/react/20/solid";
+import { XMarkIcon, ArrowLeftIcon } from "@heroicons/react/20/solid";
 import SPCLenBtn from "../components/SPCLenBtn";
 
 const Compare: React.FC = () => {
@@ -162,7 +162,7 @@ const Compare: React.FC = () => {
 			{ (allSelected || compareToIA) &&
 				<div className="relative flex flex-row rounded-br-2xl bg-black p-1.5 w-fit" onClick={handleBackButtonClicked}>
 					<div className="flex items-center justify-center">
-						<ArrowLeftCircleIcon className="w-8 h-8" color="white" />
+						<ArrowLeftIcon className="w-8 h-8" color="white" />
 					</div>
 					<p className="m-2 text-white">Back</p>
 				</div>
@@ -214,7 +214,7 @@ const Compare: React.FC = () => {
 										return (
 											<div className="flex flex-row justify-between mx-2" key={idx}>
 												<div className="flex justify-center mr-3.5">
-													<XCircleIcon className="w-5 h-5" onClick={() => {
+													<XMarkIcon className="w-5 h-5" onClick={() => {
 														if (ticker === companies) navigate("/compare");
 														newTickers(idx, "");
 													}} />
@@ -322,6 +322,7 @@ const Compare: React.FC = () => {
 												passBack={(t: string) => newTickers(1, t)}
 												hasIndustryAvgOption={true}
 												onClick={handleCompareToIndustryClicked}
+												otherSelected={companies}
 												otherFocused={false}
 												passBackFocused={() => null} // does not need to pass back focused because other one is already selected
 											/>
@@ -341,6 +342,7 @@ const Compare: React.FC = () => {
 												names={names.data}
 												passBack={(t: string) => newTickers(0, t)}
 												hasIndustryAvgOption={false}
+												otherSelected={tickers[1]}
 												otherFocused={sbFocused[1]}
 												passBackFocused={(f: boolean) => {
 													let fc = [];
@@ -365,6 +367,7 @@ const Compare: React.FC = () => {
 												passBack={(t: string) => newTickers(1, t)}
 												hasIndustryAvgOption={true}
 												onClick={handleCompareToIndustryClicked}
+												otherSelected={tickers[0]}
 												otherFocused={sbFocused[0]}
 												passBackFocused={(f: boolean) => {
 													let fc = [];

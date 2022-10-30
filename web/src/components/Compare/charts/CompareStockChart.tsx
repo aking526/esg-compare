@@ -58,6 +58,13 @@ const CompareStockChart: React.FC<CompareStockChartProps> = ({ tickerA, pricesA,
 
 	const options = {
 		responsive: true,
+		scales: {
+			x: {
+				grid: {
+					display: false
+				}
+			}
+		},
 		plugins: {
 			title: {
 				display: true,

@@ -49,13 +49,19 @@ const StockPriceChart: React.FC<StockPriceChartProps> = ({ ticker, name, spcLen,
 	};
 
 	const lineOptions = {
-		plugins: {
-			legend: {
-
-			},
-			zoomAndPan: {
-
+		hover: {
+			intersect: false
+		},
+		scales: {
+			x: {
+				grid: {
+					display: false
+				}
 			}
+		},
+		plugins: {
+			legend: {},
+			zoomAndPan: {}
 		},
 		animation: {
 			duration: 2000

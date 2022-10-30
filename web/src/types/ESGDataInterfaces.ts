@@ -45,3 +45,7 @@ export const NullLevels: ILevels = {
 };
 
 export const possibleLevels = ["Low", "Medium", "High", "Excellent"];
+
+export const scoreMetrics = ["environment_score", "social_score", "governance_score", "total_score"];
+export const gradeMetrics = ["environment_grade", "social_grade", "governance_grade", "total_grade"];
+export const levelsMetrics = ["environment_level", "social_level", "governance_level", "total_level"];

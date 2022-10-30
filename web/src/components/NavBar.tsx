@@ -5,7 +5,7 @@ import { AdjustmentsHorizontalIcon, UserCircleIcon, BarsArrowUpIcon, HomeIcon } 
 
 const NavBar: React.FC = () => {
   return (
-    <div className="relative flex flex-row items-center justify-evenly bg-sky-300 p-5 font-modern text-lg">
+    <div className="relative flex flex-row items-center justify-evenly bg-main-red p-5 font-modern font-extrabold text-xl">
       <div>
         <Link className="flex flex-row justify-center items-center" to="/">
           <span>Home</span>

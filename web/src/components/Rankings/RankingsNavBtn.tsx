@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowLeftCircleIcon, ArrowRightCircleIcon } from "@heroicons/react/20/solid";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/20/solid";
 
 interface RankingsNavBtnProps {
 	handleClick: Function;
@@ -16,9 +16,9 @@ const RankingsNavBtn: React.FC<RankingsNavBtnProps> = ({ handleClick, dir, color
 			}}
 		>
 			{ dir === "left" ?
-					<ArrowLeftCircleIcon className={`h-7 w-7 ${color}`}/>
+					<ArrowLeftIcon className={`h-7 w-7 ${color}`}/>
 					:
-					<ArrowRightCircleIcon className={`h-7 w-7 ${color}`}/>
+					<ArrowRightIcon className={`h-7 w-7 ${color}`}/>
 			}
 		</div>
 	);

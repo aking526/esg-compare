@@ -2,6 +2,7 @@ import React, { useState, useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useIndustryAvg } from "../hooks/useIndustryAvg";
+import { useIndustryBest } from "../hooks/useIndustryBest";
 import CompanyLoading from "../components/Company/CompanyLoading";
 import { ICompanyData, BlankCompanyData } from "../types/ICompanyData";
 import CompanyInfo from "../components/Company/CompanyInfo";
@@ -17,6 +18,7 @@ import { possibleGrades, possibleLevels } from "../types/ESGDataInterfaces";
 import SPCLenBtn from "../components/SPCLenBtn";
 import { useStockData } from "../hooks/useStockData";
 import "../styles/Company.css";
+import ReactTooltip from "react-tooltip";
 
 const Company: React.FC = () => {
   const { ticker } = useParams();
@@ -65,6 +67,7 @@ const Company: React.FC = () => {
   });
 
   const { avgScores, avgGrades, avgLevels } = useIndustryAvg(data.industry);
+  const { bestScores, bestGrades, bestLevels } = useIndustryBest(data.industry);
 
   const queryClient = useQueryClient();
 
@@ -154,8 +157,8 @@ const Company: React.FC = () => {
 
   return (
     <>
-      {loaded && avgScores && avgGrades && avgLevels ? (
-        <div className="flex flex-col shadow-light my-16 font-modern mx-20 p-5 bg-white rounded-2xl">
+      {loaded && avgScores && avgGrades && avgLevels && bestScores && bestGrades && bestLevels ? (
+        <div className="flex flex-col shadow-light my-16 font-modern mx-20 px-8 py-6 bg-slate-200 rounded-2xl">
           <CompanyInfo name={data.name} ticker={data.ticker} cik={data.cik} exchange={data.exchange} industry={data.industry} logo={data.logo} weburl={data.weburl} />
           <div className="flex flex-col mt-5">
             <strong className="text-2xl mb-1.5">ESG Data</strong>
@@ -177,6 +180,9 @@ const Company: React.FC = () => {
                     avg_score={avgScores.environment_score}
                     avg_grade={avgGrades.environment_grade}
                     avg_level={avgLevels.environment_level}
+                    best_score={bestScores.environment_score}
+                    best_grade={bestGrades.environment_grade}
+                    best_level={bestLevels.environment_level}
                   />
                   <ESGCategory
                     id="soc-scores"
@@ -193,6 +199,9 @@ const Company: React.FC = () => {
                     avg_score={avgScores.social_score}
                     avg_grade={avgGrades.social_grade}
                     avg_level={avgLevels.social_level}
+                    best_score={bestScores.social_score}
+                    best_grade={bestGrades.social_grade}
+                    best_level={bestLevels.social_level}
                   />
                   <ESGCategory
                     id="gov-scores"
@@ -209,12 +218,27 @@ const Company: React.FC = () => {
                     avg_score={avgScores.governance_score}
                     avg_grade={avgGrades.governance_grade}
                     avg_level={avgLevels.governance_level}
+                    best_score={bestScores.governance_score}
+                    best_grade={bestGrades.governance_grade}
+                    best_level={bestLevels.governance_level}
                   />
                 </div>
                 <div className="flex flex-row">
                   <p className="mx-1"><strong>Total Score:</strong> <span className={data.total_score >= avgScores.total_score ? "text-green-500" : "text-red-500"}  data-tip data-for="score-tip-total">{data.total_score}</span></p>
+                  <ReactTooltip id="score-tip-total" place="bottom" effect="solid">
+                    <p className="mr-1">Industry Mean: {avgScores.total_score}</p>
+                    <p className="ml-1">Industry Best: {bestScores.total_score}</p>
+                  </ReactTooltip>
                   <p className="mx-1"><strong>Total Grade:</strong> <span className={possibleGrades.indexOf(data.total_grade) > possibleGrades.indexOf(avgGrades.total_grade) ? "text-green-500" : data.total_grade === avgGrades.total_grade ? "text-gray-500" : "text-red-500"} data-tip data-for="grade-tip-total">{data.total_grade}</span></p>
+                  <ReactTooltip id="grade-tip-total" place="bottom" effect="solid">
+                    <p className="mr-1">Industry Mean: {avgGrades.total_grade}</p>
+                    <p className="ml-1">Industry Best: {bestGrades.total_grade}</p>
+                  </ReactTooltip>
                   <p className="mx-1"><strong>Total Level:</strong> <span className={possibleLevels.indexOf(data.total_level) > possibleLevels.indexOf(avgLevels.total_level) ? "text-green-500" : data.total_level === avgLevels.total_level ? "text-gray-500" : "text-red-500"} data-tip data-for="level-tip-total">{data.total_level}</span></p>
+                  <ReactTooltip id="level-tip-total" place="bottom" effect="solid">
+                    <p className="mr-1">Industry Mean: {avgLevels.total_level}</p>
+                    <p className="ml-1">Industry Best: {bestLevels.total_level}</p>
+                  </ReactTooltip>
                 </div>
               </div>
               <ESGDChart env={data.environment_score} soc={data.social_score} gov={data.governance_score}/>
@@ -286,14 +310,14 @@ const Company: React.FC = () => {
                   <div><strong>Market Cap:</strong>  &nbsp;${basicFinancials.metric["marketCapitalization"].toLocaleString("en-US")} mil.</div>
                   <div><strong>26 Week Return:</strong> &nbsp;${ typeof basicFinancials.metric["26WeekPriceReturnDaily"] === "number" && basicFinancials.metric["26WeekPriceReturnDaily"].toFixed(2)}</div>
                   <div><strong>10 Day Trading Volume:</strong> &nbsp;${ typeof basicFinancials.metric["10DayAverageTradingVolume"] === "number" && basicFinancials.metric["10DayAverageTradingVolume"].toFixed(2)}</div>
-                  { basicFinancials.metric["dividendPerShareAnnual"] && <div><strong>Dividend Per Share Annual:</strong> &nbsp;${basicFinancials.metric["dividendPerShareAnnual"]}</div> }
+                  { basicFinancials.metric["dividendPerShareAnnual"] && <div><strong>Dividend Per Share Annual:</strong> &nbsp;${typeof basicFinancials.metric["dividendPerShareAnnual"] === "number" && basicFinancials.metric["dividendPerShareAnnual"].toFixed(2)}</div> }
                 </div>
               </div>
             </div>
           </div>
           { news.length !== 0 &&
             <div className="flex flex-col mt-5">
-              <strong className="text-2xl mb-1.5">News</strong>
+              <strong className="text-2xl mb-1.5">Company News</strong>
               <div className="flex flex-row">
                 {news.slice(0, 5).map((currNews, idx) => {
                   if (!currNews.url || currNews.url === "") return null;

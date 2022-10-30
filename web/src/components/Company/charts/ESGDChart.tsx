@@ -18,9 +18,9 @@ const ESGDChart: React.FC<EPCProps> = ({ env, soc, gov}) => {
 				label: "Score",
 				data: [env, soc, gov],
 				backgroundColor: [
-					"#2BB02B", // rgba(43,176,43,1)
-					"#FC8C03", // rgba(252,140,3,1)
-					"#127ADB", // rgba(18,122,219,1)
+					"rgba(6,147,124,255)",
+					"rgba(209,121,37,255)",
+					"rgba(0,126,174,255)"
 				],
 				borderColor: "black",
 				borderWidth: 2
