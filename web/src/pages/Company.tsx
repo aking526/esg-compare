@@ -152,7 +152,6 @@ const Company: React.FC = () => {
     setLoaded(!dataLoading && !basicFinancialsLoading && !quoteLoading && !newsLoading);
   }, [dataLoading, basicFinancialsLoading, quoteLoading, newsLoading]);
 
-  console.log(data);
   return (
     <>
       {loaded && avgScores && avgGrades && avgLevels ? (
@@ -332,6 +331,7 @@ const Company: React.FC = () => {
                   );
                 })}
               </div>
+              <p className="text-xs">Note: These are not sponsored ads</p>
            </div>
           }
         </div>)

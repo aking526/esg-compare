@@ -53,7 +53,7 @@ const getIndustries = async () => {
   return res.data;
 };
 
-const fetchRankings = async (metric: string, filters: string | null) => {
+const fetchRankings = async (metric: string, filters?: string | null) => {
   const ak = process.env.REACT_APP_AK;
   const url = startUrl + (filters ? `/sort/${metric}&token=${ak}?${filters}` : `/sort/${metric}&token=${ak}`);
   const res = await axios.get<ICompanyData[]>(url);

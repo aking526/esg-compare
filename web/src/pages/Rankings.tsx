@@ -21,8 +21,6 @@ const Rankings: React.FC = () => {
 
   const [rankings, setRankings] = useState<ICompanyData[]>([]);
   const [metric, setMetric] = useState<string>(defaultMetric);
-  const [filters, setFilters] = useState<string | null>(null);
-  const [queryKey, setQueryKey] = useState<string>(`${metric}_rankings`);
   const [industryOptionsSelected, setIndustryOptionsSelected] = useState<string | null>(null);
   const [industries , setIndustries] = useState<string[] | undefined>(undefined);
   const [dropdownOptions, setDropdownOptions] = useState<MyOption[]>([]);
@@ -88,8 +86,8 @@ const Rankings: React.FC = () => {
     if (cachedIndustries) setIndustries(cachedIndustries);
   }, []);
 
-  const { isLoading: rankingsLoading, isError: rankingsIsError, error: rankingsError } = useQuery<ICompanyData[], Error>([queryKey], async () => {
-    return CompaniesApi.fetchRankings(metric, filters);
+  const { isLoading: rankingsLoading, isError: rankingsIsError, error: rankingsError } = useQuery<ICompanyData[], Error>([`${metric}_rankings`], async () => {
+    return CompaniesApi.fetchRankings(metric);
   }, {
     onSuccess: (res) => {
       setRankings(res);
@@ -100,21 +98,10 @@ const Rankings: React.FC = () => {
     return <QueryError message={rankingsError.message} />
   }
 
-  // useEffect(() => {
-  //   if (filters) {
-  //     setQueryKey(`${metric}_score_with_filters`)
-  //   }
-  // }, [filters]);
-
   useEffect(() => {
     setSliceStart(0);
-    if (filters) {
-      setQueryKey(`${metric}_rankings_with_filters`);
-    } else {
-      setQueryKey(`${metric}_rankings`);
-      const cachedRanking: ICompanyData[] | undefined = queryClient.getQueryData([`${metric}_rankings`]);
-      if (cachedRanking) setRankings(cachedRanking);
-    }
+    const cachedRanking: ICompanyData[] | undefined = queryClient.getQueryData([`${metric}_rankings`]);
+    if (cachedRanking) setRankings(cachedRanking);
   }, [metric]);
 
   useEffect(() => {
@@ -165,23 +152,12 @@ const Rankings: React.FC = () => {
   useEffect(() => {
     forceUpdate();
   }, [height]);
-  // useEffect(() => {
-  //   const preventScroll = (e: WheelEvent) => {
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     return false;
-  //   }
-  //
-  //   document.getElementById("#container")?.addEventListener("wheel", preventScroll, { passive: false });
-  //
-  //   return () => document.getElementById("#container")?.removeEventListener("wheel", preventScroll);
-  // }, []);
 
   return (
     <div id="#container" className={`relative flex justify-evenly bg-white py-5 h-[${height}px] overflow-y-hidden font-modern`}>
       <div className="flex flex-row">
         <div className="font-modern rounded-lg bg-slate-100 shadow-light w-fit h-min m-2 p-2">
-          <u className="text-xl">Metrics:</u>
+          <u className="text-xl">Sort By:</u>
           <MetricBtn
             text="Total Score"
             thisMetric={"total_score"}
