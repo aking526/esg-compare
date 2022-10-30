@@ -86,7 +86,7 @@ const CompareSearchBar: React.FC<CSearchBarProps> = ({ placeholder, data, prevSe
 			<div className="flex flex-row justify-center font-modern text-black mr-auto ml-auto w-64 p-5" onPointerDown={handleOnPointerDown}>
 				<div className="flex flex-col">
 					<input
-							className="bg-slate-100 w-60 h-14 text-sm rounded-xl border-2 border-black px-3 hover:bg-white hover:border-sky-700 placeholder:text-xs py-6"
+							className="bg-white w-60 h-14 text-sm rounded-xl border-2 border-black px-3 hover:bg-white hover:border-sky-700 placeholder:text-xs py-6"
 							onChange={onChange}
 							onFocus={onFocus}
 							value={curr}

@@ -17,7 +17,7 @@ const Home: React.FC = () => {
 							</div>
 						</div>
 						<div className="flex flex-row justify-between mt-10">
-							<div className="flex flex-col border-2 p-2 hover:shadow-light pt-4 w-[30%] bg-band">
+							<div className="flex flex-col p-2 hover:shadow-light pt-4 w-[30%] bg-contrast-gray">
 								<b className="text-4xl text-main-red font-extrabold ml-1.5">(E) Environment</b>
 								<div className="flex justify-center px-8 py-8">
 									<p className="text-2xl">Environmental criteria focus on a company’s environmental stewardship. The environmental segment of ESG examines how a company uses natural resources and impacts the environment. Environmental factors are primarily concerned with climate change issues.</p>
@@ -28,7 +28,7 @@ const Home: React.FC = () => {
 								alt="Tree Windmill Sustainability"
 								className="w-[30%] mt-0.5 hover:shadow-light"
 							/>
-							<div className="border-2 p-2 hover:shadow-light pt-10 w-[30%] bg-band">
+							<div className="p-2 hover:shadow-light pt-10 w-[30%] bg-contrast-gray">
 								<ul className="flex flex-col justify-center text-2xl px-8">
 									<li className="mb-2">&#x2022; Reducing greenhouse gasses</li>
 									<li className="mb-2">&#x2022; Decreasing carbon emissions and fossil fuel use</li>
@@ -45,13 +45,13 @@ const Home: React.FC = () => {
 								alt="Factory Workers"
 								className="w-[30%] hover:shadow-light"
 							/>
-							<div className="flex flex-col hover:shadow-light p-2 pt-4 w-[30%] h-[547px]">
+							<div className="flex flex-col hover:shadow-light p-2 pt-4 w-[30%] h-[547px] bg-contrast-gray">
 								<b className="text-4xl font-extrabold text-main-red ml-1.5">(S) Social</b>
 								<div className="flex justify-center px-8 py-8">
 									<p className="text-2xl">Social criteria focus on a company's social responsibility. The social segment of ESG examines how a company manages its relationships with its workforce and other stakeholders in its community. Social factors are primarily concerned with social consequences of business decisions.</p>
 								</div>
 							</div>
-							<div className="border-2 p-2 hover:shadow-light pt-10 w-[30%]">
+							<div className="p-2 hover:shadow-light pt-10 w-[30%] bg-contrast-gray">
 								<ul className="flex flex-col justify-center text-2xl px-8">
 									<li className="mb-2">&#x2022; Labor management</li>
 									<li className="mb-2">&#x2022; Human capital development</li>
@@ -63,13 +63,13 @@ const Home: React.FC = () => {
 							</div>
 						</div>
 						<div className="flex flex-row justify-between mt-10">
-							<div className="flex flex-col p-2 hover:shadow-light pt-4 w-[30%]">
+							<div className="flex flex-col p-2 hover:shadow-light pt-4 w-[30%] bg-contrast-gray">
 								<b className="text-4xl font-extrabold text-main-red ml-1.5">(G) Governance</b>
 								<div className="flex justify-center px-8 py-8">
 									<p className="text-2xl">Governance criteria focus on the integrity of a company’s governance structure. The governance segment of ESG examines whether a company’s leadership is operating within an ethical and responsible framework. Governance factors are primarily concerned with leadership accountability.</p>
 								</div>
 							</div>
-							<div className="border-2 p-2 hover:shadow-light pt-10 w-[30%]">
+							<div className="p-2 hover:shadow-light pt-10 w-[30%] bg-contrast-gray">
 								<ul className="flex flex-col justify-center text-2xl px-8">
 									<li className="mb-2">&#x2022; Board diversity</li>
 									<li className="mb-2">&#x2022; Executive pay</li>

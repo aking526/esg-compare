@@ -38,7 +38,7 @@ const update = async () => {
 			if (updated.length == toUpdate.length) {
 				return updated;
 			}
-		}, SERVER_AUTH, esg_data[curr]);
+		}, SERVER_AUTH, esg_data[curr], info_data);
 	}
 
 	return updated;

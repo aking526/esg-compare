@@ -30,6 +30,7 @@ const CompareBarChart: React.FC<CompareBarChartProps> = ({ companyA, companyB })
 	const options = {
 		responsive: true,
 		plugins: {
+			animation: false,
 			legend: {
 				position: 'top' as const,
 			},
@@ -49,14 +50,16 @@ const CompareBarChart: React.FC<CompareBarChartProps> = ({ companyA, companyB })
 				data: companyA.ratings,
 				backgroundColor: "rgba(255, 99, 132, 0.5)",
 				borderColor: "black",
-				borderWidth: 1
+				borderWidth: 1,
+				animation: false
 			},
 			{
 				label: companyB.name,
 				data: companyB.ratings,
 				backgroundColor: "rgba(53, 162, 235, 0.5)",
 				borderColor: "black",
-				borderWidth: 1
+				borderWidth: 1,
+				animation: false
 			}
 		]
 	};

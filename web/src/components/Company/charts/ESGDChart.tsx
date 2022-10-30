@@ -32,8 +32,15 @@ const ESGDChart: React.FC<EPCProps> = ({ env, soc, gov}) => {
 		responsive: true,
 		plugins: {
 			legend: {
-				position: "top" as const
-			}
+				labels: {
+					boxWidth: 50,
+					font: {
+						size: 16
+					},
+					color: "rgb(0, 0, 0)"
+				},
+				position: "bottom" as const
+			},
 		}
 	};
 

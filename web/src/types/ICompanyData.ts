@@ -24,6 +24,7 @@ export interface ICompanyData extends ISA {
 	total_grade: string;
 	total_level: string;
 	total_score: number;
+	last_processing_date: string;
 }
 
 export const BlankCompanyData: ICompanyData = {
@@ -49,5 +50,6 @@ export const BlankCompanyData: ICompanyData = {
 	governance_score: -1,
 	total_grade: "",
 	total_level: "",
-	total_score: -1
+	total_score: -1,
+	last_processing_date: ""
 };

@@ -36,12 +36,15 @@ const Compare: React.FC = () => {
 		}
 
 		return () => {
-			window.localStorage.setItem("compare_tickers", ["",""].join(","));
+			window.localStorage.removeItem("compare_tickers");
 		};
 	}, []);
 
 	useEffect(() => {
 		window.localStorage.setItem("compare_tickers", tickers.join(","));
+		setTimeout(() => {
+			window.localStorage.removeItem("compare_tickers");
+		}, 3 * 60 * 1000);
 	}, [tickers]);
 
 	const [allSelected, setAllSelected] = useState(false);
@@ -63,7 +66,7 @@ const Compare: React.FC = () => {
 
 	const queryClient = useQueryClient();
 
-	const names = useQuery<string[][], Error>(['names'], CompaniesApi.getNames);
+	const names = useQuery<string[][], Error>(["names"], CompaniesApi.getNames);
 	if (names.isError) {
 		// @ts-ignore
 		return <QueryError message={names.error.message} />;
@@ -167,14 +170,19 @@ const Compare: React.FC = () => {
 					<p className="m-2 text-white">Back</p>
 				</div>
 			}
-			<div className={`font-modern ${ allSelected ? "my-8" : "my-16" } mx-24 px-5 py-8 ${ allSelected || compareToIA ? "bg-gray-50" : "bg-gray-100" } rounded-2xl shadow-light`}>
+			<div className={`font-modern ${ allSelected ? "my-8" : "my-16" } mx-24 px-5 py-8 bg-contrast-gray shadow-light`}>
 				{ compareToIA &&
 					<div>
 						{ data[0] && !IA.isLoading ?
 						<div className="flex flex-col">
 							<div className="flex flex-row justify-center items-center">
-								<div className="flex flex-col mx-1">
-									<div>
+								<div className="flex flex-row mx-1">
+									<XMarkIcon className="w-5 h-5 mr-3.5" onClick={() => {
+										if (tickers[0] === companies) navigate("/compare");
+										newTickers(0, "");
+										setCompareToIA(false);
+									}}/>
+									<div className="flex flex-col">
 										<Link to={`/company/${tickers[0].toLowerCase()}`}>
 											<span className="text-3xl font-extrabold mr-2">{data[0].name}</span>
 											<span className="ml-2 text-xl">({tickers[0].toUpperCase()})</span>
@@ -182,7 +190,10 @@ const Compare: React.FC = () => {
 									</div>
 								</div>
 								<p className="mx-4">Compared To</p>
-								<div className="flex flex-col mx-1">
+								<div className="flex flex-row mx-1">
+									<XMarkIcon className="w-5 h-5 mr-3.5" onClick={() => {
+										setCompareToIA(false);
+									}} />
 									<h1 className="text-3xl font-extrabold">{data[0].industry} Industry Average</h1>
 								</div>
 							</div>
@@ -234,7 +245,7 @@ const Compare: React.FC = () => {
 												</div>
 												<div className="border-2 border-black">
 													<img
-														className="w-20 h-20"
+														className="w-[5rem] h-[5rem]"
 														src={dat.logo}
 														alt=""
 													/>

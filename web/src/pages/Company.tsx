@@ -91,7 +91,6 @@ const Company: React.FC = () => {
   useEffect(() => {
     const cachedData: ICompanyData | undefined = queryClient.getQueryData([`${ticker}_data`]);
     if (cachedData) {
-      console.log("cached data");
       setData(cachedData[0]);
     }
 
@@ -157,8 +156,8 @@ const Company: React.FC = () => {
 
   return (
     <>
-      {loaded && avgScores && avgGrades && avgLevels && bestScores && bestGrades && bestLevels ? (
-        <div className="flex flex-col shadow-light my-16 font-modern mx-20 px-8 py-6 bg-slate-200 rounded-2xl">
+      {loaded && avgScores && avgGrades && avgLevels && bestScores && bestGrades && bestLevels && data ? (
+        <div className="flex flex-col shadow-light my-16 font-modern mx-20 px-8 py-6 bg-slate-200 ">
           <CompanyInfo name={data.name} ticker={data.ticker} cik={data.cik} exchange={data.exchange} industry={data.industry} logo={data.logo} weburl={data.weburl} />
           <div className="flex flex-col mt-5">
             <strong className="text-2xl mb-1.5">ESG Data</strong>
@@ -170,7 +169,7 @@ const Company: React.FC = () => {
                     passBack={(width: number) => {
                       setNaxW(prevState => Math.max(prevState, width));
                     }}
-                    width={naxW}
+                    width={naxW !== 0 ? naxW : 275}
                     name={data.name}
                     industry={data.industry}
                     category="Environment"
@@ -224,21 +223,24 @@ const Company: React.FC = () => {
                   />
                 </div>
                 <div className="flex flex-row">
-                  <p className="mx-1"><strong>Total Score:</strong> <span className={data.total_score >= avgScores.total_score ? "text-green-500" : "text-red-500"}  data-tip data-for="score-tip-total">{data.total_score}</span></p>
+                  <p className="mx-1"><strong>Total Score:</strong> <span className={data.total_score >= avgScores.total_score ? "text-green-600" : "text-red-600"}  data-tip data-for="score-tip-total">{data.total_score}</span></p>
                   <ReactTooltip id="score-tip-total" place="bottom" effect="solid">
                     <p className="mr-1">Industry Mean: {avgScores.total_score}</p>
                     <p className="ml-1">Industry Best: {bestScores.total_score}</p>
                   </ReactTooltip>
-                  <p className="mx-1"><strong>Total Grade:</strong> <span className={possibleGrades.indexOf(data.total_grade) > possibleGrades.indexOf(avgGrades.total_grade) ? "text-green-500" : data.total_grade === avgGrades.total_grade ? "text-gray-500" : "text-red-500"} data-tip data-for="grade-tip-total">{data.total_grade}</span></p>
+                  <p className="mx-1"><strong>Total Grade:</strong> <span className={possibleGrades.indexOf(data.total_grade) > possibleGrades.indexOf(avgGrades.total_grade) ? "text-green-600" : data.total_grade === avgGrades.total_grade ? "text-gray-500" : "text-red-600"} data-tip data-for="grade-tip-total">{data.total_grade}</span></p>
                   <ReactTooltip id="grade-tip-total" place="bottom" effect="solid">
                     <p className="mr-1">Industry Mean: {avgGrades.total_grade}</p>
                     <p className="ml-1">Industry Best: {bestGrades.total_grade}</p>
                   </ReactTooltip>
-                  <p className="mx-1"><strong>Total Level:</strong> <span className={possibleLevels.indexOf(data.total_level) > possibleLevels.indexOf(avgLevels.total_level) ? "text-green-500" : data.total_level === avgLevels.total_level ? "text-gray-500" : "text-red-500"} data-tip data-for="level-tip-total">{data.total_level}</span></p>
+                  <p className="mx-1"><strong>Total Level:</strong> <span className={possibleLevels.indexOf(data.total_level) > possibleLevels.indexOf(avgLevels.total_level) ? "text-green-600" : data.total_level === avgLevels.total_level ? "text-gray-500" : "text-red-600"} data-tip data-for="level-tip-total">{data.total_level}</span></p>
                   <ReactTooltip id="level-tip-total" place="bottom" effect="solid">
                     <p className="mr-1">Industry Mean: {avgLevels.total_level}</p>
                     <p className="ml-1">Industry Best: {bestLevels.total_level}</p>
                   </ReactTooltip>
+                </div>
+                <div className="mx-1">
+                  <p className="text-black"><strong>Last Processing Date:</strong> {data.last_processing_date}. <i className="text-gray-500">Ratings are updated quarterly</i>.</p>
                 </div>
               </div>
               <ESGDChart env={data.environment_score} soc={data.social_score} gov={data.governance_score}/>
@@ -288,7 +290,7 @@ const Company: React.FC = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col ml-2 px-2 pb-2 mt-20">
+            <div className="flex flex-col border-l-2 border-black ml-6 px-8 pb-2 mt-20">
               <strong className="text-2xl mb-1.5">Market Summary</strong>
               <div>
                 <div><strong>Current Price:</strong> &nbsp;${quote.c.toFixed(2)}</div>

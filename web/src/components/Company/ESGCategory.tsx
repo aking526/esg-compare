@@ -39,17 +39,17 @@ const ESGCategory: React.FC<ESGCategoryProps> = ({ id, passBack, width, name, in
 		<div id={id} className="relative my-1 mr-6 border-2 border-black p-3 h-min hover:shadow-light" style={styles}>
 			<u className="text-xl">{category}</u>
 			<div className="flex flex-col mt-1.5 justify-between">
-				<div className="my-2"><strong>{`${category} Score: `}</strong> <span className={score >= avg_score ? "text-green-500" : "text-red-500"}  data-tip data-for={`score-tip-${category.toLowerCase()}`}>{score}</span></div>
+				<div className="my-2"><strong>{`${category} Score: `}</strong> <span className={score >= avg_score ? "text-green-600" : "text-red-600"}  data-tip data-for={`score-tip-${category.toLowerCase()}`}>{score}</span></div>
 				<ReactTooltip id={`score-tip-${category.toLowerCase()}`} place="top" effect="solid">
 					<p className="mr-1">Industry Mean: {avg_score}</p>
 					<p className="ml-1">Industry Best: {best_score}</p>
 				</ReactTooltip>
-				<div className="my-2"><strong>{`${category} Grade: `}</strong> <span className={possibleGrades.indexOf(grade) > possibleGrades.indexOf(avg_grade) ? "text-green-500" : grade === avg_grade ? "text-gray-500" : "text-red-500"} data-tip data-for={`grade-tip-${category.toLowerCase()}`}>{grade}</span></div>
+				<div className="my-2"><strong>{`${category} Grade: `}</strong> <span className={possibleGrades.indexOf(grade) > possibleGrades.indexOf(avg_grade) ? "text-green-600" : grade === avg_grade ? "text-gray-600" : "text-red-600"} data-tip data-for={`grade-tip-${category.toLowerCase()}`}>{grade}</span></div>
 				<ReactTooltip id={`grade-tip-${category.toLowerCase()}`} place="right" effect="solid">
 					<p className="mr-1">Industry Mean: {avg_grade}</p>
 					<p className="ml-1">Industry Best: {best_grade}</p>
 				</ReactTooltip>
-				<div className="my-2"><strong>{`${category} Level: `}</strong> <span className={possibleLevels.indexOf(level) > possibleLevels.indexOf(avg_level) ? "text-green-500" : level === avg_level ? "text-gray-500" : "text-red-500"} data-tip data-for={`level-tip-${category.toLowerCase()}`}>{level}</span></div>
+				<div className="my-2"><strong>{`${category} Level: `}</strong> <span className={possibleLevels.indexOf(level) > possibleLevels.indexOf(avg_level) ? "text-green-600" : level === avg_level ? "text-gray-600" : "text-red-600"} data-tip data-for={`level-tip-${category.toLowerCase()}`}>{level}</span></div>
 				<ReactTooltip id={`level-tip-${category.toLowerCase()}`} place="bottom" effect="solid">
 					<p className="mr-1">Industry Mean: {avg_level}</p>
 					<p className="ml-1">Industry Best: {best_level}</p>
