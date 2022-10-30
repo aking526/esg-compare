@@ -31,18 +31,24 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data, positioning, s
 
   // Handles whether the search box is clicked or not
   useEffect(() => {
-    if (curr.length !== 0 || !focused) return;
-    setFilteredData(data); // Resets the filtered data to show all options
+    if (!focused) {
+      setCurr("");
+      return;
+    }
 
+    if (curr.length !== 0) return;
+    setFilteredData(data); // Resets the filtered data to show all options
+  }, [focused]);
+
+  useEffect(() => {
     const handlePointerDown = (event: PointerEvent) => {
-      if (!focused) return;
       setFocused(false);
     };
 
     document.addEventListener("pointerdown", handlePointerDown);
 
     return () => document.removeEventListener("pointerdown", handlePointerDown);
-  }, [focused]);
+  }, []);
 
 
   // Sets new filter when curr is changed
@@ -84,7 +90,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data, positioning, s
           placeholder={placeholder}
         />
         <div className="relative z-10">
-          {(( filteredData && filteredData.length !== 0 && curr.length !== 0) || focused) &&
+          { ((filteredData && filteredData.length !== 0 && curr.length !== 0) || focused) &&
             <div className="absolute top-0 left-0 right-0 bottom-0">
               <ul className={`relative flex flex-col ml-auto mr-auto bg-white rounded-lg border-2 border-cyan-50 ${styles.width} ${styles.ulHeight} pt-1.5 drop-shadow-xl overflow-hidden overflow-y-auto`}>
                 {filteredData && filteredData.map((value: string[], key: number) => (
@@ -93,10 +99,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data, positioning, s
               </ul>
             </div>
           }
+          { filteredData && filteredData.length === 0 && curr.length !== 0 && (
+            <div className="absolute top-0 left-0 right-0 bottom-0">
+              <ul className={`relative flex flex-col ml-auto mr-auto bg-white rounded-lg border-2 border-cyan-50 ${styles.width} ${styles.ulHeight} pt-1.5 drop-shadow-xl overflow-hidden overflow-y-auto`}>
+                <li className={`${styles.liTextSize} m-2 text-gray-500`}><i>Not Found</i></li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
       <div>
-        {filteredData && filteredData.length !== 0 ?
+        { filteredData && filteredData.length !== 0 ?
           <Link to={`/company/${filteredData[0][0]}`}>
             <div className={`p-2 m-1 mt-2 ${styles.searchIconSize}`}>
               <MagnifyingGlassIcon className="w-6 h-6 text-white"/>

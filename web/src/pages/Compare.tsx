@@ -155,6 +155,8 @@ const Compare: React.FC = () => {
 		fetchOne().then(() => setDataLoaded(true));
 	}, [compareToIA]);
 
+	const [sbFocused, setSbFocused] = useState<boolean[]>([false, false]);
+
 	return (
 		<div>
 			{ (allSelected || compareToIA) &&
@@ -320,6 +322,8 @@ const Compare: React.FC = () => {
 												passBack={(t: string) => newTickers(1, t)}
 												hasIndustryAvgOption={true}
 												onClick={handleCompareToIndustryClicked}
+												otherFocused={false}
+												passBackFocused={() => null} // does not need to pass back focused because other one is already selected
 											/>
 											:
 											<CompareInputSelected
@@ -337,6 +341,15 @@ const Compare: React.FC = () => {
 												names={names.data}
 												passBack={(t: string) => newTickers(0, t)}
 												hasIndustryAvgOption={false}
+												otherFocused={sbFocused[1]}
+												passBackFocused={(f: boolean) => {
+													let fc = [];
+													for (let i = 0; i < sbFocused.length; i++) {
+														fc.push(sbFocused[i]);
+													}
+													fc[0] = f;
+													setSbFocused(fc);
+												}}
 											/>
 												:
 											<CompareInputSelected
@@ -352,6 +365,15 @@ const Compare: React.FC = () => {
 												passBack={(t: string) => newTickers(1, t)}
 												hasIndustryAvgOption={true}
 												onClick={handleCompareToIndustryClicked}
+												otherFocused={sbFocused[0]}
+												passBackFocused={(f: boolean) => {
+													let fc = [];
+													for (let i = 0; i < sbFocused.length; i++) {
+														fc.push(sbFocused[i]);
+													}
+													fc[1] = f;
+													setSbFocused(fc);
+												}}
 											/>
 												:
 											<CompareInputSelected

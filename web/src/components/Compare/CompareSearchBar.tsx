@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
 
 interface CSearchBarProps {
 	placeholder: string;
 	data: string[][] | undefined;
 	prevSelected: string | undefined;
+	passBackFocused: Function;
+	otherFocused: boolean;
 	passBack: Function;
 }
 
 // data[i][0] ==> ticker
 // data[i][1] ==> name
 
-const CompareSearchBar: React.FC<CSearchBarProps> = ({ placeholder, data, prevSelected, passBack }) => {
+const CompareSearchBar: React.FC<CSearchBarProps> = ({ placeholder, data, prevSelected, passBackFocused, otherFocused, passBack }) => {
 	const [curr, setCurr] = useState<string>("");
 	const [filteredData, setFilteredData] = useState<string[][] | undefined>(data);
 	const [focused, setFocused] = useState<boolean>(false);
@@ -20,21 +21,34 @@ const CompareSearchBar: React.FC<CSearchBarProps> = ({ placeholder, data, prevSe
 	const onChange = (event: React.ChangeEvent<HTMLInputElement>) => setCurr(event.target.value);
 	const onFocus = () => setFocused(true);
 
+	useEffect(() => {
+		if (otherFocused) {
+			setFocused(false);
+			setCurr("");
+		}
+	}, [otherFocused]);
 
 	// Handles whether the search box is clicked or not
 	useEffect(() => {
-		if (curr.length !== 0 || !focused) return;
-		setFilteredData(data); // Resets the filtered data to show all options
+		passBackFocused(focused);
+		if (!focused) {
+			setCurr("");
+			return;
+		}
 
+		if (curr.length !== 0) return;
+		setFilteredData(data); // Resets the filtered data to show all options
+	}, [focused]);
+
+	useEffect(() => {
 		const handlePointerDown = (event: PointerEvent) => {
-			if (!focused) return;
 			setFocused(false);
 		};
 
 		document.addEventListener("pointerdown", handlePointerDown);
 
 		return () => document.removeEventListener("pointerdown", handlePointerDown);
-	}, [focused]);
+	}, []);
 
 	// Sets new filter when curr is changed
 	useEffect(() => {
