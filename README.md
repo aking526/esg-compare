@@ -1,7 +1,7 @@
 # ESG Compare
 
 ## Our Purpose 
-This website was created to provide the ESG ratings information of some of the largest publicly traded companies.  It reflects the ESG ratings of 620 public companies listed on either the NYSE or Nasdaq, most of which are included in the S&P 500.
+This website was created to provide the ESG ratings information of some of the largest publicly traded companies in the United States.  It reflects the ESG ratings of 620 public companies listed on either the NYSE or Nasdaq, most of which are included in the S&P 500.
 
 The mission of this website is to: 
 1. Raise awareness of the importance of sustainability
