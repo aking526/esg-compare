@@ -1,5 +1,3 @@
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
-
 module.exports = {
   webpack: {
     configure: (webpackConfig, { paths }) => {
@@ -12,13 +10,7 @@ module.exports = {
 
       return webpackConfig;
     },
-    plugins: {
-      add: [
-        new NodePolyfillPlugin({
-          excludeAliases: ["console"]
-        }),
-      ]
-    }
+    plugins: {}
   },
   style: {
     postOptions: {

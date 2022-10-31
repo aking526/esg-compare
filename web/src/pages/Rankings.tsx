@@ -4,7 +4,7 @@ import { ICompanyData } from "../types/ICompanyData";
 import RankingsLoading from "../components/Rankings/RankingsLoading";
 import RankingsTable from "../components/Rankings/RankingsTable";
 import MetricBtn from "../components/Rankings/MetricBtn";
-import DataRefToText from "../mods/DataRefToText";
+import DataRefToText from "../utils/DataRefToText";
 import CompaniesApi from "../api/CompaniesApi";
 import QueryError from "../components/QueryError";
 import FilterDropdown from "../components/Rankings/FilterDropdown";
@@ -14,13 +14,10 @@ import RankingsNavBtn from "../components/Rankings/RankingsNavBtn";
 import { useCalculateHeight } from "../hooks/useCalculateHeight";
 
 const Rankings: React.FC = () => {
-  const defaultMetric = "total_score";
-  const FilterBtnStyles = "border-2 rounded-xl border-black p-1 my-0.5";
-
   const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
   const [rankings, setRankings] = useState<ICompanyData[]>([]);
-  const [metric, setMetric] = useState<string>(defaultMetric);
+  const [metric, setMetric] = useState<string>("total_score");
   const [industryOptionsSelected, setIndustryOptionsSelected] = useState<string | null>(null);
   const [industries , setIndustries] = useState<string[] | undefined>(undefined);
   const [dropdownOptions, setDropdownOptions] = useState<MyOption[]>([]);
@@ -66,7 +63,7 @@ const Rankings: React.FC = () => {
       setUncachedRankingsLoading(false);
       forceUpdate();
     });
-  }, [industryOptionsSelected, nyse, nasdaq]);
+  }, [metric, industryOptionsSelected, nyse, nasdaq]);
 
   const queryClient = useQueryClient();
 
@@ -95,13 +92,15 @@ const Rankings: React.FC = () => {
   });
 
   if (rankingsIsError) {
-    return <QueryError message={rankingsError.message} />
+    return <QueryError message={rankingsError.message} />;
   }
 
   useEffect(() => {
     setSliceStart(0);
-    const cachedRanking: ICompanyData[] | undefined = queryClient.getQueryData([`${metric}_rankings`]);
-    if (cachedRanking) setRankings(cachedRanking);
+    if (!industryOptionsSelected && !nyse && !nasdaq) {
+      const cachedRanking: ICompanyData[] | undefined = queryClient.getQueryData([`${metric}_rankings`]);
+      if (cachedRanking) setRankings(cachedRanking);
+    }
   }, [metric]);
 
   useEffect(() => {
@@ -153,8 +152,10 @@ const Rankings: React.FC = () => {
     forceUpdate();
   }, [height]);
 
+  const FilterBtnStyles = "border-2 rounded-xl border-black p-1 my-0.5";
+
   return (
-    <div id="#container" className={`relative flex justify-evenly bg-white py-5 h-[${height}px] overflow-y-hidden font-modern`}>
+    <div id="#container" className={`relative flex flex-col justify-evenly bg-white py-5 h-[${height}px] overflow-y-hidden font-modern`}>
       <div className="flex flex-row">
         <div className="font-modern rounded-lg bg-white shadow-light w-fit h-min m-2 p-2">
           <u className="text-xl">Sort By:</u>

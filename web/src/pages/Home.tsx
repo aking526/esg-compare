@@ -5,8 +5,8 @@ import GovernanceMeetingImg from "../../assets/governance/pexels-fauxels-3183172
 
 const Home: React.FC = () => {
 	return (
-		<div>
-			<div className="flex flex-col my-10 mx-28 font-modern">
+		<div className="font-modern">
+			<div className="flex flex-col my-10 mx-28">
 				<div className="mb-1">
 					<div className="mb-2">
 						<div className="flex flex-row">
@@ -92,7 +92,7 @@ const Home: React.FC = () => {
 					<p>The ESG ratings used on this website are derived from the ESG ratings published by ESG Enterprise. See their full methodology here: <a className="text-blue-600" href="https://app.esgenterprise.com/uploads/ESG-Enterprise-Risk-Ratings-MethodologyV3.pdf">ESG Enterprise Ratings Methodology</a>.</p>
 				</div>
 			</div>
-		<div className="flex flex-col mt-3 py-5 text-white font-modern bg-black px-28">
+		<div className="flex flex-col mt-3 py-5 text-white bg-black px-28">
 			<h1 className="text-sm mb-1.5">Disclaimer</h1>
 			<p className="text-xs mb-1">This website is not engaged in rendering legal, accounting, investment, or other professional advice or services. Your use of this website and of any content, information, or data accessed on or through this website is at your own risk. We do not make any warranties about or otherwise guarantee the accuracy or completeness of any content, information, or data accessed on or through this website. Certain content, information, or data accessed through or on this website may be inaccurate, incomplete, or not appropriate for a particular purpose.</p>
 			<p className="text-xs">All information, text, data, images, graphics, graphs, charts, or material contained in this website have been provided here solely for informational purposes based upon information generally available to the public, with the exception of the shown ESG scores and ratings, which have been sourced from ESG Enterprise (<a className="text-blue-600" href="esgenterprise.com">esgenterprise.com</a>). Different parties may utilize different methodologies and data inputs in arriving at their ESG scores and ratings, and thus ESG scores and ratings for any particular company may vary.</p>

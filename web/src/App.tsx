@@ -12,6 +12,7 @@ import Company from "./pages/Company";
 import NavBar from "./components/NavBar";
 import TopBar from "./components/TopBar";
 import Compare from "./pages/Compare";
+import NotFound from "./pages/NotFound";
 import CompaniesApi from "./api/CompaniesApi";
 import QueryError from "./components/QueryError";
 
@@ -30,6 +31,7 @@ function App() {
         <Route path="/about" element={ <About/> }/>
         <Route path="/rankings" element={ <Rankings/> }/>
         <Route path="/" element={ <Home/> }/>
+        <Route path="*" element={ <NotFound/> } />
       </Routes>
     </Router>
   );

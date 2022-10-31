@@ -137,7 +137,7 @@ const Compare: React.FC = () => {
 
 	const [compareToIA, setCompareToIA] = useState(false);
 	const IA = useIndustryAvg(data[0] ? data[0].industry : undefined);
-	const handleCompareToIndustryClicked: React.MouseEventHandler<HTMLButtonElement> = () => {
+	const handleCompareToIndustryClicked: React.MouseEventHandler<HTMLDivElement> = () => {
 		setCompareToIA(true);
 	};
 
@@ -318,9 +318,13 @@ const Compare: React.FC = () => {
 						:
 					<>
 						{ !compareToIA &&
-							<>
+							<div className="flex flex-col items-center">
+								<div className="flex flex-col items-center justify-center bg-band w-fit p-5 mx-20 mt-10 rounded-xl text-2xl left-auto right-auto">
+									<h3>Compare ESG ratings of one company against another or </h3>
+									<h3>compare ESG ratings of a company against its industry average:</h3>
+								</div>
 								{ companies ?
-									<div className="flex flex-row justify-evenly my-16 mx-32 px-18 py-36">
+									<div className="flex flex-row justify-evenly mb-16 mx-32 px-18 py-36">
 										<CompareInputSelected ticker={companies} handleClick={() => {
 											navigate("/compare");
 											newTickers(0, "");
@@ -345,7 +349,7 @@ const Compare: React.FC = () => {
 										}
 									</div>
 										:
-									<div className="flex flex-row items-center justify-evenly px-18 py-36">
+									<div className="flex flex-row items-center justify-between px-18 pt-10 pb-36">
 										{ !tickers[0] ?
 											<CompareInputField
 												index={0}
@@ -397,7 +401,7 @@ const Compare: React.FC = () => {
 										}
 									</div>
 								}
-							</>
+							</div>
 						}
 					</>
 				}

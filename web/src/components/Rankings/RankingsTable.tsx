@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ICompanyData } from "../../types/ICompanyData";
-import DataRefToText from "../../mods/DataRefToText";
+import DataRefToText from "../../utils/DataRefToText";
 import { make2dArray } from "../../utils/makeArray";
 import StylingProps from "../../types/StylingProps";
 

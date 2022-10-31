@@ -14,7 +14,7 @@ const CircleLoader: React.FC<CircleLoaderProps> = ({ styles, baseColor, switchCo
 				className={`block w-20 h-20 absolute top-0 left-0 rounded-full ${baseColor} border-8 border-t-8 ${switchColor} box-border`}
 				animate={{ rotate: 360 }}
 				transition={{
-					loop: Infinity,
+					repeat: Infinity,
 					duration: 1,
 					ease: "linear"
 				}}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import CompareSearchBar from "./CompareSearchBar";
+import { RectangleGroupIcon } from "@heroicons/react/20/solid";
 
 interface CInputFieldProps {
 	index: number;
@@ -10,7 +11,7 @@ interface CInputFieldProps {
 	otherSelected: string | null;
 	otherFocused: boolean;
 	hasIndustryAvgOption: boolean;
-	onClick?: React.MouseEventHandler<HTMLButtonElement>;
+	onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
 
 const CompareInputField: React.FC<CInputFieldProps> = ({ index, prevSelected, names, passBack, passBackFocused, otherSelected, otherFocused, hasIndustryAvgOption, onClick }) => {
@@ -39,11 +40,12 @@ const CompareInputField: React.FC<CInputFieldProps> = ({ index, prevSelected, na
 				/>
 			</div>
 			{ hasIndustryAvgOption && onClick ?
-				<div className="mt-2 border-2 border-band rounded-xl p-2 bg-band w-fit ml-auto mr-auto">
-					<button onClick={otherSelected ? onClick : () => null}>Compare to Industry Average</button>
+				<div className="flex flex-row items-center mt-2 border-2 border-black rounded-xl p-3 bg-white w-fit ml-auto mr-auto hover:cursor-pointer" onClick={otherSelected ? onClick : () => null}>
+					<span className="text-sm mr-2.5">Compare to Industry Average</span>
+					<RectangleGroupIcon className="w-6 h-6"/>
 				</div>
 					:
-				<div className="h-[44px] mt-2"></div>
+				<div className="h-[52px] mt-2"></div>
 			}
 		</div>
 	);
