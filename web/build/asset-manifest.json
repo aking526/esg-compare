@@ -1,15 +1,16 @@
 {
   "files": {
-    "main.css": "/static/css/main.3b221acb.css",
-    "main.js": "/static/js/main.8b908132.js",
-    "static/media/world-ga8f31bec6_640.jpg": "/static/media/world-ga8f31bec6_640.edf9d17933ba38c4ac48.jpg",
-    "static/media/windmill-ga48edb172_640.jpg": "/static/media/windmill-ga48edb172_640.cd7b6b36e3d1bd02f083.jpg",
+    "main.css": "/static/css/main.2387ab8a.css",
+    "main.js": "/static/js/main.48698081.js",
+    "static/media/pexels-philip-ackermann-1666021.jpg": "/static/media/pexels-philip-ackermann-1666021.6f66428266ac2fbb6d57.jpg",
+    "static/media/pexels-fauxels-3183172.jpg": "/static/media/pexels-fauxels-3183172.b51678b0d537207b6a16.jpg",
+    "static/media/remy-gieling-KP6XQIEjjPA-unsplash.jpg": "/static/media/remy-gieling-KP6XQIEjjPA-unsplash.4c1561cc09ed5b39d0f6.jpg",
     "index.html": "/index.html",
-    "main.3b221acb.css.map": "/static/css/main.3b221acb.css.map",
-    "main.8b908132.js.map": "/static/js/main.8b908132.js.map"
+    "main.2387ab8a.css.map": "/static/css/main.2387ab8a.css.map",
+    "main.48698081.js.map": "/static/js/main.48698081.js.map"
   },
   "entrypoints": [
-    "static/css/main.3b221acb.css",
-    "static/js/main.8b908132.js"
+    "static/css/main.2387ab8a.css",
+    "static/js/main.48698081.js"
   ]
 }
