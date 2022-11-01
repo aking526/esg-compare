@@ -23,7 +23,6 @@ function App() {
   return (
     <Router>
       <TopBar names={names.data} />
-      {/*<TopBar names={[["", ""]]} />*/}
       <NavBar />
       <Routes>
         <Route path="/company/:ticker" element={ <Company/> }/>

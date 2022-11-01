@@ -170,7 +170,7 @@ const Compare: React.FC = () => {
 					<p className="m-2 text-white">Back</p>
 				</div>
 			}
-			<div className={`font-modern ${ allSelected ? "my-8" : "my-16" } mx-24 px-5 py-8 bg-contrast-gray shadow-light`}>
+			<div className={`font-modern ${ allSelected ? "my-8" : "my-16" } mx-[6.67%] px-5 py-8 bg-contrast-gray shadow-light`}>
 				{ compareToIA &&
 					<div>
 						{ data[0] && !IA.isLoading ?
@@ -254,7 +254,7 @@ const Compare: React.FC = () => {
 											);
 										})}
 									</div>
-									<div>
+									<div className="w-[1200px] h-[550px]">
 										<CompareBarChart
 											companyA={{
 												ticker: tickers[0],
@@ -268,13 +268,14 @@ const Compare: React.FC = () => {
 											}}
 										/>
 									</div>
-									<div className="w-[1200px] h-[400px]">
+									<div className="w-[1200px] h-[450px]">
 										{ stock0 && stock1 && !stock0.isLoading && !stock1.isLoading &&
 											<CompareStockChart
 												tickerA={tickers[0]}
 												pricesA={stock0.prices}
 												tickerB={tickers[1]}
 												pricesB={stock1.prices}
+												spcLen={spcLen}
 											/>
 										}
 									</div>
@@ -324,7 +325,7 @@ const Compare: React.FC = () => {
 									<h3>compare ESG ratings of a company against its industry average:</h3>
 								</div>
 								{ companies ?
-									<div className="flex flex-row justify-evenly mb-16 mx-32 px-18 py-36">
+									<div className="flex flex-row justify-evenly mb-16 mx-[8.89%] px-18 pt-10 pb-24">
 										<CompareInputSelected ticker={companies} handleClick={() => {
 											navigate("/compare");
 											newTickers(0, "");
@@ -349,7 +350,7 @@ const Compare: React.FC = () => {
 										}
 									</div>
 										:
-									<div className="flex flex-row items-center justify-between px-18 pt-10 pb-36">
+									<div className="flex flex-row items-center justify-between mb-16 mx-[8.89%] px-18 pt-10 pb-24">
 										{ !tickers[0] ?
 											<CompareInputField
 												index={0}

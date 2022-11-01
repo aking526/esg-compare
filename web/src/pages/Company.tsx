@@ -54,7 +54,14 @@ const Company: React.FC = () => {
   });
   const [quoteLoading, setQuoteLoading] = useState(false);
 
+  const [basicFinancials, setBasicFinancials] = useState<IBasicFinancials>({
+    metric: {},
+    metricType: "",
+    series: {}
+  });
+
   useEffect(() => {
+    setSpcLen("1 month");
     if (!ticker) return;
 
     const fetch = async () => {
@@ -66,11 +73,9 @@ const Company: React.FC = () => {
     fetch().then(() => setQuoteLoading(false));
   }, []);
 
-  const [basicFinancials, setBasicFinancials] = useState<IBasicFinancials>({
-    metric: {},
-    metricType: "",
-    series: {}
-  });
+  useEffect(() => {
+    forceUpdate();
+  }, [ticker]);
 
   const queryClient = useQueryClient();
 
@@ -170,9 +175,9 @@ const Company: React.FC = () => {
           :
         <>
           { loaded && avgScores && avgGrades && avgLevels && bestScores && bestGrades && bestLevels && data ? (
-            <div className="flex flex-col shadow-light my-16 font-modern mx-20 px-8 py-6 bg-contrast-gray">
+            <div className="flex flex-col shadow-light my-[7.11vh] font-modern mx-[6vw] px-8 py-6 bg-contrast-gray">
               <CompanyInfo name={data.name} ticker={data.ticker} cik={data.cik} exchange={data.exchange} industry={data.industry} logo={data.logo} weburl={data.weburl} />
-              <div className="flex flex-col mt-5">
+              <div className="relative flex flex-col mt-5 w-fit">
                 <strong className="text-2xl mb-1.5">ESG Data</strong>
                 <div className="flex flex-row mb-1.5">
                   <div className="flex flex-col">
@@ -182,10 +187,10 @@ const Company: React.FC = () => {
                         passBack={(width: number) => {
                           setNaxW(prevState => Math.max(prevState, width));
                         }}
-                        width={naxW !== 0 ? naxW : 275}
+                        width={naxW}
                         name={data.name}
                         industry={data.industry}
-                        category="Environment"
+                        category="Environmental"
                         score={data.environment_score}
                         grade={data.environment_grade}
                         level={data.environment_level}
@@ -334,8 +339,8 @@ const Company: React.FC = () => {
                 <div className="flex flex-col mt-5">
                 <strong className="text-2xl mb-1.5">Company News</strong>
                   { !newsLoading ?
-                    <div className="flex flex-row">
-                      {news.slice(0, 5).map((currNews, idx) => {
+                    <div className="flex flex-row w-full overflow-x-auto">
+                      {news.slice(0, Math.min(news.length, 20)).map((currNews, idx) => {
                         if (!currNews.url || currNews.url === "") return null;
                         const split = currNews.headline.split(" ");
 
@@ -350,7 +355,10 @@ const Company: React.FC = () => {
 
                         return (
                           <div
-                            className={`my-3 mr-2 w-[20%] p-2 ${idx < Math.min(4, news.length - 1) ? "border-r-2" : ""} border-black p-1.5`}
+                            className={`my-3 mr-2 w-[20vw] p-2 ${idx < Math.min(20 - 1, news.length - 1) ? "border-r-2" : ""} border-black p-1.5`}
+                            style={{
+                              minWidth: "20%"
+                            }}
                             key={idx}
                           >
                             <a href={currNews.url}>

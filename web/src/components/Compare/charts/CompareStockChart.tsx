@@ -11,6 +11,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { CPair, getDatesFormatted, getPrices } from "../../../classes/CPair";
+import { useSPCSlicer } from "../../../hooks/spc-hooks";
 
 ChartJS.register(
 	CategoryScale,
@@ -27,15 +28,18 @@ interface CompareStockChartProps {
 	pricesA: CPair[];
 	tickerB: string;
 	pricesB: CPair[];
+	spcLen: string;
 }
 
-const CompareStockChart: React.FC<CompareStockChartProps> = ({ tickerA, pricesA, tickerB, pricesB }) => {
+const CompareStockChart: React.FC<CompareStockChartProps> = ({ tickerA, pricesA, tickerB, pricesB, spcLen }) => {
+	const [startA, stopA] = useSPCSlicer(spcLen, pricesA);
+	const [startB, stopB] = useSPCSlicer(spcLen, pricesB);
 	const data = {
-		labels: getDatesFormatted(pricesA),
+		labels: getDatesFormatted(pricesA).slice(startA, stopA),
 		datasets: [
 			{
 				label: `${tickerA.toUpperCase()} Stock Price`,
-				data: getPrices(pricesA),
+				data: getPrices(pricesA).slice(startA, stopA),
 				backgroundColor: [
 					"rgba(255, 99, 132, 0.5)"
 				],
@@ -45,7 +49,7 @@ const CompareStockChart: React.FC<CompareStockChartProps> = ({ tickerA, pricesA,
 			},
 			{
 				label: `${tickerB.toUpperCase()} Stock Price`,
-				data: getPrices(pricesB),
+				data: getPrices(pricesB).slice(startB, stopB),
 				backgroundColor: [
 					"rgba(53, 162, 235, 0.5)"
 				],
@@ -69,13 +73,19 @@ const CompareStockChart: React.FC<CompareStockChartProps> = ({ tickerA, pricesA,
 			title: {
 				display: true,
 				text: "Stock Price Comparison",
+				font: {
+					size: 24
+				},
+				padding: {
+					top: 40
+				}
 			},
 		},
 	};
 
 	return (
 		<div>
-			<Line data={data} options={options} width={1200} height={400} />
+			<Line data={data} options={options} height={450} width={1200}/>
 		</div>
 	);
 };

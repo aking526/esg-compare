@@ -27,21 +27,7 @@ interface CompareBarChartProps {
 }
 
 const CompareBarChart: React.FC<CompareBarChartProps> = ({ companyA, companyB }) => {
-	const options = {
-		responsive: true,
-		plugins: {
-			animation: false,
-			legend: {
-				position: 'top' as const,
-			},
-			title: {
-				display: true,
-				text: "ESG Ratings Comparison",
-			},
-		},
-	};
-
-	const labels = ["Environment", "Social", "Governance", "Total"];
+	const labels = ["Environmental", "Social", "Governance", "Total"];
 	const data: ChartData<"bar"> = {
 		labels,
 		datasets: [
@@ -64,9 +50,30 @@ const CompareBarChart: React.FC<CompareBarChartProps> = ({ companyA, companyB })
 		]
 	};
 
+
+	const options = {
+		responsive: true,
+		plugins: {
+			animation: false,
+			legend: {
+				position: 'top' as const,
+			},
+			title: {
+				display: true,
+				text: "ESG Ratings Comparison",
+				font: {
+					size: 24
+				},
+				padding: {
+					top: 40
+				}
+			},
+		},
+	};
+
 	return (
 		<div>
-			<Bar data={data} options={options} height={500} width={1200}/>
+			<Bar data={data} options={options} height={550} width={1200}/>
 		</div>
 	);
 };

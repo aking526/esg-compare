@@ -53,7 +53,7 @@ interface RankingsProps {
 }
 
 const RankingsTable: React.FC<RankingsProps> = ({ rankings, metric, start, reverse }) => {
-	const tableHeading: string[] = ["Rank", "Company", "Total Score", "Environment Score", "Social Score", "Governance Score"];
+	const tableHeading: string[] = ["Rank", "Company", "Total Score", "Environmental Score", "Social Score", "Governance Score"];
 	const getFrom: string[] = ["name", "ticker", "total_score", "environment_score", "social_score", "governance_score"];
 	const tableBody: string[][] = make2dArray(getFrom.length, rankings.length, "");
 

@@ -86,32 +86,32 @@ const CompareSearchBar: React.FC<CSearchBarProps> = ({ placeholder, data, prevSe
 			<div className="flex flex-row justify-center font-modern text-black mr-auto ml-auto w-64 p-5" onPointerDown={handleOnPointerDown}>
 				<div className="flex flex-col">
 					<input
-							className="bg-white w-60 h-14 text-sm rounded-xl border-2 border-black px-3 hover:bg-white hover:border-sky-700 placeholder:text-xs py-6"
-							onChange={onChange}
-							onFocus={onFocus}
-							value={curr}
-							type="text"
-							placeholder={placeholder}
+						className="bg-white w-60 h-14 text-sm rounded-xl border-2 border-black px-3 hover:bg-white hover:border-sky-700 placeholder:text-xs py-6"
+						onChange={onChange}
+						onFocus={onFocus}
+						value={curr}
+						type="text"
+						placeholder={placeholder}
 					/>
 					<div className="relative z-10">
 						{(( filteredData && filteredData.length !== 0 && curr.length !== 0) || focused) &&
-                <div className="absolute top-0 left-0 right-0 bottom-0">
-                  <ul className="relative flex flex-col ml-auto mr-auto bg-white rounded-lg border-2 border-cyan-50 w-60 h-36 pt-1.5 drop-shadow-xl overflow-hidden overflow-y-auto">
-										{filteredData && filteredData.map((value: string[], key: number) => {
-											if (value[0] === otherSelected) return;
-											return (
-												<li
-													className="text-sm m-2 hover:bg-slate-100"
-													key={key}
-													onClick={() => {
-														passBack(value[0]);
-													}}>
-													{value[1]} - {value[0].toUpperCase()}
-												</li>
-											);
-										})}
-                  </ul>
-                </div>
+							<div className="absolute top-0 left-0 right-0 bottom-0">
+								<ul className="relative flex flex-col ml-auto mr-auto bg-white rounded-lg border-2 border-cyan-50 w-60 h-36 pt-1.5 drop-shadow-xl overflow-hidden overflow-y-auto">
+									{filteredData && filteredData.map((value: string[], key: number) => {
+										if (value[0] === otherSelected) return;
+										return (
+											<li
+												className="text-sm m-2 hover:bg-slate-100"
+												key={key}
+												onClick={() => {
+													passBack(value[0]);
+												}}>
+												{value[1]} - {value[0].toUpperCase()}
+											</li>
+										);
+									})}
+								</ul>
+							</div>
 						}
 					</div>
 				</div>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { convSPCFrom } from "./useSPCFrom";
 import ISA from "../types/ISA";
 import { convertStockData, CPair } from "../classes/CPair";
 import StockApi from "../api/StockApi";
@@ -14,16 +13,17 @@ export function useStockData(ticker: string, spcLen: string, f?: number, t?: num
 	const queryClient = useQueryClient();
 
 	useEffect(() => {
-		const cd: ISA | undefined = queryClient.getQueryData([`${ticker}_stock_prices`, spcLen]);
+		const cd: ISA | undefined = queryClient.getQueryData([`${ticker}_stock_prices`]);
 		setCachedData(cd);
 	}, [spcLen]);
 
-	const sp = useQuery([`${ticker}_stock_prices`, spcLen], async () => {
+	const sp = useQuery([`${ticker}_stock_prices`], async () => {
 		if (ticker === "" || ticker === undefined || !ticker) return { message: "No Ticker" };
 
-		const from = convSPCFrom(spcLen);
+		let from = new Date();
+		from.setFullYear(from.getFullYear() - 5);
 
-		return await StockApi.fetchStockInfo(ticker, "D", from, to);
+		return await StockApi.fetchStockInfo(ticker, "D", convertDateToUnix(from), to);
 	}, {
 		onSuccess: (res) => {
 			if (!res || "message" in res) return;
@@ -32,7 +32,7 @@ export function useStockData(ticker: string, spcLen: string, f?: number, t?: num
 	});
 
 	if (!ticker) {
-		queryClient.removeQueries([`${ticker}_stock_prices`, spcLen]);
+		queryClient.removeQueries([`${ticker}_stock_prices`]);
 	}
 
 	if (cachedData) return { prices: convertStockData(cachedData, "c"), isLoading: false, isError: false, error: null };

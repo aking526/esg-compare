@@ -6,7 +6,7 @@ import GovernanceMeetingImg from "../../assets/governance/pexels-fauxels-3183172
 const Home: React.FC = () => {
 	return (
 		<div className="font-modern">
-			<div className="flex flex-col my-10 mx-28">
+			<div className="flex flex-col my-10 mx-[7.78vw]">
 				<div className="mb-1">
 					<div className="mb-2">
 						<div className="flex flex-row">
@@ -18,7 +18,7 @@ const Home: React.FC = () => {
 						</div>
 						<div className="flex flex-row justify-between mt-10">
 							<div className="flex flex-col p-2 hover:shadow-light pt-4 w-[30%] bg-contrast-gray">
-								<b className="text-4xl text-main-red font-extrabold ml-1.5">(E) Environment</b>
+								<b className="text-4xl text-main-red font-extrabold ml-1.5">(E) Environmental</b>
 								<div className="flex justify-center px-8 py-8">
 									<p className="text-2xl">Environmental criteria focus on a company’s environmental stewardship. The environmental segment of ESG examines how a company uses natural resources and impacts the environment. Environmental factors are primarily concerned with climate change issues.</p>
 								</div>

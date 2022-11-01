@@ -12,6 +12,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { CPair, getDatesFormatted, getPrices } from "../../../classes/CPair";
+import { useSPCSlicer } from "../../../hooks/spc-hooks";
 
 ChartJS.register(
 	CategoryScale,
@@ -33,12 +34,13 @@ interface StockPriceChartProps {
 }
 
 const StockPriceChart: React.FC<StockPriceChartProps> = ({ ticker, name, spcLen, prices }) => {
+	const [start, stop] = useSPCSlicer(spcLen, prices);
 	const data = {
-		labels: getDatesFormatted(prices),
+		labels: getDatesFormatted(prices).slice(start, stop),
 		datasets: [
 			{
 				label: "Price",
-				data: getPrices(prices),
+				data: getPrices(prices).slice(start, stop),
 				backgroundColor: "rgba(125, 211, 252, 0.25)",
 				borderColor: "rgba(125, 211, 252, 1)",
 				fill: true,

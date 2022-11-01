@@ -12,7 +12,7 @@ interface EPCProps {
 
 const ESGDChart: React.FC<EPCProps> = ({ env, soc, gov}) => {
 	const [data, setData] = useState<ChartData<"doughnut">>({
-		labels: ["Environment", "Social", "Governance"],
+		labels: ["Environmental", "Social", "Governance"],
 		datasets: [
 			{
 				label: "Score",
@@ -45,8 +45,8 @@ const ESGDChart: React.FC<EPCProps> = ({ env, soc, gov}) => {
 	};
 
 	return (
-		<div className="relative">
-			<Doughnut data={data} options={options} width={300} height={200} />
+		<div>
+			<Doughnut data={data} options={options} width={window.innerWidth * 300 / 1440} height={window.innerHeight * 200 / 1440} />
 		</div>
 	);
 };

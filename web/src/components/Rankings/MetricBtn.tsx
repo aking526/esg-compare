@@ -14,7 +14,7 @@ const MetricBtn: React.FC<FilterBtnProps> = ({ text, thisMetric, currMetric, set
 	const handleClick = () => setMetric(thisMetric);
 
 	useEffect(() => {
-		if (currMetric === thisMetric) setColor("bg-green-300");
+		if (currMetric === thisMetric) setColor("bg-green-400");
 		else setColor("");
 	},[currMetric]);
 

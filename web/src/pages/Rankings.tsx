@@ -97,9 +97,11 @@ const Rankings: React.FC = () => {
 
   useEffect(() => {
     setSliceStart(0);
-    if (!industryOptionsSelected && !nyse && !nasdaq) {
+    if ((!industryOptionsSelected || industryOptionsSelected === "") && !nyse && !nasdaq) {
       const cachedRanking: ICompanyData[] | undefined = queryClient.getQueryData([`${metric}_rankings`]);
-      if (cachedRanking) setRankings(cachedRanking);
+      if (cachedRanking) {
+        setRankings(cachedRanking);
+      }
     }
   }, [metric]);
 
@@ -167,7 +169,7 @@ const Rankings: React.FC = () => {
             styles={FilterBtnStyles}
           />
           <MetricBtn
-            text="Environment Score"
+            text="Environmental Score"
             thisMetric={"environment_score"}
             currMetric={metric}
             setMetric={setMetric}
@@ -209,7 +211,7 @@ const Rankings: React.FC = () => {
           <RankingsLoading metric={DataRefToText[metric]} />
           }
         </div>
-        <div className="flex flex-col m-2 p-2 shadow-light bg-white rounded-lg w-fit h-min">
+        <div className="flex flex-col m-2 p-3 shadow-light bg-white rounded-lg w-fit h-min">
           <u className="text-xl">Filters: </u>
           <div className="border-2 border-black p-2 my-2 rounded-lg">
             <FilterCheckbox label="Reverse rankings" value={reverse} onChange={() => setReverse(prevState => !prevState)} />
@@ -223,7 +225,7 @@ const Rankings: React.FC = () => {
               <p>Industry:</p>
             </div>
           }
-          <div className="mt-5 border-2 rounded-lg p-2 border-black">
+          <div className="mt-2 border-2 rounded-lg p-2 border-black">
             <h3>Stock Exchange: </h3>
             <FilterCheckbox label="NYSE" value={nyse} onChange={() => setNyse(prevState => !prevState)} />
             <FilterCheckbox label="Nasdaq" value={nasdaq} onChange={() => setNasdaq(prevState => !prevState)} />

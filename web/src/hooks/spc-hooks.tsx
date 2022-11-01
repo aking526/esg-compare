@@ -1,5 +1,17 @@
 import { useState, useEffect } from "react";
 import { convertDateToUnix } from "../utils/date";
+import { CPair } from "../classes/CPair";
+
+export function useSPCSlicer(spcLen: string, arr: CPair[]) {
+	const from = useSPCFrom(spcLen);
+
+	let idx = arr.length - 1;
+	while (idx >= 0 && arr[idx].date >= from) idx--;
+
+	if (spcLen === "5 days") idx = arr.length - 5;
+	if (spcLen === "5 years") idx = 0;
+	return [idx, arr.length];
+}
 
 export function useSPCFrom(spcLen: string) {
 	const [from, setFrom] = useState<number>(-1);
@@ -7,7 +19,8 @@ export function useSPCFrom(spcLen: string) {
 	useEffect(() => {
 		let d = new Date();
 		if (spcLen === "5 days") {
-			d.setDate(d.getDate() - 5);
+			// Some days are missing so to include a total of 5 days...
+			d.setDate(d.getDate() - 10);
 		} else if (spcLen === "1 month") {
 			d.setMonth(d.getMonth() - 1);
 		} else if (spcLen === "6 months") {
@@ -31,7 +44,8 @@ export function useSPCFrom(spcLen: string) {
 export function convSPCFrom(spcLen: string) {
 	let d = new Date();
 	if (spcLen === "5 days") {
-		d.setDate(d.getDate() - 5);
+		// Some days are missing so to include a total of 5 days...
+		d.setDate(d.getDate() - 15);
 	} else if (spcLen === "1 month") {
 		d.setMonth(d.getMonth() - 1);
 	} else if (spcLen === "6 months") {

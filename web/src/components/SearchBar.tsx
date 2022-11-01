@@ -79,8 +79,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, data, positioning, s
   const handleOnPointerDown = (event: React.PointerEvent<HTMLDivElement>) => event.stopPropagation();
 
   return (
-    <div id="search-bar" className={`flex flex-row justify-center my-1 ${positioning} font-modern text-black mr-auto ml-auto ${styles.containerWidth}`} onPointerDown={handleOnPointerDown}>
-      <div className="flex flex-col">
+    <div id="search-bar" className={`flex flex-row justify-center my-1 font-modern text-black mr-auto ml-auto ${styles.containerWidth}`} onPointerDown={handleOnPointerDown}>
+      <div className={`flex flex-col ${positioning}`}>
         <input
           className={`bg-slate-200 ${styles.width} h-14 ${styles.inputTextSize} rounded-xl border-2 border-black px-3 hover:bg-white hover:border-sky-700 placeholder:${styles.inputPlaceholderTextSize}`}
           onChange={onChange}
