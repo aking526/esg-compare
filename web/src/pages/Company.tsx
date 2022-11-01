@@ -258,7 +258,7 @@ const Company: React.FC = () => {
                       </ReactTooltip>
                     </div>
                     <div className="mx-1">
-                      <p className="text-black"><strong>Last Processing Date:</strong> {data.last_processing_date}. <i className="text-gray-500">Ratings are updated quarterly</i>.</p>
+                      <p className="text-black"><strong>Last Processing Date:</strong> {data.last_processing_date}. <i className="text-gray-500">Ratings are updated periodically</i>.</p>
                     </div>
                   </div>
                   <ESGDChart env={data.environment_score} soc={data.social_score} gov={data.governance_score}/>
