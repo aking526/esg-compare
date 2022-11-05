@@ -77,7 +77,7 @@ const CompareStockChart: React.FC<CompareStockChartProps> = ({ tickerA, pricesA,
 					size: 24
 				},
 				padding: {
-					top: 40
+					top: window.outerHeight * 40 / 900
 				}
 			},
 		},
@@ -85,10 +85,9 @@ const CompareStockChart: React.FC<CompareStockChartProps> = ({ tickerA, pricesA,
 
 	return (
 		<div>
-			<Line data={data} options={options} height={450} width={1200}/>
+			<Line data={data} options={options} height={window.outerHeight * 450 / 900} width={window.innerWidth * 1200 / 1440}/>
 		</div>
 	);
 };
 
 export default CompareStockChart;
-

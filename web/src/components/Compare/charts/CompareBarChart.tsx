@@ -65,7 +65,7 @@ const CompareBarChart: React.FC<CompareBarChartProps> = ({ companyA, companyB })
 					size: 24
 				},
 				padding: {
-					top: 40
+					top: window.outerHeight * 40 / 900
 				}
 			},
 		},
@@ -73,7 +73,7 @@ const CompareBarChart: React.FC<CompareBarChartProps> = ({ companyA, companyB })
 
 	return (
 		<div>
-			<Bar data={data} options={options} height={550} width={1200}/>
+			<Bar data={data} options={options} height={window.outerHeight * 550 / 900} width={window.innerWidth * 1200 / 1440}/>
 		</div>
 	);
 };

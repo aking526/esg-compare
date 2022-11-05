@@ -4,7 +4,7 @@ import { Github_URL } from "../utils/Links";
 const About: React.FC = () => {
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col bg-white font-modern mx-[10%] mb-10">
+      <div className="flex flex-col bg-white font-modern mx-[10%] mb-[4.445vh]">
         <h1 className="my-5 mx-auto text-5xl text-main-red">About</h1>
         <div className="flex flex-col bg-contrast-gray mt-8 hover:shadow-light p-5">
           <h3 className="text-4xl">Our Purpose</h3>

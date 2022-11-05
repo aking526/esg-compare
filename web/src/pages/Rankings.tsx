@@ -157,7 +157,7 @@ const Rankings: React.FC = () => {
   const FilterBtnStyles = "border-2 rounded-xl border-black p-1 my-0.5";
 
   return (
-    <div id="#container" className={`relative flex flex-col justify-evenly bg-white py-5 h-[${height}px] overflow-y-hidden font-modern`}>
+    <div id="#container" className={`relative flex flex-col justify-evenly bg-white py-[2.22vh] h-[${height}px] overflow-y-hidden font-modern mt-[1vh]`}>
       <div className="flex flex-row">
         <div className="font-modern rounded-lg bg-white shadow-light w-fit h-min m-2 p-2">
           <u className="text-xl">Sort By:</u>
@@ -190,7 +190,7 @@ const Rankings: React.FC = () => {
             styles={FilterBtnStyles}
           />
         </div>
-        <div className="w-rankings-w">
+        <div className="w-[63.33vw]">
           { !rankingsLoading && !uncachedRankingsLoading ? (
             <div className="flex flex-col">
               <RankingsTable rankings={rankings.slice(!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0), !reverse ? sliceStart + 50 : Math.min(rankings.length - sliceStart, rankings.length))} metric={metric} start={!reverse ? sliceStart : Math.max(rankings.length - sliceStart - 50, 0)} reverse={reverse} />
@@ -217,15 +217,15 @@ const Rankings: React.FC = () => {
             <FilterCheckbox label="Reverse rankings" value={reverse} onChange={() => setReverse(prevState => !prevState)} />
           </div>
           {!industriesLoading ?
-            <div className="border-2 rounded-lg p-2 border-black w-72 h-[85px]">
+            <div className="border-2 rounded-lg p-2 border-black w-[20vw] h-[11vh]">
               <FilterDropdown title="Industry:" options={dropdownOptions} passBack={handleIndustryOptSel}/>
             </div>
               :
-            <div className="border-2 rounded-lg p-2 border-black w-72 h-[85px]">
+            <div className="border-2 rounded-lg p-2 border-black w-[20vw] h-[11vh]">
               <p>Industry:</p>
             </div>
           }
-          <div className="mt-2 border-2 rounded-lg p-2 border-black">
+          <div className="flex flex-col h-fit mt-2 border-2 rounded-lg p-2 border-black">
             <h3>Stock Exchange: </h3>
             <FilterCheckbox label="NYSE" value={nyse} onChange={() => setNyse(prevState => !prevState)} />
             <FilterCheckbox label="Nasdaq" value={nasdaq} onChange={() => setNasdaq(prevState => !prevState)} />

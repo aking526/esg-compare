@@ -16,9 +16,9 @@ const RankingsNavBtn: React.FC<RankingsNavBtnProps> = ({ handleClick, dir, color
 			}}
 		>
 			{ dir === "left" ?
-					<ArrowLeftIcon className={`h-7 w-7 ${color}`}/>
+					<ArrowLeftIcon className={`h-6 w-6 ${color}`}/>
 					:
-					<ArrowRightIcon className={`h-7 w-7 ${color}`}/>
+					<ArrowRightIcon className={`h-6 w-6 ${color}`}/>
 			}
 		</div>
 	);

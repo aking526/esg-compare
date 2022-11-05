@@ -130,6 +130,7 @@ const Compare: React.FC = () => {
 	};
 
 	const handleBackButtonClicked = () => {
+		window.localStorage.removeItem("compare_tickers");
 		setTickers(["", ""]);
 		setData([]);
 		setCompareToIA(false);
@@ -170,7 +171,7 @@ const Compare: React.FC = () => {
 					<p className="m-2 text-white">Back</p>
 				</div>
 			}
-			<div className={`font-modern ${ allSelected ? "my-8" : "my-16" } mx-[6.67%] px-5 py-8 bg-contrast-gray shadow-light`}>
+			<div className={`font-modern ${ allSelected ? "my-[3.556vh]" : "my-[7.2vh]" } mx-[6.67%] px-[1.389vw] py-[3.556vh] bg-contrast-gray shadow-light`}>
 				{ compareToIA &&
 					<div>
 						{ data[0] && !IA.isLoading ?
@@ -254,7 +255,7 @@ const Compare: React.FC = () => {
 											);
 										})}
 									</div>
-									<div className="w-[1200px] h-[550px]">
+									<div>
 										<CompareBarChart
 											companyA={{
 												ticker: tickers[0],
@@ -268,7 +269,7 @@ const Compare: React.FC = () => {
 											}}
 										/>
 									</div>
-									<div className="w-[1200px] h-[450px]">
+									<div className="relative mb-1.5">
 										{ stock0 && stock1 && !stock0.isLoading && !stock1.isLoading &&
 											<CompareStockChart
 												tickerA={tickers[0]}
@@ -279,7 +280,7 @@ const Compare: React.FC = () => {
 											/>
 										}
 									</div>
-									<div className="flex flex-row justify-between">
+									<div className="relative flex flex-row justify-between">
 										<SPCLenBtn
 											initialValue={false}
 											text="5 days"
@@ -320,12 +321,12 @@ const Compare: React.FC = () => {
 					<>
 						{ !compareToIA &&
 							<div className="flex flex-col items-center">
-								<div className="flex flex-col items-center justify-center bg-band w-fit p-5 mx-20 mt-10 rounded-xl text-2xl left-auto right-auto">
+								<div className="flex flex-col items-center justify-center bg-band w-fit p-5 mx-[5.556vw] mt-[4.45vh] rounded-xl text-2xl left-auto right-auto">
 									<h3>Compare ESG ratings of one company against another or </h3>
 									<h3>compare ESG ratings of a company against its industry average:</h3>
 								</div>
 								{ companies ?
-									<div className="flex flex-row justify-evenly mb-16 mx-[8.89%] px-18 pt-10 pb-24">
+									<div className="flex flex-row justify-evenly mb-[7.11vh] mx-[8.89%] px-[5.56vw] pt-[4.45vh] pb-[10vh]">
 										<CompareInputSelected ticker={companies} handleClick={() => {
 											navigate("/compare");
 											newTickers(0, "");
@@ -350,7 +351,7 @@ const Compare: React.FC = () => {
 										}
 									</div>
 										:
-									<div className="flex flex-row items-center justify-between mb-16 mx-[8.89%] px-18 pt-10 pb-24">
+									<div className="flex flex-row items-center justify-between mb-[7.12vh] mx-[8.89%] px-[5.56vw] pt-[4.45vh] pb-[10vh]">
 										{ !tickers[0] ?
 											<CompareInputField
 												index={0}

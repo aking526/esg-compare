@@ -175,7 +175,7 @@ const Company: React.FC = () => {
           :
         <>
           { loaded && avgScores && avgGrades && avgLevels && bestScores && bestGrades && bestLevels && data ? (
-            <div className="flex flex-col shadow-light my-[7.11vh] font-modern mx-[6vw] px-8 py-6 bg-contrast-gray">
+            <div className="flex flex-col shadow-light my-[7.11vh] font-modern mx-[6vw] px-[2.22vw] py-[2.67vh] bg-contrast-gray">
               <CompanyInfo name={data.name} ticker={data.ticker} cik={data.cik} exchange={data.exchange} industry={data.industry} logo={data.logo} weburl={data.weburl} />
               <div className="relative flex flex-col mt-5 w-fit">
                 <strong className="text-2xl mb-1.5">ESG Data</strong>
@@ -264,7 +264,7 @@ const Company: React.FC = () => {
                   <ESGDChart env={data.environment_score} soc={data.social_score} gov={data.governance_score}/>
                 </div>
               </div>
-              <div className="flex flex-row mt-5">
+              <div className="flex flex-row mt-[2.223vh]">
                 <div className="flex flex-col items-center mr-1">
                   <strong className="text-2xl mb-1.5">Share Price</strong>
                   <p className="text-xs">Last Updated: {new Date().toLocaleString()}</p>
@@ -272,7 +272,7 @@ const Company: React.FC = () => {
                     { closingPrices && !closingPrices.isLoading ?
                       <StockPriceChart ticker={data.ticker} name={data.name} spcLen={spcLen} prices={closingPrices.prices}/>
                         :
-                      <div className="w-[800px] h-[400px]"></div>
+                      <div className="w-[55.56vw] h-[44.44vh]"></div>
                     }
                   </div>
                   <div className="flex flex-row justify-between">
@@ -308,7 +308,7 @@ const Company: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="flex flex-col border-l-2 border-black ml-6 px-8 pb-2 mt-20">
+                <div className="flex flex-col border-l-2 border-black ml-[1.67vw] px-[2.23vw] pb-[0.899vh] mt-[8.89vh]">
                   <strong className="text-2xl mb-1.5">Market Summary</strong>
                   <div>
                     <div><strong>Current Price:</strong> &nbsp;${quote.c.toFixed(2)}</div>
@@ -336,58 +336,58 @@ const Company: React.FC = () => {
                 </div>
               </div>
               { news.length !== 0 &&
-                <div className="flex flex-col mt-5">
-                <strong className="text-2xl mb-1.5">Company News</strong>
-                  { !newsLoading ?
-                    <div className="flex flex-row w-full overflow-x-auto">
-                      {news.slice(0, Math.min(news.length, 20)).map((currNews, idx) => {
-                        if (!currNews.url || currNews.url === "") return null;
-                        const split = currNews.headline.split(" ");
+                <div className="flex flex-col mt-[2.223vh]">
+                  <strong className="text-2xl mb-1.5">Company News</strong>
+                    { !newsLoading ?
+                      <div className="flex flex-row w-full overflow-x-auto">
+                        {news.slice(0, Math.min(news.length, 20)).map((currNews, idx) => {
+                          if (!currNews.url || currNews.url === "") return null;
+                          const split = currNews.headline.split(" ");
 
-                        let cnt = 0;
-                        let slicedHeadline = "";
-                        for (let i = 0; i < split.length; i++) {
-                          if (cnt < 50) {
-                            slicedHeadline += split[i] + " ";
-                            cnt += split[i].length;
-                          } else break;
-                        }
+                          let cnt = 0;
+                          let slicedHeadline = "";
+                          for (let i = 0; i < split.length; i++) {
+                            if (cnt < 50) {
+                              slicedHeadline += split[i] + " ";
+                              cnt += split[i].length;
+                            } else break;
+                          }
 
-                        return (
-                          <div
-                            className={`my-3 mr-2 w-[20vw] p-2 ${idx < Math.min(20 - 1, news.length - 1) ? "border-r-2" : ""} border-black p-1.5`}
-                            style={{
-                              minWidth: "20%"
-                            }}
-                            key={idx}
-                          >
-                            <a href={currNews.url}>
-                              <div className="flex flex-col">
-                                <h3 id="news-headline">{slicedHeadline}...</h3>
-                                <img
-                                  id={`news-img-${idx}`}
-                                  width={100}
-                                  height={100}
-                                  src={currNews.image}
-                                  alt={`${currNews.source} Article Image`}
-                                  onError={() => {
-                                    // @ts-ignore
-                                    document.getElementById(`news-img-${idx}`).style.display = "none";
-                                  }}
-                                />
-                                <p>Source: {currNews.source}</p>
-                              </div>
-                            </a>
-                          </div>
-                        );
-                      })}
-                    </div>
+                          return (
+                            <div
+                              className={`my-3 mr-2 w-[20vw] p-2 ${idx < Math.min(20 - 1, news.length - 1) ? "border-r-2" : ""} border-black p-1.5`}
+                              style={{
+                                minWidth: "20%"
+                              }}
+                              key={idx}
+                            >
+                              <a href={currNews.url}>
+                                <div className="flex flex-col">
+                                  <h3 id="news-headline">{slicedHeadline}...</h3>
+                                  <img
+                                    id={`news-img-${idx}`}
+                                    width={100}
+                                    height={100}
+                                    src={currNews.image}
+                                    alt={`${currNews.source} Article Image`}
+                                    onError={() => {
+                                      // @ts-ignore
+                                      document.getElementById(`news-img-${idx}`).style.display = "none";
+                                    }}
+                                 />
+                                  <p>Source: {currNews.source}</p>
+                                </div>
+                              </a>
+                            </div>
+                          );
+                        })}
+                      </div>
                     :
-                    <div>
-                      <h1 className="text-xl">Loading...</h1>
-                    </div>
+                      <div>
+                        <h1 className="text-xl">Loading...</h1>
+                      </div>
                   }
-                <p className="text-xs">Note: These are not sponsored ads</p>
+                  <p className="text-xs">Note: These are not sponsored ads</p>
                 </div>
               }
             </div>)

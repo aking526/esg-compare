@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, ChartData } from "chart.js";
 
@@ -11,7 +11,12 @@ interface EPCProps {
 }
 
 const ESGDChart: React.FC<EPCProps> = ({ env, soc, gov}) => {
-	const [data, setData] = useState<ChartData<"doughnut">>({
+	const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+
+	const [width, setWidth] = useState(window.innerWidth * 300 / 1440);
+	const [height, setHeight] = useState(window.outerHeight * 200 / 900);
+
+	const data : ChartData<"doughnut"> = {
 		labels: ["Environmental", "Social", "Governance"],
 		datasets: [
 			{
@@ -26,7 +31,7 @@ const ESGDChart: React.FC<EPCProps> = ({ env, soc, gov}) => {
 				borderWidth: 2
 			}
 		]
-	});
+	};
 
 	const options = {
 		responsive: true,
@@ -44,9 +49,18 @@ const ESGDChart: React.FC<EPCProps> = ({ env, soc, gov}) => {
 		}
 	};
 
+	useEffect(() => {
+		setWidth(window.innerWidth * 300 / 1440);
+		setHeight(window.outerHeight * 200 / 900);
+	}, [window.innerWidth, window.innerHeight]);
+
+	useEffect(() => {
+		forceUpdate();
+	}, [width, height]);
+
 	return (
 		<div>
-			<Doughnut data={data} options={options} width={window.innerWidth * 300 / 1440} height={window.innerHeight * 200 / 1440} />
+			<Doughnut data={data} options={options} width={width} height={height} />
 		</div>
 	);
 };

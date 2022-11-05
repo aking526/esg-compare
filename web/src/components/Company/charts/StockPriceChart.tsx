@@ -72,7 +72,7 @@ const StockPriceChart: React.FC<StockPriceChartProps> = ({ ticker, name, spcLen,
 
 	return (
 		<div>
-			<Line data={data} options={lineOptions} width={800} height={400}/>
+			<Line data={data} options={lineOptions} width={window.innerWidth * 800 / 1440} height={window.innerHeight * 400 / 900}/>
 		</div>
 	);
 };

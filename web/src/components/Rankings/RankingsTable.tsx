@@ -77,7 +77,7 @@ const RankingsTable: React.FC<RankingsProps> = ({ rankings, metric, start, rever
 	if (reverse) tableBody.reverse();
 
 	return (
-		<div id="#rankings" className="relative mt-2 ml-10 mr-5 px-5 pb-3 bg-white rounded-xl border-none shadow-light overflow-y-auto h-rankings-table-h">
+		<div id="#rankings" className="relative mt-2 ml-10 mr-5 px-5 pb-3 bg-white rounded-xl border-none shadow-light overflow-y-auto h-[70vh]">
 			<Table heading={tableHeading} body={tableBody} metric={metric}/>
 		</div>
 	);
