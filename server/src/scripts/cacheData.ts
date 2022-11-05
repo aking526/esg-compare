@@ -75,7 +75,7 @@ const ExecEsgBatch = async (dayCnt: number, customList: string[] | undefined) =>
 
 	const getNewList = (list: string[]) => {
 		let arr = [];
-		for (let i = list.length / 3 * 4 - 1000; i >= 0; i--) {
+		for (let i = 2000; i < list.length; i--) {
 			const ticker = list[i];
 			if (ticker in e) continue;
 			if (arr.length >= 50) break;
