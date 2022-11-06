@@ -7,7 +7,7 @@ import { authCheck } from "../utils/authCheck";
 function deleteCompany(ticker: string, auth: string, callback: Function) {
 	authCheck(auth);
 
-	axios.delete(`http://localhost:8000/api/companies/delete/ticker=${ticker}&auth=${auth}&`)
+	axios.delete(`http://localhost:80/api/companies/delete/ticker=${ticker}&auth=${auth}`)
 		.then((res: AxiosResponse) => {
 			Logging.log(res);
 			callback();
@@ -36,4 +36,4 @@ function deleteAll() {
 	}
 }
 
-deleteAll();
+deleteCompany("twtr", config.server.auth, () => Logging.log("Deleted twtr"));
