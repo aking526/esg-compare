@@ -1,6 +1,6 @@
 # ESG Compare
 
-Please visit the site at: [ESG Compare](https://esgcompare.org).
+Visit the site at: [ESG Compare](https://esgcompare.org).
 
 ## Our Purpose 
 This website was created to provide the ESG ratings information of some of the largest publicly-traded companies in the United States. It reflects the ESG ratings of hundreds of public companies listed on either the NYSE or Nasdaq, most of which are included in the S&P 500.
