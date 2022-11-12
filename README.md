@@ -27,7 +27,6 @@ Libraries/Tools used:
 * React ChartJS 2
 * Heroicons
 <br>
-
 See more details [here](web/package.json)
 
 ### The Backend API
@@ -41,7 +40,6 @@ Libraries/Tools used:
 * mongoose
 * ts-node
 <br>
- 
 See more details [here](server/package.json)
 
 ## License
