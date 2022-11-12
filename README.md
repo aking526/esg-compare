@@ -20,8 +20,29 @@ The mission of this website is to:
 This website was written in TypeScript using MongoDB, ExpressJS, React, and NodeJS. It was styled with TailwindCSS.
 
 ### The Frontend
+Libraries/Tools used:
+* React Query
+* CRACO
+* Framer Motion
+* React ChartJS 2
+* Heroicons
+<br>
 
-### The API
+See more details [here](web/package.json)
+
+### The Backend API
+Disclaimer: The use of the data provided through or by this API is strictly for the purposes of this website.
+
+Libraries/Tools used:
+* axios
+* chalk
+* dotenv
+* joi
+* mongoose
+* ts-node
+<br>
+ 
+See more details [here](server/package.json)
 
 ## License
 GNU General Public License version 3.
