@@ -31,4 +31,4 @@ const changeAndSign = async (type: string) => {
 	}
 };
 
-changeAndSign("Metals & Mining").then(() => Logging.log("Function Complete"));
+changeAndSign("Commercial Services & Supplies").then(() => Logging.log("Function Complete"));
